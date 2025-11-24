@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>API-653 Inspectors Pro | Tank Inspection Toolkit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../../public/css/eds.css" />
+  </head>
+  <body>
+    <main class="eds-main">
+      <section id="license-gate">
+        <h2>Unlock This Tool</h2>
+        <input id="license-input" type="text" placeholder="EDS-API653-XXXX" />
+        <button id="license-submit">Unlock</button>
+        <p id="license-message"></p>
+        <p>
+          Dont have a license?
+          <a href="YOUR_PAYMENT_LINK" target="_blank">Purchase here</a>.
+        </p>
+      </section>
+
+      <section id="app-wrapper" style="display:none;">
+        <header class="eds-tool-hero">
+          <div>
+            <p class="eds-tool-kicker">EDS | API-653 Field Toolkit</p>
+            <h1>API-653 Inspectors Pro</h1>
+            <p class="eds-tool-subtitle">
+              Client-side tank inspection app for shell courses, nozzles, settlement, and reports.
+              Data never leaves the inspectors device.
+            </p>
+          </div>
+        </header>
+
+        <section class="eds-section">
+          <div class="eds-tools-grid">
+            <article class="eds-tool-card">
+              <h3>Shell Course Builder</h3>
+              <p>Configure shell courses and basic dimensions entirely in the browser.</p>
+            </article>
+            <article class="eds-tool-card">
+              <h3>Nozzles &amp; Manways</h3>
+              <p>Define nozzle/manway catalog entries with blind/non-blind states.</p>
+            </article>
+            <article class="eds-tool-card">
+              <h3>Inspection Report</h3>
+              <p>Generate a full PDF-ready report from local JSON and user input.</p>
+            </article>
+          </div>
+
+          <button id="api653-export" class="eds-btn-primary" style="margin-top:2rem;">
+            Download Inspection Report (PDF)
+          </button>
+        </section>
+      </section>
+    </main>
+
+    <script type="module">
+      import { initLicenseGate } from "../../lib/license.js";
+
+      initLicenseGate("API653");
+
+      document.getElementById("api653-export").addEventListener("click", () => {
+        alert("PDF export stub  implement client-side PDF generation here.");
+      });
+    </script>
+  </body>
+  </html>

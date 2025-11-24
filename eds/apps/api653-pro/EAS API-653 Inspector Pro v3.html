@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EAS | API-653 Inspector Pro v5</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0d1b2a;
+      color: #f5f5f5;
+    }
+    header {
+      background: #000000;
+      color: #ffffff;
+      padding: 16px 24px;
+      border-bottom: 2px solid #00bfff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    header .brand {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+    main {
+      padding: 16px;
+      max-width: 1150px;
+      margin: 0 auto;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    button {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    button.primary {
+      background: #00bfff;
+      color: #000;
+      font-weight: 600;
+    }
+    button.secondary {
+      background: #1b263b;
+      color: #f5f5f5;
+      border: 1px solid #415a77;
+    }
+    button.danger {
+      background: #8b0000;
+      color: #fff;
+    }
+    .card {
+      background: #1b263b;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border: 1px solid #415a77;
+      page-break-inside: avoid;
+    }
+    .card h2 {
+      margin: 0 0 8px 0;
+      font-size: 1.0rem;
+      color: #e0eaf5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card h3 {
+      margin: 10px 0 6px;
+      font-size: 0.95rem;
+      color: #d8e3f0;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px 16px;
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 2px;
+      color: #e0eaf5;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      border-radius: 4px;
+      border: 1px solid #415a77;
+      padding: 6px 7px;
+      font-size: 0.85rem;
+      background: #0d1b2a;
+      color: #f5f5f5;
+      resize: vertical;
+    }
+    textarea { min-height: 60px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+    th, td {
+      border: 1px solid #415a77;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    th {
+      background: #0d1b2a;
+    }
+    .add-row-btn {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+    }
+    /* UT status highlighting (applied to T_meas cell only) */
+    .status-ut-bad {
+      background-color: rgba(120, 40, 31, 0.4);
+      border: 2px solid #ff4d4d;
+      box-shadow: 0 0 0 1px rgba(255, 77, 77, 0.4);
+    }
+    .status-ut-warn {
+      background-color: rgba(125, 102, 8, 0.35);
+      border: 2px solid #ffd54f;
+      box-shadow: 0 0 0 1px rgba(255, 213, 79, 0.4);
+    }
+    .section-tag {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #00bfff;
+      color: #000;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .muted {
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+    .summary-box {
+      background: #0d1b2a;
+      border-radius: 6px;
+      border: 1px dashed #415a77;
+      padding: 8px;
+      font-size: 0.8rem;
+      max-height: 250px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    /* Photo log */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .photo-card {
+      border-radius: 6px;
+      border: 1px solid #415a77;
+      padding: 8px;
+      background: #0d1b2a;
+    }
+    .photo-preview {
+      width: 100%;
+      max-height: 180px;
+      object-fit: contain;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      background: #1b263b;
+    }
+    .photo-meta {
+      font-size: 0.75rem;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Shell status colors */
+    .status-chip {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-good {
+      background: #145a32;
+      color: #f5f5f5;
+    }
+    .status-warn {
+      background: #7d6608;
+      color: #f5f5f5;
+    }
+    .status-bad {
+      background: #78281f;
+      color: #f5f5f5;
+    }
+
+    /* Inspection mode defaults */
+    .external-only { display: block; }
+    .internal-only { display: none; }
+
+    /* Course cards */
+    .course-card {
+      border: 1px solid #415a77;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: #0d1b2a;
+    }
+    .course-header {
+      padding: 6px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .course-header-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .course-toggle {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+    .course-body {
+      padding: 8px 10px 10px;
+      display: none;
+    }
+    .course-card.open .course-body {
+      display: block;
+    }
+
+    .no-pdf {
+      /* elements hidden only for on-screen use, removed for PDF */
+    }
+
+    body.pdf-export .no-pdf {
+      display: none !important;
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        color: #000000;
+      }
+      header {
+        background: #ffffff;
+        color: #000000;
+        border-bottom: 1px solid #000;
+      }
+      .toolbar {
+        display: none !important;
+      }
+      .card {
+        background: #ffffff;
+        border-color: #000000;
+      }
+      input, textarea, select {
+        border: 1px solid #000000;
+        background: #ffffff;
+        color: #000000;
+      }
+      .summary-box {
+        border-color: #000000;
+        background: #ffffff;
+      }
+      .photo-preview {
+        background: #ffffff;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>EAS | API-653 Inspector Pro v5</h1>
+    <div class="brand">Enhanced Digital Imaging Solutions – Field Inspector Toolkit</div>
+  </div>
+  <div style="text-align:right;font-size:0.8rem;">
+    <div>Report Version: v5.0 – Modes + Per-Course UT</div>
+    <div>Date: <span id="todayDate"></span></div>
+  </div>
+</header>
+
+<main id="reportRoot">
+  <div class="toolbar no-pdf">
+    <button class="primary" onclick="generateSummary()">Generate Summary</button>
+    <button class="secondary" onclick="window.print()">Print / Save as PDF (Browser)</button>
+    <button class="secondary" onclick="exportPDF()">Export PDF (Formatted)</button>
+    <button class="secondary" onclick="saveDraft()">Save Draft (Local)</button>
+    <button class="secondary" onclick="loadDraft()">Load Draft</button>
+    <button class="danger" onclick="clearDraft()">Clear Local Draft</button>
+  </div>
+
+  <!-- CATEGORY 0: General Tank/Inspector Info -->
+  <section class="card">
+    <h2>
+      0. Inspector & Tank Information
+      <span class="section-tag">General</span>
+    </h2>
+    <div class="grid-2">
+      <div>
+        <label for="inspectorName">Inspector Name</label>
+        <input type="text" id="inspectorName" data-field />
+      </div>
+      <div>
+        <label for="inspectorCert">Certification / ID</label>
+        <input type="text" id="inspectorCert" data-field placeholder="e.g., API-653 #, CWI #" />
+      </div>
+      <div>
+        <label for="inspectionDate">Inspection Date</label>
+        <input type="date" id="inspectionDate" data-field />
+      </div>
+      <div>
+        <label for="clientName">Client / Facility Name</label>
+        <input type="text" id="clientName" data-field />
+      </div>
+      <div>
+        <label for="tankId">Tank ID / Tag</label>
+        <input type="text" id="tankId" data-field />
+      </div>
+      <div>
+        <label for="serviceFluid">Service Fluid / Product</label>
+        <input type="text" id="serviceFluid" data-field />
+      </div>
+      <div>
+        <label for="tankDiameter">Tank Diameter (ft)</label>
+        <input type="number" step="0.01" id="tankDiameter" data-field oninput="recalcShellCourses()" />
+      </div>
+      <div>
+        <label for="tankHeight">Total Shell Height (ft)</label>
+        <input type="number" step="0.01" id="tankHeight" data-field oninput="recalcShellCourses()" />
+      </div>
+      <div>
+        <label for="maxLiquidHeight">Max Liquid Height (ft)</label>
+        <input type="number" step="0.01" id="maxLiquidHeight" data-field oninput="recalcShellCourses()" />
+      </div>
+      <div>
+        <label for="specificGravity">Specific Gravity (G)</label>
+        <input type="number" step="0.01" id="specificGravity" data-field oninput="recalcShellCourses()" />
+      </div>
+      <div>
+        <label for="designPressure">Design Internal Pressure P (psig)</label>
+        <input type="number" step="0.01" id="designPressure" data-field oninput="recalcShellCourses()" placeholder="0 = atmospheric" />
+      </div>
+      <div>
+        <label for="globalCorrosionRate">Global Corrosion Rate (in/yr)</label>
+        <input type="number" step="0.001" id="globalCorrosionRate" data-field oninput="recalcShellCourses()" />
+      </div>
+    </div>
+    <h3>General Notes</h3>
+    <textarea id="generalNotes" data-field placeholder="Brief description of tank service, history, and inspection scope."></textarea>
+  </section>
+
+  <!-- INSPECTION TYPE SELECTOR -->
+  <section class="card">
+    <h2>
+      Inspection Type
+      <span class="section-tag">Mode</span>
+    </h2>
+    <select id="inspectionType" data-field onchange="updateInspectionMode()">
+      <option value="">-- Select Inspection Type --</option>
+      <option value="external">External Inspection (API-653 External)</option>
+      <option value="internal">Internal Inspection (API-653 Internal)</option>
+      <option value="both">Both (Full Inspection)</option>
+    </select>
+    <p class="muted" style="margin-top:6px;">
+      The form and PDF will automatically show only sections relevant to the selected inspection type.
+    </p>
+  </section>
+
+  <!-- CATEGORY 1: Foundation / Floor / Projection -->
+  <section class="card">
+    <h2>
+      1. Foundation / Floor / Projection
+      <span class="section-tag">Category 1</span>
+    </h2>
+
+    <!-- External-only: Foundation -->
+    <div class="external-only">
+      <h3>1.1 Foundation Assessment (External)</h3>
+      <div class="grid-2">
+        <div>
+          <label for="foundationType">Foundation Type</label>
+          <input type="text" id="foundationType" data-field placeholder="e.g., ringwall, slab, gravel" />
+        </div>
+        <div>
+          <label for="foundationDrainage">Drainage / Grading</label>
+          <input type="text" id="foundationDrainage" data-field placeholder="e.g., positive drainage, ponding issues" />
+        </div>
+      </div>
+      <textarea id="foundationCondition" data-field placeholder="Concrete condition, settlement signs, heave, washout, vegetation, cracking, etc."></textarea>
+    </div>
+
+    <!-- Internal-only: Floor -->
+    <div class="internal-only">
+      <h3>1.2 Floor Condition (Internal)</h3>
+      <div class="grid-2">
+        <div>
+          <label for="floorWeldType">Floor Weld Type</label>
+          <select id="floorWeldType" data-field>
+            <option value="">-- Select --</option>
+            <option>Butt-Welded</option>
+            <option>Lap-Welded</option>
+            <option>Butt-Weld + Lap Floor</option>
+            <option>Unknown / Mixed</option>
+          </select>
+        </div>
+        <div>
+          <label for="floorType">Floor Type</label>
+          <select id="floorType" data-field>
+            <option value="">-- Select --</option>
+            <option>Single Bottom</option>
+            <option>Double Bottom (HDPE)</option>
+            <option>Double Bottom (Concrete)</option>
+            <option>Unknown</option>
+          </select>
+        </div>
+        <div>
+          <label for="floorCoating">Floor Coating / Lining</label>
+          <input type="text" id="floorCoating" data-field placeholder="type and general condition" />
+        </div>
+        <div>
+          <label for="floorHasAnnular">
+            <input type="checkbox" id="floorHasAnnular" data-field onchange="toggleAnnularSection()" />
+            Tank has an Annular Ring
+          </label>
+        </div>
+      </div>
+      <textarea id="floorCondition" data-field placeholder="Thinning, pitting, patch plates, weld quality, lap joints, MFL indications, etc."></textarea>
+
+      <div id="annularSection" style="display:none;margin-top:10px;">
+        <h3>1.2.1 Annular Ring Details</h3>
+        <div class="grid-2">
+          <div>
+            <label for="annularMaterial">Annular Material</label>
+            <input type="text" id="annularMaterial" data-field placeholder="e.g., A36, A283C" />
+          </div>
+          <div>
+            <label for="annularTnom">Nominal Annular Thickness (in)</label>
+            <input type="number" step="0.001" id="annularTnom" data-field />
+          </div>
+          <div>
+            <label for="annularTmin">Minimum Allowed Annular Thickness (in)</label>
+            <input type="number" step="0.001" id="annularTmin" data-field placeholder="manual or engineering value" />
+          </div>
+          <div>
+            <label for="annularWidth">Annular Width (in)</label>
+            <input type="number" step="0.1" id="annularWidth" data-field />
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:12px;">1.3 Floor Thickness & Remaining Life</h3>
+      <div class="grid-2">
+        <div>
+          <label for="floorTnom">Floor Nominal Thickness (in)</label>
+          <input type="number" step="0.001" id="floorTnom" data-field />
+        </div>
+        <div>
+          <label for="floorCR">Local Floor Corrosion Rate CR (in/yr)</label>
+          <input type="number" step="0.001" id="floorCR" data-field placeholder="blank = use global CR" />
+        </div>
+        <div>
+          <label for="floorTret">Floor Retirement Thickness T_ret (in)</label>
+          <input type="number" step="0.001" id="floorTret" data-field value="0.10" />
+        </div>
+        <div>
+          <label for="floorOverallRL">Floor Remaining Life (yrs, worst UT)</label>
+          <input type="text" id="floorOverallRL" data-field readonly />
+        </div>
+      </div>
+
+      <h3>1.3.1 Floor UT Thickness (Min 4, Max 12)</h3>
+      <p class="muted">Default points: North, East, South, West. For each point enter T_req (acceptance), current T_meas, and notes. Remaining life uses T_ret and floor/global CR.</p>
+      <table id="floorUTTable">
+        <thead>
+          <tr>
+            <th>Location / Quadrant</th>
+            <th>T_req (in)</th>
+            <th>T_meas (in)</th>
+            <th>Remaining (T_meas - T_req)</th>
+            <th>Status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button class="secondary add-row-btn" onclick="addFloorUTRow()">+ Add Floor UT Reading</button>
+      <p id="floorUTWarning" class="muted" style="margin-top:4px;"></p>
+    </div>
+
+    <!-- Always visible: Projection -->
+    <h3>1.4 Projection / Layout Notes</h3>
+    <textarea id="projectionNotes" data-field placeholder="Reference points, nearby structures, access limitations, tank centerline references, UT map orientation, etc."></textarea>
+  </section>
+
+  <!-- CATEGORY 2: Shell & Shell Courses -->
+  <section class="card">
+    <h2>
+      2. Shell Assessment & Course Calculations
+      <span class="section-tag">Category 2</span>
+    </h2>
+
+    <h3>2.1 Global Shell Parameters</h3>
+    <div class="grid-2">
+      <div>
+        <label for="shellMaterial">Shell Material (General)</label>
+        <select id="shellMaterial" data-field onchange="onMaterialChange()">
+          <option value="">-- Select Material --</option>
+          <option value="A36">A36</option>
+          <option value="A283C">A283 Grade C</option>
+          <option value="A516_55">A516 Grade 55</option>
+          <option value="A516_60">A516 Grade 60</option>
+          <option value="A516_65">A516 Grade 65</option>
+          <option value="A516_70">A516 Grade 70</option>
+          <option value="A573">A573</option>
+          <option value="OTHER">Other (Manual S)</option>
+        </select>
+      </div>
+      <div>
+        <label for="allowableStress">Allowable Stress S (psi)</label>
+        <input type="number" step="10" id="allowableStress" data-field oninput="recalcShellCourses()" placeholder="Auto from material, editable for OTHER" />
+      </div>
+      <div>
+        <label for="jointEfficiency">Joint Efficiency E</label>
+        <select id="jointEfficiency" data-field onchange="recalcShellCourses()">
+          <option value="">-- Select --</option>
+          <option value="1.0">RT-1 (E = 1.00)</option>
+          <option value="0.85">RT-2 (E = 0.85)</option>
+          <option value="0.7">RT-3 (E = 0.70)</option>
+          <option value="0.35">None (E = 0.35)</option>
+        </select>
+      </div>
+      <div>
+        <label for="shellCourseCount">Number of Shell Courses</label>
+        <input type="number" id="shellCourseCount" data-field oninput="updateShellCourseCards()" />
+      </div>
+    </div>
+
+    <h3>2.2 Shell Course Blocks (Per-Course Calcs + UT)</h3>
+    <p class="muted">
+      Each course card includes height, nominal thickness, API-653 T<sub>min</sub>, and a dedicated UT block
+      with 4 quadrant readings (N/E/S/W) and optional additional points (max 12 per course).
+    </p>
+
+    <div id="shellCoursesContainer"></div>
+
+    <h3>2.3 Global Shell Condition (Visual)</h3>
+    <textarea id="shellCondition" data-field placeholder="Overall visual shell condition: corrosion, pitting, buckling, welds, coating, distortion, etc."></textarea>
+  </section>
+
+  <!-- CATEGORY 3: Roof (External-leaning) -->
+  <section class="card external-only">
+    <h2>
+      3. Roof Assessment
+      <span class="section-tag">Category 3</span>
+    </h2>
+    <div class="grid-2">
+      <div>
+        <label for="roofType">Roof Type</label>
+        <select id="roofType" data-field>
+          <option value="">-- Select --</option>
+          <option>Fixed Roof – Cone</option>
+          <option>Fixed Roof – Umbrella</option>
+          <option>External Floating Roof</option>
+          <option>Internal Floating Roof</option>
+          <option>Open Top</option>
+          <option>Other / Mixed</option>
+        </select>
+      </div>
+      <div>
+        <label for="roofCoating">Roof Coating / Lining</label>
+        <input type="text" id="roofCoating" data-field placeholder="type and general condition" />
+      </div>
+    </div>
+
+    <h3>3.1 Roof Condition</h3>
+    <textarea id="roofCondition" data-field placeholder="Roof plates, rafters, vents, drains, seals (if floating), appurtenances, handrails, etc."></textarea>
+
+    <h3>3.2 Roof Access / Safety</h3>
+    <textarea id="roofAccessSafety" data-field placeholder="Ladders, handrails, platforms, toe plates, fall protection, roof manways, etc."></textarea>
+
+    <h3>3.3 Roof UT Thickness (Optional, Max 12)</h3>
+    <div style="margin-bottom:6px;">
+      <label style="font-size:0.8rem;">
+        <input type="checkbox" id="roofUTEnabled" onchange="toggleRoofUT()" />
+        Roof UT Required
+      </label>
+    </div>
+    <div id="roofUTSection" style="display:none;">
+      <p class="muted">Default points: North, East, South, West. Add additional points up to 12 total readings if roof UT is required.</p>
+      <table id="roofUTTable">
+        <thead>
+          <tr>
+            <th>Location / Quadrant</th>
+            <th>T_req (in)</th>
+            <th>T_meas (in)</th>
+            <th>Remaining (T_meas - T_req)</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button class="secondary add-row-btn" onclick="addRoofUTRow()">+ Add Roof UT Reading</button>
+    </div>
+  </section>
+
+  <!-- CATEGORY 4: Nozzles & Attachments (External-heavy) -->
+  <section class="card external-only">
+    <h2>
+      4. Nozzles & Attachments
+      <span class="section-tag">Category 4</span>
+    </h2>
+
+    <div class="grid-2">
+      <div>
+        <label for="nozzleCount">Number of Nozzles</label>
+        <input type="number" id="nozzleCount" data-field oninput="updateNozzleTable()" />
+      </div>
+      <div>
+        <label for="manwayCount">Number of Manways</label>
+        <input type="number" id="manwayCount" data-field oninput="updateManwayTable()" />
+      </div>
+    </div>
+
+    <h3>4.1 Nozzle Inventory</h3>
+    <table id="nozzleTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Size (in)</th>
+          <th>Service / Label</th>
+          <th>Elevation (ft)</th>
+          <th>Shell Course #</th>
+          <th>Blind Flanged?</th>
+          <th>Weld & Flange Condition</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>4.2 Manway Inventory</h3>
+    <table id="manwayTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Size</th>
+          <th>Type (Shell/Roof)</th>
+          <th>Blind Flanged?</th>
+          <th>Condition Notes</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>4.3 Attachments & Appurtenances</h3>
+    <textarea id="attachmentsNotes" data-field placeholder="Ladders, platforms, stair towers, gauge poles, level transmitters, overflow lines, reinforcement plates, grounding, etc."></textarea>
+  </section>
+
+  <!-- UT / THICKNESS DETAIL (special local points) -->
+  <section class="card">
+    <h2>
+      5. Special Local UT / Critical Points
+      <span class="section-tag">UT Log</span>
+    </h2>
+    <p class="muted">
+      Use this section for specific UT locations on nozzles, appurtenances, known hot spots, or critical local areas outside the standard shell/floor/roof quadrants.
+    </p>
+
+    <table id="utTable">
+      <thead>
+        <tr>
+          <th>Location / Component</th>
+          <th>T_nom (in)</th>
+          <th>T_min (in)</th>
+          <th>T_meas (in)</th>
+          <th>Remaining (T_meas - T_min)</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" data-field /></td>
+          <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+          <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+          <td><input type="text" data-field readonly /></td>
+          <td><input type="text" data-field /></td>
+        </tr>
+        <tr>
+          <td><input type="text" data-field /></td>
+          <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+          <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+          <td><input type="text" data-field readonly /></td>
+          <td><input type="text" data-field /></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="secondary add-row-btn" onclick="addUTRow()">+ Add UT Row</button>
+
+    <h3>5.1 UT Summary / Critical Findings</h3>
+    <textarea id="utSummary" data-field placeholder="Summarize critical thinning locations, minimum readings, and any areas requiring repair or monitoring."></textarea>
+  </section>
+
+  <!-- Compliance & Recommendations -->
+  <section class="card">
+    <h2>
+      6. API-653 Compliance & Recommendations
+      <span class="section-tag">Summary</span>
+    </h2>
+    <div class="grid-2">
+      <div>
+        <label for="overallCondition">Overall Tank Condition Rating</label>
+        <select id="overallCondition" data-field>
+          <option value="">-- Select --</option>
+          <option>Acceptable – No Immediate Repair Required</option>
+          <option>Acceptable with Monitoring</option>
+          <option>Repairs Recommended – Schedule</option>
+          <option>Repairs Required – Before Return to Service</option>
+          <option>Remove from Service / Not Fit for Service</option>
+        </select>
+      </div>
+      <div>
+        <label for="nextInspection">Recommended Next Internal / Full Inspection</label>
+        <input type="text" id="nextInspection" data-field placeholder="e.g., 10 years, 5 years, or date." />
+      </div>
+    </div>
+
+    <h3>6.1 Repair Recommendations</h3>
+    <textarea id="repairRecommendations" data-field placeholder="List recommended repairs, alterations, or upgrades in clear, bullet-style language."></textarea>
+
+    <h3>6.2 Operational / Integrity Recommendations</h3>
+    <textarea id="operationalRecommendations" data-field placeholder="Monitoring plan, operating limits, fill height limits, interim actions, etc."></textarea>
+
+    <h3>6.3 Statement of Compliance</h3>
+    <textarea id="complianceStatement" data-field placeholder="Statement regarding compliance with API-653 and fitness for continued service, subject to recommendations."></textarea>
+
+    <h3>6.4 Attachments / Supporting Documents Index</h3>
+    <textarea id="attachmentIndex" data-field placeholder="List attached UT maps, MFL reports, settlement calcs, repair sketches, photo sets, etc."></textarea>
+  </section>
+
+  <!-- Generated Summary -->
+  <section class="card">
+    <h2>
+      7. Generated Text Summary
+      <span class="section-tag">Narrative</span>
+    </h2>
+    <p class="muted">
+      Click <strong>Generate Summary</strong> in the toolbar to build a narrative-style summary you can copy into email or a formal report.
+    </p>
+    <div id="summaryBox" class="summary-box"></div>
+  </section>
+
+  <!-- Photo Log -->
+  <section class="card">
+    <h2>
+      8. Photo Log (EAS | QCM)
+      <span class="section-tag">Visual Evidence</span>
+    </h2>
+    <p class="muted">
+      Upload field images and the tool will auto-label them as Photo 1, Photo 2, etc.  
+      You can tag each image by category (Foundation, Floor, Shell Course, Roof, Nozzle, etc.).
+      Images are not stored in local drafts for privacy.
+    </p>
+    <button class="secondary add-row-btn no-pdf" onclick="addPhotoCard()">+ Add Photo Entry</button>
+
+    <div id="photoGrid" class="photo-grid" style="margin-top:10px;"></div>
+  </section>
+
+  <p class="muted" style="margin-top:10px;">
+    EYE AM STUDIOS | EAS | API-653 Inspector Pro v5 – HTML field tool for API-653 inspections.  
+    This tool supports but does not replace a signed engineered report where required.
+  </p>
+</main>
+
+<!-- html2pdf library for formatted PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        integrity="sha512-YcsIPVKqIkED4hZzMhUlCT3VkOITkkpFmSPr+uC9qWLzAa5t3Z5C54iigFsMghvYDn8M63SS3FZ8pFQ8UuQf3g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+  // --- Utility: today's date ---
+  (function setToday() {
+    const el = document.getElementById("todayDate");
+    const d = new Date();
+    el.textContent = d.toISOString().slice(0, 10);
+  })();
+
+  // --- Inspection mode: show/hide external vs internal sections ---
+  function updateInspectionMode() {
+    const type = document.getElementById("inspectionType").value;
+    const externalSections = document.querySelectorAll(".external-only");
+    const internalSections = document.querySelectorAll(".internal-only");
+
+    if (type === "external") {
+      externalSections.forEach(sec => sec.style.display = "block");
+      internalSections.forEach(sec => sec.style.display = "none");
+    } else if (type === "internal") {
+      externalSections.forEach(sec => sec.style.display = "none");
+      internalSections.forEach(sec => sec.style.display = "block");
+    } else if (type === "both") {
+      externalSections.forEach(sec => sec.style.display = "block");
+      internalSections.forEach(sec => sec.style.display = "block");
+    } else {
+      // default: external view only
+      externalSections.forEach(sec => sec.style.display = "block");
+      internalSections.forEach(sec => sec.style.display = "none");
+    }
+  }
+
+  // --- Roof UT toggle ---
+  function toggleRoofUT() {
+    const enabled = document.getElementById("roofUTEnabled").checked;
+    const sec = document.getElementById("roofUTSection");
+    sec.style.display = enabled ? "block" : "none";
+  }
+
+  // --- Annular ring toggle ---
+  function toggleAnnularSection() {
+    const hasAnnular = document.getElementById("floorHasAnnular").checked;
+    const sec = document.getElementById("annularSection");
+    if (sec) {
+      sec.style.display = hasAnnular ? "block" : "none";
+    }
+  }
+
+  // --- Material -> Allowable Stress map (psi) ---
+  const materialStressMap = {
+    "A36": 21600,
+    "A283C": 17200,
+    "A516_55": 17500,
+    "A516_60": 20000,
+    "A516_65": 20800,
+    "A516_70": 21600,
+    "A573": 22000
+  };
+
+  function onMaterialChange() {
+    const mat = document.getElementById("shellMaterial").value;
+    const sField = document.getElementById("allowableStress");
+    if (mat && mat !== "OTHER" && materialStressMap[mat]) {
+      sField.value = materialStressMap[mat];
+    } else if (mat === "OTHER") {
+      sField.value = "";
+    }
+    recalcShellCourses();
+  }
+
+  // --- Shell course cards (per-course) ---
+  function updateShellCourseCards() {
+    const count = parseInt(document.getElementById("shellCourseCount").value);
+    const container = document.getElementById("shellCoursesContainer");
+    container.innerHTML = "";
+    if (isNaN(count) || count < 1) return;
+
+    for (let i = 1; i <= count; i++) {
+      const card = document.createElement("div");
+      card.className = "course-card";
+      card.id = `courseCard_${i}`;
+
+      card.innerHTML = `
+        <div class="course-header" onclick="toggleCourseBody(${i})">
+          <div class="course-header-title">Shell Course ${i}</div>
+          <div class="course-toggle" id="courseToggle_${i}">Click to expand</div>
+        </div>
+        <div class="course-body" id="courseBody_${i}">
+          <div class="grid-2">
+            <div>
+              <label for="courseHeight_${i}">Course Height (ft)</label>
+              <input type="number" step="0.01" id="courseHeight_${i}" data-field oninput="recalcShellCourses()" />
+            </div>
+            <div>
+              <label for="courseTnom_${i}">T_nom (in)</label>
+              <input type="number" step="0.001" id="courseTnom_${i}" data-field />
+            </div>
+            <div>
+              <label for="courseTmeas_${i}">T_meas (in)</label>
+              <input type="number" step="0.001" id="courseTmeas_${i}" data-field oninput="recalcShellCourses()" />
+            </div>
+            <div>
+              <label for="courseCR_${i}">Corrosion Rate CR (in/yr)</label>
+              <input type="number" step="0.001" id="courseCR_${i}" data-field oninput="recalcShellCourses()" placeholder="blank = global" />
+            </div>
+            <div>
+              <label for="courseTmin_${i}">T_min (in) – API-653</label>
+              <input type="text" id="courseTmin_${i}" data-field readonly />
+            </div>
+            <div>
+              <label for="courseRL_${i}">Remaining Life (yr)</label>
+              <input type="text" id="courseRL_${i}" data-field readonly />
+            </div>
+          </div>
+          <div style="margin-top:6px;">
+            <span class="muted">Status:</span>
+            <span id="courseStatus_${i}" class="status-chip"></span>
+          </div>
+
+          <h3 style="margin-top:12px;">UT Readings – Course ${i} (Min 4, Max 12)</h3>
+          <p class="muted">Default points: North, East, South, West. For each point enter T_req and T_meas; status is auto-calculated per reading.</p>
+          <table id="courseUTTable_${i}">
+            <thead>
+              <tr>
+                <th>Location / Quadrant</th>
+                <th>T_req (in)</th>
+                <th>T_meas (in)</th>
+                <th>Remaining (T_meas - T_req)</th>
+                <th>Status</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <button class="secondary add-row-btn" onclick="addCourseUTRow(${i})">+ Add UT Reading for Course ${i}</button>
+        </div>
+      `;
+      container.appendChild(card);
+
+      // Initialize UT table with quadrants
+      initCourseUTTable(i);
+    }
+
+    // Optionally open first course by default
+    if (count >= 1) {
+      toggleCourseBody(1, true);
+    }
+
+    recalcShellCourses();
+  }
+
+  function toggleCourseBody(i, forceOpen) {
+    const card = document.getElementById(`courseCard_${i}`);
+    const toggleLabel = document.getElementById(`courseToggle_${i}`);
+    const isOpen = card.classList.contains("open");
+    const newState = forceOpen ? true : !isOpen;
+    if (newState) {
+      card.classList.add("open");
+      if (toggleLabel) toggleLabel.textContent = "Click to collapse";
+    } else {
+      card.classList.remove("open");
+      if (toggleLabel) toggleLabel.textContent = "Click to expand";
+    }
+  }
+
+  // --- Per-course shell calculations (T_min, RL, status) ---
+  function recalcShellCourses() {
+    const diameterFt = parseFloat(document.getElementById("tankDiameter").value);
+    const tankHeightFt = parseFloat(document.getElementById("tankHeight").value);
+    const maxLiquidHeightFt = parseFloat(document.getElementById("maxLiquidHeight").value);
+    const SG = parseFloat(document.getElementById("specificGravity").value);
+    const S = parseFloat(document.getElementById("allowableStress").value);
+    const E = parseFloat(document.getElementById("jointEfficiency").value);
+    const P = parseFloat(document.getElementById("designPressure").value || "0");
+    const globalCR = parseFloat(document.getElementById("globalCorrosionRate").value);
+    const R_in = !isNaN(diameterFt) ? (diameterFt / 2) * 12.0 : NaN;
+
+    const courseCount = parseInt(document.getElementById("shellCourseCount").value);
+    if (isNaN(courseCount) || courseCount < 1) return;
+
+    let cumulativeHeightFt = 0;
+
+    for (let i = 1; i <= courseCount; i++) {
+      const hEl = document.getElementById(`courseHeight_${i}`);
+      const tMeasEl = document.getElementById(`courseTmeas_${i}`);
+      const crEl = document.getElementById(`courseCR_${i}`);
+      const tMinEl = document.getElementById(`courseTmin_${i}`);
+      const rlEl = document.getElementById(`courseRL_${i}`);
+      const statusEl = document.getElementById(`courseStatus_${i}`);
+
+      if (!hEl || !tMeasEl || !tMinEl || !rlEl || !statusEl) continue;
+
+      statusEl.classList.remove("status-good", "status-warn", "status-bad");
+      statusEl.textContent = "";
+
+      const courseHeightFt = parseFloat(hEl.value);
+      const tMeas = parseFloat(tMeasEl.value);
+      const localCR = parseFloat(crEl.value);
+      const CR = !isNaN(localCR) ? localCR : globalCR;
+
+      let T_min = NaN;
+      if (!isNaN(S) && !isNaN(SG)) {
+        let H_mid = NaN;
+        if (!isNaN(courseHeightFt) && !isNaN(maxLiquidHeightFt) && !isNaN(tankHeightFt)) {
+          const bottom = cumulativeHeightFt;
+          const mid = bottom + courseHeightFt / 2;
+          const head = maxLiquidHeightFt - (tankHeightFt - mid);
+          H_mid = Math.max(0, head);
+        }
+
+        if (P > 0 && !isNaN(R_in) && !isNaN(E)) {
+          const denom = 2 * S * E - 1.2 * P;
+          if (denom > 0) {
+            T_min = (P * R_in) / denom;
+          }
+        } else if (!isNaN(H_mid) && H_mid > 0) {
+          T_min = (2.6 * H_mid * SG) / S;
+        } else {
+          T_min = NaN;
+        }
+      }
+
+      if (!isNaN(T_min)) {
+        tMinEl.value = T_min.toFixed(3);
+      } else {
+        tMinEl.value = "";
+      }
+
+      if (!isNaN(T_min) && !isNaN(tMeas) && !isNaN(CR) && CR > 0) {
+        const RL = (tMeas - T_min) / CR;
+        if (isFinite(RL) && RL >= 0) {
+          rlEl.value = RL.toFixed(1);
+        } else {
+          rlEl.value = "";
+        }
+      } else {
+        rlEl.value = "";
+      }
+
+      if (!isNaN(T_min) && !isNaN(tMeas)) {
+        const delta = tMeas - T_min;
+        if (delta <= 0) {
+          statusEl.textContent = "RED  Below T_min";
+          statusEl.classList.add("status-bad");
+        } else if (delta < 0.05) {
+          statusEl.textContent = "YELLOW  Monitor";
+          statusEl.classList.add("status-warn");
+        } else {
+          statusEl.textContent = "GREEN  OK";
+          statusEl.classList.add("status-good");
+        }
+      }
+
+      if (!isNaN(courseHeightFt)) {
+        cumulativeHeightFt += courseHeightFt;
+      }
+    }
+  }
+
+  // --- Generic UT row calc (any UT table, v6 style) ---
+  function recalcUTRow(inputEl) {
+    const row = inputEl.closest("tr");
+    if (!row) return;
+    const cells = row.querySelectorAll("td");
+
+    const tReq = parseFloat(cells[1].querySelector("input").value);
+    const tMeas = parseFloat(cells[2].querySelector("input").value);
+    const outInput = cells[3].querySelector("input");
+    const statusCell = cells[4];
+    const measInput = cells[2].querySelector("input");
+
+    if (measInput) {
+      measInput.classList.remove("status-ut-bad", "status-ut-warn");
+    }
+    if (statusCell) {
+      statusCell.textContent = "";
+    }
+
+    if (!isNaN(tReq) && !isNaN(tMeas)) {
+      const remaining = tMeas - tReq;
+      outInput.value = remaining.toFixed(3);
+
+      // Highlight UT measurement vs required thickness
+      const thresholdBad = tReq;          // below T_req => red
+      const thresholdWarn = tReq * 1.25;  // between T_req and 1.25*T_req => yellow
+      if (measInput) {
+        if (tMeas < thresholdBad) {
+          measInput.classList.add("status-ut-bad");
+          if (statusCell) statusCell.textContent = "RED";
+        } else if (tMeas < thresholdWarn) {
+          measInput.classList.add("status-ut-warn");
+          if (statusCell) statusCell.textContent = "YELLOW";
+        } else if (statusCell) {
+          statusCell.textContent = "GREEN";
+        }
+      }
+    } else {
+      outInput.value = "";
+    }
+
+    // Floor-specific remaining life aggregation
+    const table = row.closest("table");
+    if (table && table.id === "floorUTTable") {
+      recalcFloorRemainingLife();
+    }
+  }
+
+  // --- Floor remaining life based on T_ret and CR ---
+  function recalcFloorRemainingLife() {
+    const tbody = document.querySelector("#floorUTTable tbody");
+    if (!tbody) return;
+
+    const tRet = parseFloat(document.getElementById("floorTret").value || "0.10");
+    const localCR = parseFloat(document.getElementById("floorCR").value);
+    const globalCR = parseFloat(document.getElementById("globalCorrosionRate").value);
+    const CR = !isNaN(localCR) ? localCR : globalCR;
+
+    let minRL = null;
+    Array.from(tbody.rows).forEach((tr) => {
+      const cells = tr.querySelectorAll("td");
+      const tMeas = parseFloat(cells[2].querySelector("input").value);
+      if (!isNaN(tMeas) && !isNaN(tRet) && CR > 0) {
+        const rl = (tMeas - tRet) / CR;
+        if (isFinite(rl)) {
+          if (minRL === null || rl < minRL) {
+            minRL = rl;
+          }
+        }
+      }
+    });
+
+    const rlField = document.getElementById("floorOverallRL");
+    if (!rlField) return;
+    if (minRL !== null && minRL >= 0) {
+      rlField.value = minRL.toFixed(1);
+    } else {
+      rlField.value = "";
+    }
+
+    // Warning if fewer than 4 readings
+    const warnEl = document.getElementById("floorUTWarning");
+    if (warnEl) {
+      if (tbody.rows.length < 4) {
+        warnEl.textContent = "Warning: fewer than 4 floor UT readings entered (min 4 per API-653 guidance).";
+      } else {
+        warnEl.textContent = "";
+      }
+    }
+  }
+
+  // --- Special Local UT table ---
+  function addUTRow() {
+    const tbody = document.getElementById("utTable").querySelector("tbody");
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><input type="text" data-field /></td>
+      <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+      <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+      <td><input type="text" data-field readonly /></td>
+      <td><input type="text" data-field /></td>
+    `;
+    tbody.appendChild(row);
+  }
+
+  // --- Floor UT (min 4, max 12) ---
+  function initFloorUTTable() {
+    const tbody = document.querySelector("#floorUTTable tbody");
+    tbody.innerHTML = "";
+    const quads = ["North Floor", "East Floor", "South Floor", "West Floor"];
+    quads.forEach(label => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="text" data-field value="${label}" /></td>
+        <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+        <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+        <td><input type="text" data-field readonly /></td>
+        <td><input type="text" data-field readonly /></td>
+        <td><input type="text" data-field /></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    recalcFloorRemainingLife();
+  }
+
+  function addFloorUTRow() {
+    const tbody = document.querySelector("#floorUTTable tbody");
+    const count = tbody.rows.length;
+    if (count >= 12) {
+      alert("Maximum of 12 Floor UT readings reached.");
+      return;
+    }
+    const extraIndex = count - 3; // first extra is 1
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="text" data-field value="Additional Floor ${extraIndex}" /></td>
+      <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+      <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+      <td><input type="text" data-field readonly /></td>
+      <td><input type="text" data-field readonly /></td>
+      <td><input type="text" data-field /></td>
+    `;
+    tbody.appendChild(tr);
+    recalcFloorRemainingLife();
+  }
+
+  // --- Roof UT (min 4, max 12 when enabled) ---
+  function initRoofUTTable() {
+    const tbody = document.querySelector("#roofUTTable tbody");
+    tbody.innerHTML = "";
+    const quads = ["North Roof", "East Roof", "South Roof", "West Roof"];
+    quads.forEach(label => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="text" data-field value="${label}" /></td>
+        <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+        <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+        <td><input type="text" data-field readonly /></td>
+        <td><input type="text" data-field readonly /></td>
+        <td><input type="text" data-field /></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function addRoofUTRow() {
+    const tbody = document.querySelector("#roofUTTable tbody");
+    const count = tbody.rows.length;
+    if (count >= 12) {
+      alert("Maximum of 12 Roof UT readings reached.");
+      return;
+    }
+    const extraIndex = count - 3;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="text" data-field value="Additional Roof ${extraIndex}" /></td>
+      <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+      <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+      <td><input type="text" data-field readonly /></td>
+      <td><input type="text" data-field readonly /></td>
+      <td><input type="text" data-field /></td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  // --- Per-course UT (min 4, max 12) ---
+  function initCourseUTTable(courseIndex) {
+    const tbody = document.querySelector(`#courseUTTable_${courseIndex} tbody`);
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    const quads = ["North", "East", "South", "West"];
+    quads.forEach(q => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="text" data-field value="Course ${courseIndex} – ${q}" /></td>
+        <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+        <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+        <td><input type="text" data-field readonly /></td>
+        <td><input type="text" data-field readonly /></td>
+        <td><input type="text" data-field /></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function addCourseUTRow(courseIndex) {
+    const tbody = document.querySelector(`#courseUTTable_${courseIndex} tbody`);
+    if (!tbody) return;
+    const count = tbody.rows.length;
+    if (count >= 12) {
+      alert(`Maximum of 12 UT readings reached for Course ${courseIndex}.`);
+      return;
+    }
+    const extraIndex = count - 3;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="text" data-field value="Course ${courseIndex} – Additional ${extraIndex}" /></td>
+      <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+      <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" /></td>
+      <td><input type="text" data-field readonly /></td>
+      <td><input type="text" data-field readonly /></td>
+      <td><input type="text" data-field /></td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  // --- Nozzle & Manway tables ---
+  function updateNozzleTable() {
+    const count = parseInt(document.getElementById("nozzleCount").value);
+    const tbody = document.querySelector("#nozzleTable tbody");
+    tbody.innerHTML = "";
+    if (isNaN(count) || count < 1) return;
+
+    for (let i = 1; i <= count; i++) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i}</td>
+        <td><input type="text" data-field placeholder="e.g., 4" /></td>
+        <td><input type="text" data-field placeholder="e.g., Product Inlet" /></td>
+        <td><input type="number" step="0.01" data-field placeholder="ft" /></td>
+        <td><input type="number" step="1" data-field placeholder="Course #" /></td>
+        <td>
+          <select data-field>
+            <option>No</option>
+            <option>Yes</option>
+          </select>
+        </td>
+        <td><input type="text" data-field placeholder="Corrosion, leaks, weld cond." /></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function updateManwayTable() {
+    const count = parseInt(document.getElementById("manwayCount").value);
+    const tbody = document.querySelector("#manwayTable tbody");
+    tbody.innerHTML = "";
+    if (isNaN(count) || count < 1) return;
+
+    for (let i = 1; i <= count; i++) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i}</td>
+        <td><input type="text" data-field placeholder="e.g., 24in" /></td>
+        <td>
+          <select data-field>
+            <option>Shell Manway</option>
+            <option>Roof Manway</option>
+          </select>
+        </td>
+        <td>
+          <select data-field>
+            <option>No</option>
+            <option>Yes</option>
+          </select>
+        </td>
+        <td><input type="text" data-field placeholder="General condition" /></td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  // --- Data collection for save/load (no images) ---
+  function collectData() {
+    const data = {};
+    const all = document.querySelectorAll("[data-field]");
+    let index = 0;
+    all.forEach((el) => {
+      const id = el.id || `field_${index++}`;
+      if (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT") {
+        data[id] = el.value;
+      }
+    });
+
+    // Special local UT rows
+    const utRows = [];
+    document.querySelectorAll("#utTable tbody tr").forEach((tr) => {
+      const tds = tr.querySelectorAll("td");
+      utRows.push({
+        location: tds[0].querySelector("input").value,
+        tNom: tds[1].querySelector("input").value,
+        tMin: tds[2].querySelector("input").value,
+        tMeas: tds[3].querySelector("input").value,
+        remaining: tds[4].querySelector("input").value,
+        notes: tds[5].querySelector("input").value
+      });
+    });
+    data.utRows = utRows;
+
+    // Nozzles
+    const nozzleRows = [];
+    document.querySelectorAll("#nozzleTable tbody tr").forEach((tr) => {
+      const tds = tr.querySelectorAll("td");
+      nozzleRows.push({
+        size: tds[1].querySelector("input").value,
+        service: tds[2].querySelector("input").value,
+        elevation: tds[3].querySelector("input").value,
+        course: tds[4].querySelector("input").value,
+        blind: tds[5].querySelector("select").value,
+        notes: tds[6].querySelector("input").value
+      });
+    });
+    data.nozzleRows = nozzleRows;
+
+    // Manways
+    const manwayRows = [];
+    document.querySelectorAll("#manwayTable tbody tr").forEach((tr) => {
+      const tds = tr.querySelectorAll("td");
+      manwayRows.push({
+        size: tds[1].querySelector("input").value,
+        type: tds[2].querySelector("select").value,
+        blind: tds[3].querySelector("select").value,
+        notes: tds[4].querySelector("input").value
+      });
+    });
+    data.manwayRows = manwayRows;
+
+    return data;
+  }
+
+  function saveDraft() {
+    try {
+      const data = collectData();
+      localStorage.setItem("EAS_API653_PRO_V5_DRAFT", JSON.stringify(data));
+      alert("Draft saved locally on this device (images not included).");
+    } catch (e) {
+      console.error(e);
+      alert("Unable to save draft. Check console for details.");
+    }
+  }
+
+  function loadDraft() {
+    try {
+      const json = localStorage.getItem("EAS_API653_PRO_V5_DRAFT");
+      if (!json) {
+        alert("No saved draft found on this device.");
+        return;
+      }
+      const data = JSON.parse(json);
+      const all = document.querySelectorAll("[data-field]");
+      let index = 0;
+      all.forEach((el) => {
+        const id = el.id || `field_${index++}`;
+        if (data.hasOwnProperty(id)) {
+          el.value = data[id];
+        }
+      });
+
+      // Rebuild shell course cards after loading shellCourseCount
+      updateShellCourseCards();
+
+      // Re-run UT init for floor & roof (they may have been overwritten)
+      initFloorUTTable();
+      initRoofUTTable();
+
+      // Special local UT rows
+      if (Array.isArray(data.utRows)) {
+        const tbody = document.getElementById("utTable").querySelector("tbody");
+        tbody.innerHTML = "";
+        data.utRows.forEach((row) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><input type="text" data-field value="${row.location || ""}" /></td>
+            <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" value="${row.tNom || ""}" /></td>
+            <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" value="${row.tMin || ""}" /></td>
+            <td><input type="number" step="0.001" data-field oninput="recalcUTRow(this)" value="${row.tMeas || ""}" /></td>
+            <td><input type="text" data-field readonly value="${row.remaining || ""}" /></td>
+            <td><input type="text" data-field value="${row.notes || ""}" /></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Nozzles
+      if (Array.isArray(data.nozzleRows)) {
+        document.getElementById("nozzleCount").value = data.nozzleRows.length;
+        updateNozzleTable();
+        const rows = document.querySelectorAll("#nozzleTable tbody tr");
+        data.nozzleRows.forEach((row, idx) => {
+          if (rows[idx]) {
+            const tds = rows[idx].querySelectorAll("td");
+            tds[1].querySelector("input").value = row.size || "";
+            tds[2].querySelector("input").value = row.service || "";
+            tds[3].querySelector("input").value = row.elevation || "";
+            tds[4].querySelector("input").value = row.course || "";
+            tds[5].querySelector("select").value = row.blind || "No";
+            tds[6].querySelector("input").value = row.notes || "";
+          }
+        });
+      }
+
+      // Manways
+      if (Array.isArray(data.manwayRows)) {
+        document.getElementById("manwayCount").value = data.manwayRows.length;
+        updateManwayTable();
+        const rows = document.querySelectorAll("#manwayTable tbody tr");
+        data.manwayRows.forEach((row, idx) => {
+          if (rows[idx]) {
+            const tds = rows[idx].querySelectorAll("td");
+            tds[1].querySelector("input").value = row.size || "";
+            tds[2].querySelector("select").value = row.type || "Shell Manway";
+            tds[3].querySelector("select").value = row.blind || "No";
+            tds[4].querySelector("input").value = row.notes || "";
+          }
+        });
+      }
+
+      recalcShellCourses();
+      updateInspectionMode();
+      toggleRoofUT();
+      alert("Draft loaded from this device (images must be reloaded separately).");
+    } catch (e) {
+      console.error(e);
+      alert("Unable to load draft. Check console for details.");
+    }
+  }
+
+  function clearDraft() {
+    if (confirm("Clear locally saved draft? This cannot be undone.")) {
+      localStorage.removeItem("EAS_API653_PRO_V5_DRAFT");
+      alert("Local draft cleared.");
+    }
+  }
+
+  // --- Generate narrative summary ---
+  function generateSummary() {
+    const inspector = document.getElementById("inspectorName").value || "N/A";
+    const cert = document.getElementById("inspectorCert").value || "N/A";
+    const date = document.getElementById("inspectionDate").value || document.getElementById("todayDate").textContent;
+    const client = document.getElementById("clientName").value || "N/A";
+    const tankId = document.getElementById("tankId").value || "N/A";
+    const service = document.getElementById("serviceFluid").value || "N/A";
+    const diameter = document.getElementById("tankDiameter").value || "N/A";
+    const height = document.getElementById("tankHeight").value || "N/A";
+    const tankType = document.getElementById("roofType").value || "N/A";
+    const generalNotes = document.getElementById("generalNotes").value || "";
+    const insType = document.getElementById("inspectionType").value || "";
+
+    const foundation = document.getElementById("foundationCondition").value || "";
+    const floorCond = document.getElementById("floorCondition").value || "";
+    const projNotes = document.getElementById("projectionNotes").value || "";
+
+    const shellVisual = document.getElementById("shellCondition").value || "";
+    const roofCond = document.getElementById("roofCondition").value || "";
+    const roofAccess = document.getElementById("roofAccessSafety").value || "";
+    const attachments = document.getElementById("attachmentsNotes").value || "";
+
+    const utSummary = document.getElementById("utSummary").value || "";
+    const overallCondition = document.getElementById("overallCondition").value || "N/A";
+    const nextInspection = document.getElementById("nextInspection").value || "";
+    const repairRec = document.getElementById("repairRecommendations").value || "";
+    const opRec = document.getElementById("operationalRecommendations").value || "";
+    const compliance = document.getElementById("complianceStatement").value || "";
+    const attachmentIndex = document.getElementById("attachmentIndex").value || "";
+
+    let utMin = null;
+    let utMinLoc = "";
+    document.querySelectorAll("#utTable tbody tr").forEach((tr) => {
+      const loc = tr.cells[0].querySelector("input").value;
+      const tMeasVal = parseFloat(tr.cells[2].querySelector("input").value);
+      if (!isNaN(tMeasVal)) {
+        if (utMin === null || tMeasVal < utMin) {
+          utMin = tMeasVal;
+          utMinLoc = loc || "Unlabeled Location";
+        }
+      }
+    });
+    const utMinText = utMin !== null
+      ? `Minimum recorded UT thickness (special local points): ${utMin.toFixed(3)} in at ${utMinLoc}.`
+      : `Minimum recorded UT thickness (special local points): N/A (UT data not fully entered).`;
+
+    let insTypeText = "N/A";
+    if (insType === "external") insTypeText = "External Inspection (API-653 External)";
+    else if (insType === "internal") insTypeText = "Internal Inspection (API-653 Internal)";
+    else if (insType === "both") insTypeText = "Combined External + Internal Inspection";
+
+    let summary = "";
+    summary += `API-653 FIELD INSPECTION SUMMARY\n`;
+    summary += `----------------------------------------\n`;
+    summary += `Client / Facility : ${client}\n`;
+    summary += `Tank ID           : ${tankId}\n`;
+    summary += `Service           : ${service}\n`;
+    summary += `Dimensions        : Diameter ${diameter} ft x Shell Height ${height} ft\n`;
+    summary += `Roof / Tank Type  : ${tankType}\n`;
+    summary += `Inspection Type   : ${insTypeText}\n`;
+    summary += `Inspection Date   : ${date}\n`;
+    summary += `Inspector         : ${inspector} (Cert: ${cert})\n\n`;
+
+    if (generalNotes.trim()) {
+      summary += `GENERAL NOTES:\n${generalNotes}\n\n`;
+    }
+
+    summary += `CATEGORY 1 – FOUNDATION / FLOOR / PROJECTION:\n`;
+    if (foundation.trim()) summary += `- Foundation: ${foundation}\n`;
+    if (floorCond.trim()) summary += `- Floor: ${floorCond}\n`;
+    if (projNotes.trim()) summary += `- Projection / Layout: ${projNotes}\n`;
+    summary += `\n`;
+
+    summary += `CATEGORY 2 – SHELL (VISUAL & THICKNESS):\n`;
+    if (shellVisual.trim()) summary += `- Visual Shell Condition: ${shellVisual}\n`;
+    summary += `- Shell course calculations are documented in the per-course blocks, including T_min, remaining life, and status per course.\n\n`;
+
+    summary += `CATEGORY 3 – ROOF:\n`;
+    if (roofCond.trim()) summary += `- Roof Condition: ${roofCond}\n`;
+    if (roofAccess.trim()) summary += `- Roof Access / Safety: ${roofAccess}\n`;
+    summary += `\n`;
+
+    summary += `CATEGORY 4 – NOZZLES & ATTACHMENTS:\n`;
+    if (attachments.trim()) summary += `- Nozzles / Attachments: ${attachments}\n`;
+    summary += `\n`;
+
+    summary += `UT / THICKNESS SUMMARY:\n`;
+    summary += `- ${utMinText}\n`;
+    if (utSummary.trim()) summary += `- Additional UT Notes: ${utSummary}\n`;
+    summary += `\n`;
+
+    summary += `CONDITION & RECOMMENDATIONS:\n`;
+    summary += `- Overall Condition: ${overallCondition}\n`;
+    if (nextInspection.trim()) summary += `- Recommended Next Inspection: ${nextInspection}\n`;
+    if (repairRec.trim()) summary += `- Repair Recommendations: ${repairRec}\n`;
+    if (opRec.trim()) summary += `- Operational / Integrity Recommendations: ${opRec}\n`;
+    if (compliance.trim()) summary += `- Statement of Compliance: ${compliance}\n`;
+    summary += `\n`;
+
+    if (attachmentIndex.trim()) {
+      summary += `ATTACHMENTS / SUPPORTING DOCUMENTS:\n${attachmentIndex}\n\n`;
+    }
+
+    summary += `End of API-653 field summary.\n`;
+    document.getElementById("summaryBox").textContent = summary;
+  }
+
+  // --- Photo Log (QCM-style) ---
+  let photoIndex = 0;
+  function addPhotoCard() {
+    photoIndex += 1;
+    const grid = document.getElementById("photoGrid");
+    const card = document.createElement("div");
+    card.className = "photo-card";
+    card.innerHTML = `
+      <div class="photo-meta">
+        <strong id="photoLabel_${photoIndex}">Photo ${photoIndex}</strong>
+        <select id="photoCategory_${photoIndex}" data-field style="font-size:0.7rem;">
+          <option value="">Category</option>
+          <option>Foundation</option>
+          <option>Floor</option>
+          <option>Shell Course 1</option>
+          <option>Shell Course 2</option>
+          <option>Shell Course 3</option>
+          <option>Shell Course 4</option>
+          <option>Roof</option>
+          <option>Nozzle</option>
+          <option>Manway</option>
+          <option>Attachment</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <img id="photoPreview_${photoIndex}" class="photo-preview" alt="Photo preview ${photoIndex}" />
+      <div style="margin-bottom:6px;">
+        <label style="font-size:0.75rem;">Image File</label>
+        <input type="file" accept="image/*" onchange="handlePhotoFile(this, ${photoIndex})" />
+      </div>
+      <div>
+        <label style="font-size:0.75rem;" for="photoLabelInput_${photoIndex}">Custom Label</label>
+        <input type="text" id="photoLabelInput_${photoIndex}" data-field placeholder="Defaults to Photo ${photoIndex}" oninput="syncPhotoLabel(${photoIndex})" />
+      </div>
+      <div>
+        <label style="font-size:0.75rem;" for="photoLocation_${photoIndex}">Location / Component</label>
+        <input type="text" id="photoLocation_${photoIndex}" data-field placeholder="e.g., Shell Course 2, East Side" />
+      </div>
+      <div>
+        <label style="font-size:0.75rem;" for="photoDescription_${photoIndex}">Condition / Notes</label>
+        <textarea id="photoDescription_${photoIndex}" data-field placeholder="Brief description of what this image documents."></textarea>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+
+  function handlePhotoFile(input, idx) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const img = document.getElementById(`photoPreview_${idx}`);
+    const reader = new FileReader();
+    reader.onload = function(e) { img.src = e.target.result; };
+    reader.readAsDataURL(file);
+
+    const labelInput = document.getElementById(`photoLabelInput_${idx}`);
+    if (!labelInput.value.trim()) {
+      labelInput.value = `Photo ${idx}`;
+      syncPhotoLabel(idx);
+    }
+  }
+
+  function syncPhotoLabel(idx) {
+    const labelInput = document.getElementById(`photoLabelInput_${idx}`);
+    const label = document.getElementById(`photoLabel_${idx}`);
+    const txt = labelInput.value.trim() || `Photo ${idx}`;
+    label.textContent = txt;
+  }
+
+  // --- Export to PDF with html2pdf ---
+  function exportPDF() {
+    const root = document.getElementById("reportRoot");
+    const tankId = (document.getElementById("tankId").value || "API653_Report").replace(/[^a-zA-Z0-9_-]+/g, "_");
+    document.body.classList.add("pdf-export");
+
+    const opt = {
+      margin: 0.5,
+      filename: `${tankId}.pdf`,
+      image: { type: "jpeg", quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
+    };
+
+    html2pdf()
+      .set(opt)
+      .from(root)
+      .save()
+      .then(() => {
+        document.body.classList.remove("pdf-export");
+      })
+      .catch(err => {
+        console.error(err);
+        document.body.classList.remove("pdf-export");
+        alert("Error generating PDF. See console for details.");
+      });
+  }
+
+  // --- Init on load ---
+  window.addEventListener("load", () => {
+    updateInspectionMode();
+    initFloorUTTable();
+    initRoofUTTable();
+    toggleRoofUT(); // ensures section visibility matches checkbox
+  });
+</script>
+</body>
+</html>

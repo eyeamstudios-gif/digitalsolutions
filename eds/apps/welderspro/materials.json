@@ -1,0 +1,7 @@
+{
+  "materials": [
+    { "id": "A36", "group": "Carbon", "description": "ASTM A36 carbon steel" },
+    { "id": "304L", "group": "Stainless", "description": "304L austenitic stainless steel" },
+    { "id": "4130", "group": "Chromoly", "description": "4130 chromium-molybdenum steel" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "wps": [
+    {
+      "id": "WPS-A36-1",
+      "base": ["A36"],
+      "process": "GMAW",
+      "position": "1G-4G",
+      "note": "Example procedure stub. All logic runs client-side."
+    }
+  ]
+}
