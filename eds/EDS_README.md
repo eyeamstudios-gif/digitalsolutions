@@ -2,15 +2,15 @@
 
 The EDS platform (`eds.eyeamstudios.com`) is a browser-only collection of industrial tools created by **EYE AM STUDIOS**. All tools:
 
-- Run 100% in the user's browser (no backend processing)
+- Run 100% in the users browser
 - Store zero user data on EDS servers
-- Rely on local JSON/config files for logic (no remote APIs)
+- Rely on local JSON/config for logic
 - Use a universal license unlock gate
 - Export PDF / XLSX / CSV / JSON client-side
 
 ## Tools
 
-### WeldersPro – Digital Welding Assistant (`/apps/welderspro/`)
+### WeldersPro  Digital Welding Assistant (`/apps/welderspro/`)
 
 - Multi-material compatibility engine (carbon, stainless, chromoly, exotic)
 - Dissimilar metal guidance
@@ -28,30 +28,6 @@ The EDS platform (`eds.eyeamstudios.com`) is a browser-only collection of indust
 - Inspection checklist and report export to PDF
 - No inspection data stored on EDS servers
 
-### PBS – Personal Budget System (`/apps/pbs/`)
-
-- Personal budgeting engine with envelope-style categories
-- Instant XLSX exports generated fully client-side
-- No income or expense data stored on EDS servers
-
-### PAS – Profit Allocation System (`/apps/pas/`)
-
-- Revenue allocation for owner pay, taxes, profit, and OPEX
-- Configurable allocation rules stored locally in browser storage
-- All calculations and exports performed in the browser only
-
-### DIFA – Digital ImageFlow Automation (`/apps/difa/`)
-
-- Bulk image renaming and folder structuring based on presets
-- Local-only processing against user-selected folders
-- No images uploaded or stored on EDS servers
-
-### PaintPro – Painting Estimator (`/apps/paintpro/`)
-
-- Room-by-room material and labor estimating for painting projects
-- Client-ready proposal/invoice exports generated in-browser
-- No project or client details stored on EDS servers
-
 ## Unlock Flow
 
 Each tool uses the same browser-only license gate:
@@ -66,5 +42,5 @@ Each tool uses the same browser-only license gate:
 ## Local Development
 
 - Serve the `eds` directory with any static file server.
-- Open `pages/index.html` as the public EDS landing page and tool catalog.
+- Open `pages/index.html` as the landing page.
 - Tools live under `apps/<tool>/index.html` and can be tested directly.
