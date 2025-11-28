@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PBS | Pro App - Full Access</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <style>
+    main.wrap { max-width: 1100px; padding: 48px 24px; text-align: center; }
+    .lead { color: rgba(255,255,255,.9); max-width: 800px; margin: 0 auto 10px; line-height: 1.7; }
+    .pricing { display: grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 24px; margin-top: 28px; }
+    .pricing .card { padding: 32px 24px; }
+    .pricing .card.featured { 
+      background: linear-gradient(135deg, rgba(0,191,255,.08) 0%, rgba(23,54,77,.95) 50%);
+      border: 2px solid var(--electric-cyan);
+      transform: scale(1.02);
+    }
+    .pricing .card h3 { font-size: 1.7em; margin: 0 0 6px; }
+    .price { font-size: 2.2rem; font-weight: 800; margin: 16px 0; color: var(--white); }
+    .price.featured { color: var(--electric-cyan); }
+    ul.features { text-align: left; list-style: none; padding: 0; margin: 20px 0; }
+    ul.features li { margin: 10px 0; position: relative; padding-left: 24px; line-height: 1.5; }
+    ul.features li::before { content: "✔"; position: absolute; left: 0; color: var(--electric-cyan); font-weight: bold; }
+    .premium-features li::before { content: "⭐"; }
+    .cta-row { display:flex; gap:12px; justify-content:center; margin: 24px 0 8px; }
+    .fine { color: rgba(255,255,255,.72); font-size: .95rem; }
+    .badge { 
+      background: var(--electric-cyan); 
+      color: var(--black); 
+      padding: 4px 12px; 
+      border-radius: 12px; 
+      font-size: 0.8em; 
+      font-weight: 700; 
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .app-preview { 
+      margin: 40px 0; 
+      text-align: center; 
+    }
+    .app-preview .mock { 
+      max-width: 600px; 
+      margin: 20px auto; 
+      height: 400px;
+      display: grid;
+      place-items: center;
+      font-size: 1.1em;
+      color: #bfeaff;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../">
+  <span class="logo" aria-hidden="true"></span>
+  <strong>EAS</strong><span class="muted"> | Personal Budget System</span>
+    </a>
+    <nav>
+      <a href="../starter/">Starter</a>
+      <a class="active" href="../pro/">Pro</a>
+      <a href="../pro-cloud/">Pro+ Cloud</a>
+      <a href="../starter/guide.html">Guide</a>
+      <a href="../support.html">Support</a>
+      <button class="theme-toggle" id="themeToggle" type="button" title="Toggle light/dark">🌓</button>
+    </nav>
+  </header>
+
+  <script>
+    // ===== PRO ACCESS PROTECTION =====
+    // Check for valid Pro access before loading the app
+    function checkProAccess() {
+      const hasProAccess = localStorage.getItem('PBS_PRO_ACCESS') === 'true';
+      const proKey = localStorage.getItem('PBS_PRO_KEY');
+      const proExpires = localStorage.getItem('PBS_PRO_EXPIRES');
+      
+      if (!hasProAccess || !proKey) {
+        // No Pro access, redirect to payment
+        window.location.href = 'payment.html?from=pro-app';
+        return false;
+      }
+      
+      // Check expiration for annual plans
+      if (proExpires && proExpires !== 'recurring' && proExpires !== 'never') {
+        const expiryDate = parseInt(proExpires);
+        if (Date.now() > expiryDate) {
+          // Expired, redirect to payment
+          localStorage.removeItem('PBS_PRO_ACCESS');
+          localStorage.removeItem('PBS_PRO_KEY');
+          window.location.href = 'payment.html?from=expired';
+          return false;
+        }
+      }
+      
+      return true;
+    }
+    
+    // Check access on page load
+    if (!checkProAccess()) {
+      // Access check failed, page will redirect
+      document.body.style.display = 'none';
+    } else {
+      // Access verified, show success message
+      console.log('Pro access verified');
+    }
+  </script>
+
+  <main class="wrap">
+    <h1>PBS Pro App - Full Access</h1>
+    <p class="lead">Your Money. Your Plan. Your Future.</p>
+    <p class="lead">The complete PBS experience with advanced features, analytics, and premium support—for serious budgeters who want it all.</p>
+
+    <div class="pricing">
+      <div class="card">
+        <h3>Pro Standard</h3>
+        <div class="price">$12.99 / mo</div>
+        <ul class="features">
+          <li>Everything in Starter</li>
+          <li>Debt Payoff Tracking</li>
+          <li>Savings Goals with progress</li>
+          <li>Multi-device sync</li>
+          <li>Cloud backup & restore</li>
+          <li>Priority updates</li>
+        </ul>
+        <a href="index.html" class="btn ghost" aria-label="View Pro Standard">View Details</a>
+      </div>
+
+      <div class="card featured">
+        <div class="badge">PREMIUM</div>
+        <h3>Pro Full Access</h3>
+        <div class="price featured">$29.99 / mo</div>
+        <ul class="features premium-features">
+          <li>Everything in Pro Standard</li>
+          <li>Advanced Analytics & Reports</li>
+          <li>Custom Categories & Tags</li>
+          <li>Investment Portfolio Tracking</li>
+          <li>Bill Reminder Automation</li>
+          <li>Export to Excel/CSV</li>
+          <li>Premium Support (1-hour response)</li>
+          <li>Early access to Beta features</li>
+          <li>White-label customization</li>
+        </ul>
+        <a href="#subscribe" class="btn" aria-label="Upgrade to Full Access">Upgrade to Full Access</a>
+        <div class="fine">Instant access • 30‑day guarantee • Cancel anytime</div>
+      </div>
+    </div>
+
+    <div class="app-preview">
+      <h2>Advanced Features Preview</h2>
+      <p class="lead">Get deeper insights into your financial health with advanced analytics, custom reporting, and automation tools.</p>
+      
+      <div class="mock">
+        <div>
+          📊 Advanced Analytics Dashboard<br>
+          📈 Investment Portfolio Tracking<br>
+          🔔 Smart Bill Reminders<br>
+          📋 Custom Reports & Export
+        </div>
+      </div>
+    </div>
+
+    <h2>Why Choose Full Access?</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>🎯 Advanced Analytics</h3>
+        <p>Get detailed insights into spending patterns, savings velocity, and financial trends with interactive charts and custom reporting.</p>
+      </div>
+      <div class="card">
+        <h3>💼 Investment Tracking</h3>
+        <p>Monitor your investment portfolio alongside your budget, with real-time updates and performance analytics.</p>
+      </div>
+      <div class="card">
+        <h3>🤖 Smart Automation</h3>
+        <p>Set up intelligent bill reminders, automatic categorization, and recurring transaction templates.</p>
+      </div>
+      <div class="card">
+        <h3>⚡ Premium Support</h3>
+        <p>Get priority support with guaranteed 1-hour response times and direct access to our development team.</p>
+      </div>
+    </div>
+
+    <div class="cta-row">
+      <a class="btn" href="#subscribe" id="subscribe">Start Full Access Trial</a>
+      <a class="btn ghost" href="../starter/">Try Starter Free</a>
+    </div>
+
+    <p class="fine" style="margin-top: 32px;">
+      All plans include our privacy-first guarantee: your data stays yours. 
+      Full access includes advanced features while maintaining the same security standards.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <span>© <span id="year"></span> EYE AM STUDIOS</span>
+  </footer>
+  <script>
+    // Show a small helper link to test tools when ?test=1 is present
+    (function(){
+      try{
+        var url = new URL(window.location.href);
+        if(url.searchParams.get('test') === '1'){
+          var a = document.createElement('a');
+          a.href = 'test.html';
+          a.textContent = 'Open Pro Test Tools →';
+          a.setAttribute('aria-label','Open Pro test tools');
+          a.style.position='fixed';
+          a.style.right='12px';
+          a.style.bottom='12px';
+          a.style.zIndex='9999';
+          a.style.padding='10px 12px';
+          a.style.borderRadius='10px';
+          a.style.border='1px solid rgba(255,255,255,.25)';
+          a.style.background='rgba(0,191,255,.15)';
+          a.style.backdropFilter='blur(6px)';
+          a.style.color='var(--electric-cyan)';
+          a.style.textDecoration='none';
+          a.style.fontWeight='700';
+          document.body.appendChild(a);
+        }
+      }catch(e){ /* non-blocking */ }
+    })();
+    (function(){
+      const saved = localStorage.getItem('PBS_THEME');
+      if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+      const btn = document.getElementById('themeToggle');
+      if(btn){ btn.addEventListener('click', ()=>{
+        const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', cur);
+        localStorage.setItem('PBS_THEME', cur);
+      }); }
+      document.getElementById('year').textContent=new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>

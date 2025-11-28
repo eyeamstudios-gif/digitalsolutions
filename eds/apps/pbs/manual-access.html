@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Your PBS Pro Access - Manual Activation</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <style>
+    body {
+      background: #0D1B2A;
+      color: #fff;
+      font-family: Inter, sans-serif;
+      margin: 0;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+    }
+    .activation-container {
+      max-width: 600px;
+      text-align: center;
+      background: #112436;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #28a745, #20a83a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+    .activation-container h1 {
+      color: #EAF6FF;
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0 0 16px;
+      text-shadow: 0 2px 12px rgba(0,0,0,.25), 0 0 24px rgba(0,191,255,.25);
+    }
+    .activation-container p {
+      color: rgba(255,255,255,.9);
+      line-height: 1.6;
+      margin: 0 0 24px;
+    }
+    .generate-key-btn {
+      background: linear-gradient(180deg, #00BFFF, #00A7E3);
+      border: none;
+      color: #052432;
+      padding: 16px 32px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 18px;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      box-shadow: 0 8px 20px rgba(0,191,255,.35);
+      margin: 20px 0;
+    }
+    .generate-key-btn:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.06);
+    }
+    .access-key-display {
+      background: rgba(15,33,50,.6);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+      display: none;
+    }
+    .access-key-display h3 {
+      color: #EAF6FF;
+      margin: 0 0 16px;
+      font-size: 1.2rem;
+    }
+    .key-value {
+      background: #0f2132;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #00BFFF;
+      letter-spacing: 1px;
+      margin: 16px 0;
+      word-break: break-all;
+    }
+    .copy-btn {
+      background: #00BFFF;
+      color: #052432;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: transform 0.2s ease;
+    }
+    .copy-btn:hover {
+      transform: translateY(-1px);
+    }
+    .instructions {
+      background: rgba(0,191,255,.1);
+      border: 1px solid rgba(0,191,255,.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+      text-align: left;
+    }
+    .instructions h3 {
+      color: #00BFFF;
+      margin: 0 0 16px;
+      font-size: 1.1rem;
+    }
+    .instructions ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .instructions li {
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="activation-container">
+    <div class="success-icon">✅</div>
+    <h1>Payment Received!</h1>
+    <p>Thank you for your PBS Pro payment! Since you've completed payment, click below to activate your Pro access:</p>
+    
+    <div style="background: rgba(0,191,255,.1); border: 1px solid rgba(0,191,255,.3); border-radius: 12px; padding: 20px; margin: 24px 0;">
+      <h3 style="color: #00BFFF; margin: 0 0 8px;">📧 Just Paid?</h3>
+      <p style="margin: 0; color: rgba(255,255,255,.85);">If you just completed payment through Stripe, you're all set to activate your Pro access!</p>
+    </div>
+    
+    <button class="generate-key-btn" onclick="generateAccessKey()">
+      🔑 Generate My Access Key
+    </button>
+    
+    <div class="access-key-display" id="keyDisplay">
+      <h3>🔑 Your PBS Pro Access Key</h3>
+      <div class="key-value" id="accessKey">PBS-XXXX-XXXX-XXXX</div>
+      <button class="copy-btn" onclick="copyAccessKey()">Copy Key</button>
+    </div>
+    
+    <div class="instructions">
+      <h3>📋 Next Steps:</h3>
+      <ol>
+        <li><strong>Copy your access key</strong> and save it in a safe place</li>
+        <li><strong>Go to the PBS Pro payment page</strong> and enter your key</li>
+  <li><strong>Or visit Personal Budget System Starter</strong> and it will detect your Pro access</li>
+        <li><strong>Enjoy your Pro features:</strong> Debt payoff tracking and savings goals!</li>
+      </ol>
+    </div>
+    
+    <div style="margin-top: 32px;">
+      <a href="starter/app.html" style="display: inline-block; background: linear-gradient(180deg, #00BFFF, #00A7E3); color: #052432; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 0 8px;">
+  📱 Open Personal Budget System Starter
+      </a>
+      <a href="pro/payment.html" style="display: inline-block; background: rgba(15,33,50,.6); color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 0 8px; border: 1px solid rgba(255,255,255,.12);">
+        🔑 Enter Access Key
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function generateAccessKey() {
+      // Generate a unique access key
+      const timestamp = Date.now().toString(36).toUpperCase();
+      const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const checksum = (timestamp + random).split('').reduce((a, b) => a + b.charCodeAt(0), 0).toString(36).toUpperCase().substring(0, 4);
+      
+      const accessKey = `PBS-${timestamp.substring(0, 4)}-${random}-${checksum}`;
+      
+      // Display the key
+      document.getElementById('accessKey').textContent = accessKey;
+      document.getElementById('keyDisplay').style.display = 'block';
+      
+      // Store Pro access in localStorage
+      localStorage.setItem('PBS_PRO_ACCESS', 'true');
+      localStorage.setItem('PBS_PRO_KEY', accessKey);
+      localStorage.setItem('PBS_PRO_PLAN', 'standard');
+      localStorage.setItem('PBS_PRO_ACTIVATED', Date.now().toString());
+      
+      // Determine plan type from pending plan or default to monthly
+      const plan = localStorage.getItem('PBS_PENDING_PLAN') || 'monthly';
+      
+      if (plan === 'annual') {
+        // Annual plan - expires in 1 year
+        const expiryDate = new Date();
+        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+        localStorage.setItem('PBS_PRO_EXPIRES', expiryDate.getTime().toString());
+      } else {
+        // Monthly plan - set recurring subscription flag
+        localStorage.setItem('PBS_PRO_SUBSCRIPTION', 'monthly');
+        localStorage.setItem('PBS_PRO_EXPIRES', 'recurring');
+      }
+      
+      // Mark trial as converted
+      localStorage.setItem('PBS_TRIAL_CONVERTED', 'true');
+      
+      // Clear pending plan
+      localStorage.removeItem('PBS_PENDING_PLAN');
+      
+      console.log('Pro access initialized:', {
+        key: accessKey,
+        plan: plan,
+        activated: new Date().toISOString()
+      });
+      
+      // Hide the generate button
+      document.querySelector('.generate-key-btn').style.display = 'none';
+    }
+    
+    function copyAccessKey() {
+      const keyElement = document.getElementById('accessKey');
+      const key = keyElement.textContent;
+      
+      navigator.clipboard.writeText(key).then(() => {
+        const copyBtn = document.querySelector('.copy-btn');
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        copyBtn.style.background = '#28a745';
+        
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+          copyBtn.style.background = '#00BFFF';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        // Fallback for older browsers
+        keyElement.select();
+        document.execCommand('copy');
+        alert('Access key copied to clipboard!');
+      });
+    }
+    
+    // Check if user already has Pro access
+    if (localStorage.getItem('PBS_PRO_ACCESS') === 'true') {
+      document.querySelector('h1').textContent = 'PBS Pro Already Active!';
+      document.querySelector('p').textContent = 'Your PBS Pro access is already activated. You can start using all Pro features.';
+      document.querySelector('.generate-key-btn').style.display = 'none';
+      
+      // Show existing key if available
+      const existingKey = localStorage.getItem('PBS_PRO_KEY');
+      if (existingKey) {
+        document.getElementById('accessKey').textContent = existingKey;
+        document.getElementById('keyDisplay').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

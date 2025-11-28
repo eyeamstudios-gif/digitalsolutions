@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PBS Pro Standard - Payment</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    body {
+      background: #0D1B2A;
+      color: #fff;
+      font-family: Inter, sans-serif;
+      margin: 0;
+      padding: 24px;
+    }
+    .payment-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .header h1 {
+      color: #EAF6FF;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 8px;
+      text-shadow: 0 2px 12px rgba(0,0,0,.25), 0 0 24px rgba(0,191,255,.25);
+    }
+    .header p {
+      color: rgba(255,255,255,.9);
+      font-size: 1.1rem;
+      margin: 0;
+    }
+    .plan-summary {
+      background: #112436;
+      border: 2px solid #00BFFF;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .plan-summary h2 {
+      color: #00BFFF;
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+    }
+    .plan-summary .price {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 8px 0 16px;
+    }
+    .features-list {
+      text-align: left;
+      margin: 16px 0;
+    }
+    .features-list li {
+      margin: 8px 0;
+      padding-left: 24px;
+      position: relative;
+    }
+    .features-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #00BFFF;
+      font-weight: bold;
+    }
+    .payment-section {
+      background: #112436;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .payment-section h3 {
+      color: #EAF6FF;
+      margin: 0 0 16px;
+      font-size: 1.3rem;
+    }
+    .payment-buttons {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .payment-btn {
+      background: linear-gradient(180deg, #00BFFF, #00A7E3);
+      border: none;
+      color: #052432;
+      padding: 16px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      box-shadow: 0 8px 20px rgba(0,191,255,.35);
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+    .payment-btn:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.06);
+    }
+    .payment-btn.annual {
+      background: linear-gradient(180deg, #28a745, #20a83a);
+      color: #fff;
+      position: relative;
+    }
+    .savings-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ffc107;
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .access-key-section {
+      background: rgba(255,193,7,.1);
+      border: 1px solid rgba(255,193,7,.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+    .access-key-section h3 {
+      color: #ffc107;
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+    }
+    .key-input-group {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .key-input-group input {
+      flex: 1;
+      background: #0f2132;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 8px;
+      color: #fff;
+      padding: 12px 16px;
+      font-size: 16px;
+      outline: none;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 2px;
+    }
+    .key-input-group input:focus {
+      border-color: #ffc107;
+      box-shadow: 0 0 0 4px rgba(255,193,7,.12);
+    }
+    .key-input-group button {
+      background: #ffc107;
+      border: none;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s ease;
+    }
+    .key-input-group button:hover {
+      transform: translateY(-1px);
+    }
+    .back-link {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      color: #8fe6ff;
+      text-decoration: none;
+      font-size: 14px;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+    .back-link:hover {
+      opacity: 1;
+    }
+    .security-note {
+      background: rgba(15,33,50,.6);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 14px;
+      color: rgba(255,255,255,.8);
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      color: rgba(255,255,255,.7);
+    }
+    .success-message {
+      display: none;
+      background: rgba(40,167,69,.1);
+      border: 1px solid rgba(40,167,69,.3);
+      border-radius: 8px;
+      padding: 16px;
+      color: #28a745;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .error-message {
+      display: none;
+      background: rgba(244,67,54,.1);
+      border: 1px solid rgba(244,67,54,.3);
+      border-radius: 8px;
+      padding: 16px;
+      color: #f44336;
+      text-align: center;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <a href="../pro/" class="back-link">← Back to Pro Plans</a>
+  
+  <div class="payment-container">
+    <div class="header">
+      <h1>Upgrade to PBS Pro</h1>
+      <p>Continue your budgeting journey with professional features</p>
+    </div>
+
+    <div class="plan-summary">
+      <h2>Pro Standard</h2>
+      <div class="price">$12.99/mo</div>
+      <ul class="features-list">
+        <li>Everything in Starter</li>
+        <li>Debt Payoff Tracking</li>
+        <li>Savings Goals with progress</li>
+        <li>Multi-device sync</li>
+        <li>Cloud backup & restore</li>
+        <li>Priority updates</li>
+      </ul>
+    </div>
+
+    <div class="payment-section">
+      <h3>💳 Choose Payment Option</h3>
+      <div class="payment-buttons">
+        <button class="payment-btn" onclick="initiatePayment('monthly')">
+          Pay $12.99/month
+        </button>
+        <button class="payment-btn annual" onclick="initiatePayment('annual')">
+          Pay $99/year
+          <span class="savings-badge">Save 36%</span>
+        </button>
+      </div>
+      
+      <div class="loading" id="paymentLoading">
+        Processing payment... Please wait.
+      </div>
+      
+      <div class="success-message" id="paymentSuccess">
+        Payment successful! Your access key has been sent to your email.
+      </div>
+      
+      <div class="error-message" id="paymentError">
+        Payment failed. Please try again or contact support.
+      </div>
+    </div>
+
+    <div class="access-key-section">
+      <h3>🔑 Already Have an Access Key?</h3>
+      <p>Enter your PBS Pro access key to unlock your account:</p>
+      
+      <div class="key-input-group">
+        <input 
+          type="text" 
+          id="accessKey" 
+          placeholder="PBS-XXXX-XXXX-XXXX"
+          maxlength="17"
+          style="text-transform: uppercase;"
+        >
+        <button onclick="validateAccessKey()">Unlock</button>
+      </div>
+      
+      <div class="success-message" id="keySuccess">
+        Access key validated! Redirecting to your Pro account...
+      </div>
+      
+      <div class="error-message" id="keyError">
+        Invalid access key. Please check and try again.
+      </div>
+      
+      <div class="security-note">
+        🔒 Your access key was sent to your email after payment. Keep it safe for future access.
+      </div>
+    </div>
+
+    <div class="security-note">
+      <strong>Secure Payment:</strong> All payments are processed securely through Stripe. We never store your payment information.
+    </div>
+  </div>
+
+  <script>
+    // Use live key for production
+    const stripe = Stripe('pk_live_51S4BLfGeFfTIts5LDlbDiVlWWNBQMiAqvrCzfCNtEelDNoBmSautrns9XFio4JJpty4KTh3TrugCLOFOd2NNti3O00447qm5pE');
+    
+    // Payment configuration - Using Stripe Payment Links
+    const PAYMENT_CONFIG = {
+      monthly: {
+        payment_link: 'https://buy.stripe.com/5kQeVdgBr7Uf9NY5dn0RG00',
+        amount: 1299, // $12.99 in cents
+        description: 'PBS Pro Standard - Monthly'
+      },
+      annual: {
+        payment_link: 'https://buy.stripe.com/3cIcN584Vdez3pAeNX0RG01',
+        amount: 9900, // $99 in cents
+        description: 'PBS Pro Standard - Annual'
+      }
+    };
+
+    async function initiatePayment(plan) {
+      const config = PAYMENT_CONFIG[plan];
+      
+      // Show loading
+      document.getElementById('paymentLoading').style.display = 'block';
+      document.getElementById('paymentError').style.display = 'none';
+      document.getElementById('paymentSuccess').style.display = 'none';
+      
+      try {
+        // Store the plan for when user returns
+        localStorage.setItem('PBS_PENDING_PLAN', plan);
+        localStorage.setItem('PBS_PAYMENT_TIMESTAMP', Date.now().toString());
+        
+        // Option 1: Direct redirect to Stripe Payment Link
+        // Note: Success URL should be configured in the Payment Link itself
+        window.location.href = config.payment_link;
+        
+      } catch (error) {
+        console.error('Payment redirect error:', error);
+        document.getElementById('paymentLoading').style.display = 'none';
+        document.getElementById('paymentError').style.display = 'block';
+        document.getElementById('paymentError').textContent = 'Unable to redirect to payment. Please try again.';
+      }
+    }
+
+    function getCustomerEmail() {
+      // Try to get email from trial signup
+      return localStorage.getItem('PBS_USER_EMAIL') || '';
+    }
+
+    function validateAccessKey() {
+      const keyInput = document.getElementById('accessKey');
+      const accessKey = keyInput.value.trim().toUpperCase();
+      
+      // Hide previous messages
+      document.getElementById('keyError').style.display = 'none';
+      document.getElementById('keySuccess').style.display = 'none';
+      
+      if (!accessKey) {
+        showKeyError('Please enter an access key');
+        return;
+      }
+      
+      // Validate key format (PBS-XXXX-XXXX-XXXX)
+      const keyPattern = /^PBS-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+      if (!keyPattern.test(accessKey)) {
+        showKeyError('Invalid key format. Use: PBS-XXXX-XXXX-XXXX');
+        return;
+      }
+      
+      // In a real implementation, validate with your backend
+      // For now, we'll simulate validation
+      validateKeyWithServer(accessKey);
+    }
+    
+    async function validateKeyWithServer(accessKey) {
+      try {
+        // Simulate server validation
+        // In reality, call your backend API
+        const response = await fetch('/api/validate-key', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            key: accessKey,
+            product: 'pbs_pro_standard'
+          })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.valid) {
+            // Store access validation
+            localStorage.setItem('PBS_PRO_ACCESS', 'true');
+            localStorage.setItem('PBS_PRO_KEY', accessKey);
+            localStorage.setItem('PBS_PRO_PLAN', data.plan || 'standard');
+            localStorage.setItem('PBS_PRO_EXPIRES', data.expires || 'never');
+            
+            showKeySuccess();
+            
+            // Redirect to Pro app
+            setTimeout(() => {
+              window.location.href = '../pro/app.html';
+            }, 2000);
+          } else {
+            showKeyError('Invalid or expired access key');
+          }
+        } else {
+          showKeyError('Unable to validate key. Please try again.');
+        }
+        
+      } catch (error) {
+        console.error('Key validation error:', error);
+        
+        // Fallback: For development/testing, accept any properly formatted key
+        if (accessKey.startsWith('PBS-TEST-')) {
+          localStorage.setItem('PBS_PRO_ACCESS', 'true');
+          localStorage.setItem('PBS_PRO_KEY', accessKey);
+          localStorage.setItem('PBS_PRO_PLAN', 'standard');
+          showKeySuccess();
+          setTimeout(() => {
+            window.location.href = '../pro/app.html';
+          }, 2000);
+        } else {
+          showKeyError('Unable to connect to validation server');
+        }
+      }
+    }
+    
+    function showKeySuccess() {
+      document.getElementById('keySuccess').style.display = 'block';
+    }
+    
+    function showKeyError(message) {
+      const errorEl = document.getElementById('keyError');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+    
+    // Auto-format access key input
+    document.getElementById('accessKey').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^A-Z0-9]/g, '');
+      if (value.length > 3 && value.length <= 7) {
+        value = 'PBS-' + value.substring(3);
+      } else if (value.length > 7 && value.length <= 11) {
+        value = 'PBS-' + value.substring(3, 7) + '-' + value.substring(7);
+      } else if (value.length > 11) {
+        value = 'PBS-' + value.substring(3, 7) + '-' + value.substring(7, 11) + '-' + value.substring(11, 15);
+      }
+      e.target.value = value;
+    });
+    
+    // Check if user came from trial expiration
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('from') === 'trial-expired') {
+      // Could show special messaging for trial users
+      console.log('User came from expired trial');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EYE AM STUDIOS - PAS Starter Edition</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f9fa;color:#333}
+    .container{max-width:1400px;margin:0 auto;padding:20px}
+    .header{background:linear-gradient(135deg,#0d1b2a 0%,#415a77 100%);color:#fff;padding:20px;border-radius:8px;margin-bottom:20px;text-align:center;position:relative}
+    .plan-badge{position:absolute;top:15px;right:20px;background:#28a745;color:#fff;padding:6px 12px;border-radius:15px;font-size:12px;font-weight:700}
+    .trial-badge{position:absolute;top:15px;left:20px;background:#17a2b8;color:#fff;padding:6px 12px;border-radius:15px;font-size:12px;font-weight:700}
+    .header h1{font-size:24px;margin-bottom:5px}
+    .header .subtitle{font-size:14px;opacity:.9;margin-bottom:10px}
+    .trial-status{background:rgba(40,167,69,0.2);color:#155724;padding:8px 15px;border-radius:20px;margin-top:10px;font-size:13px;font-weight:600;display:inline-block}
+    .trial-expired{background:rgba(220,53,69,0.2);color:#721c24;padding:8px 15px;border-radius:20px;margin-top:10px;font-size:13px;font-weight:600;display:inline-block}
+    .upgrade-banner{background:linear-gradient(135deg,#ffc107 0%,#ff8f00 100%);color:#333;padding:12px 20px;border-radius:6px;margin-bottom:20px;text-align:center;font-weight:500;box-shadow:0 2px 4px rgba(0,0,0,.1)}
+    .upgrade-banner a{color:#d84315;text-decoration:none;font-weight:700;margin-left:10px}
+    .trial-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1000;align-items:center;justify-content:center}
+    .trial-modal.show{display:flex}
+    .modal-content{background:#fff;padding:30px;border-radius:10px;max-width:500px;margin:20px;text-align:center}
+    .modal-content h3{color:#dc3545;margin-bottom:15px}
+    .modal-content p{margin-bottom:20px;color:#333}
+    .cta-button{background:#28a745;color:#fff;padding:12px 24px;border:none;border-radius:5px;font-weight:700;text-decoration:none;display:inline-block;margin:5px}
+    .cta-button:hover{background:#218838}
+    .tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:20px;border-bottom:2px solid #e9ecef;padding-bottom:10px}
+    .tab{background:#e9ecef;border:none;padding:10px 15px;border-radius:5px 5px 0 0;cursor:pointer;font-weight:500;transition:.2s}
+    .tab.active{background:#0d1b2a;color:#fff}
+    .tab:hover{background:#495057;color:#fff}
+    .sheet{display:none;background:#fff;border-radius:8px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.1);min-height:600px}
+    .sheet.active{display:block}
+    .sheet-title{background:#0d1b2a;color:#fff;padding:12px;font-weight:700;font-size:16px;border-radius:5px;margin-bottom:20px}
+    .limit-warning{background:#fff3cd;color:#856404;padding:10px 15px;border-radius:5px;border-left:4px solid #ffc107;margin-bottom:15px;font-size:14px}
+    .limit-reached{background:#f8d7da;color:#721c24;padding:10px 15px;border-radius:5px;border-left:4px solid #dc3545;margin-bottom:15px;font-size:14px}
+    table{width:100%;border-collapse:collapse;margin-bottom:20px}
+    th,td{border:1px solid #dee2e6;padding:8px 12px;text-align:left}
+    th{background:#0d1b2a;color:#fff;font-weight:700}
+    .input-cell{background:#e8f3ff}
+    .calculated-cell{background:#f8f9fa}
+    .positive-check{background:#e8f5e9!important;color:#155724!important;font-weight:700;border:2px solid #28a745!important}
+    .error-check{background:#f8d7da!important;color:#721c24!important;font-weight:700;border:2px solid #dc3545!important}
+    input,select{border:none;background:transparent;width:100%;padding:4px;font-family:inherit}
+    input:focus,select:focus{outline:2px solid #007bff;border-radius:3px}
+    .formula-result{color:#007bff;font-weight:500}
+    .section-header{background:#6c757d;color:#fff;padding:8px;font-weight:700;margin:10px 0}
+    .nav-link{background:#007bff;color:#fff;padding:8px 12px;text-decoration:none;border-radius:5px;font-size:12px;cursor:pointer;display:inline-block;margin-right:5px}
+    .nav-link:hover{background:#0056b3}
+    .progress-indicator{display:inline-block;padding:4px 8px;border-radius:3px;font-weight:700}
+    .progress-yes{background:#e8f5e9;color:#155724}
+    .progress-no{background:#f8d7da;color:#721c24}
+    .add-button{background:#007bff;color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;margin-top:10px}
+    .add-button:hover{background:#0056b3}
+    .add-button:disabled{background:#6c757d;cursor:not-allowed}
+    .revenue-limit-warning{background:#f8d7da;color:#721c24;padding:15px;border-radius:5px;border-left:4px solid #dc3545;margin:20px 0;display:none}
+    .feature-locked{opacity:.6;pointer-events:none;position:relative}
+    .locked-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.8);color:#fff;padding:10px 15px;border-radius:5px;font-size:12px;z-index:10}
+  </style>
+</head>
+<body>
+  <!-- Trial Expired Modal -->
+  <div id="trial-modal" class="trial-modal">
+    <div class="modal-content">
+      <h3>🚀 Your Free Trial Has Ended</h3>
+      <p>You've had 30 days to experience the power of PAS Starter Edition.<br>
+         Continue tracking your business profit for just <strong>$19.99/month</strong>.</p>
+      <a href="#subscribe" class="cta-button" onclick="handleSubscribe()">Continue for $19.99/month</a>
+      <a href="#" class="cta-button" style="background:#6c757d" onclick="closeTrialModal()">Not Now</a>
+      <p style="font-size:12px;margin-top:15px;color:#666;">
+        Need more features? <a href="#upgrade" style="color:#007bff">Upgrade to Professional</a> for unlimited items, analytics & export.
+      </p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="header">
+      <div class="trial-badge" id="trial-badge">FREE TRIAL</div>
+      <div class="plan-badge">STARTER EDITION</div>
+      <h1>EYE AM STUDIOS — Profit Allocation System</h1>
+      <div class="subtitle">Starter Edition v1.0 | Perfect for Solo Entrepreneurs</div>
+      <p style="font-size:12px;margin-top:8px;opacity:.8;">FREE for 30 days • Then $19.99/month • Up to $50K monthly revenue • 10 products/services • 20 expenses</p>
+      <div id="trial-status" class="trial-status">
+        <span id="trial-days-left">30</span> days left in your free trial
+      </div>
+    </div>
+ 
+    <div class="upgrade-banner">
+      ⚡ Need more? Upgrade to Professional for unlimited products, advanced analytics & data import/export
+      <a href="#upgrade">Upgrade Now</a>
+    </div>
+ 
+    <div class="tabs" role="tablist" aria-label="PAS Sheets">
+      <button class="tab active" role="tab" aria-selected="true" onclick="showSheet('start_here', this)">START_HERE</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="showSheet('inputs', this)">Settings</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="showSheet('products', this)">Products & Services</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="showSheet('project_pricing', this)">Project_Pricing</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="showSheet('expenses', this)">Expenses</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="showSheet('dashboard', this)">Dashboard</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="showSheet('client_summary', this)">My Business Summary</button>
+      <button class="tab" role="tab" aria-selected="false" onclick="showSheet('compare_plans', this)">Compare Plans</button>
+    </div>
+    <!-- Compare Plans Sheet -->
+    <div id="compare_plans" class="sheet" style="max-width:900px;margin:0 auto;">
+      <div class="sheet-title">Compare PAS Plans</div>
+      <div style="margin-bottom:20px;">
+        <strong>Choose the plan that fits your business growth stage. Upgrade anytime for more power and flexibility!</strong>
+      </div>
+      <table style="margin-bottom:30px;">
+        <thead>
+          <tr style="background:#0d1b2a;color:#fff;">
+            <th>Plan</th>
+            <th>Price</th>
+            <th>Core Purpose</th>
+            <th>Key Limits</th>
+            <th>Ideal Audience</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Free Trial</td>
+            <td>$0 (30 days)</td>
+            <td>Experience clarity & setup</td>
+            <td>10 products/services, 20 expenses, $50K revenue cap</td>
+            <td>Curious users & early testers</td>
+          </tr>
+          <tr>
+            <td>Starter</td>
+            <td>$14.99/mo</td>
+            <td>Manage business with structure</td>
+            <td>25 products/services, 30 expenses, $100K monthly cap, No data export</td>
+            <td>Solopreneurs & small teams</td>
+          </tr>
+          <tr>
+            <td>Professional</td>
+            <td>$24.99/mo</td>
+            <td>Full-scale profit intelligence</td>
+            <td>Unlimited products/expenses, No revenue cap, Data export/import, Advanced analytics, Custom allocation categories</td>
+            <td>Growing firms & consultants</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr style="background:#415a77;color:#fff;">
+            <th>Feature</th>
+            <th>Trial</th>
+            <th>Starter ($14.99)</th>
+            <th>Pro ($24.99)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>30-Day Access</td><td>✅</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Business Type Selector</td><td>✅</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Monthly Goal Tracking</td><td>✅</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Products/Services</td><td>10</td><td>25</td><td>Unlimited</td></tr>
+          <tr><td>Expenses</td><td>20</td><td>30</td><td>Unlimited</td></tr>
+          <tr><td>Monthly Revenue Limit</td><td>$50K</td><td>$100K</td><td>Unlimited</td></tr>
+          <tr><td>Profit Allocation System</td><td>✅</td><td>✅</td><td>✅ (custom categories)</td></tr>
+          <tr><td>Data Import/Export</td><td>❌</td><td>❌</td><td>✅</td></tr>
+          <tr><td>Analytics Dashboard</td><td>Basic</td><td>Basic</td><td>Advanced (charts + trends)</td></tr>
+          <tr><td>Support</td><td>Email only</td><td>Priority Email</td><td>Priority + Onboarding Call</td></tr>
+          <tr><td>Branding (Client Report)</td><td>Starter watermark</td><td>PAS Starter branding</td><td>White-label “Powered by EYE AM STUDIOS”</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div style="margin-top:30px;text-align:center;">
+        <a href="#upgrade" class="cta-button" style="font-size:16px;">Upgrade to Professional</a>
+      </div>
+    </div>
+ 
+    <!-- START_HERE Sheet -->
+    <div id="start_here" class="sheet active">
+      <div class="sheet-title">Welcome to PAS Starter Edition</div>
+ 
+      <div class="section-header">Quick Setup: 4 Simple Steps</div>
+      <table>
+        <tbody><tr>
+          <td><strong>1. Configure your profit allocation</strong></td>
+          <td><a class="nav-link" onclick="showSheet('inputs', this)">Go to Settings</a></td>
+        </tr>
+        <tr>
+          <td><strong>2. Add your products & services (up to 10)</strong></td>
+          <td><a class="nav-link" onclick="showSheet('products', this)">Products & Services</a></td>
+        </tr>
+        <tr>
+          <td><strong>3. Price your current project</strong></td>
+          <td><a class="nav-link" onclick="showSheet('project_pricing', this)">Project_Pricing</a></td>
+        </tr>
+        <tr>
+          <td><strong>4. Track monthly expenses (up to 20)</strong></td>
+          <td><a class="nav-link" onclick="showSheet('expenses', this)">Expenses</a></td>
+        </tr>
+      </tbody></table>
+ 
+      <div class="section-header">Your Progress</div>
+      <table>
+        <tbody><tr><td>Settings configured?</td><td><span id="progress_inputs" class="progress-indicator progress-yes">Yes</span></td></tr>
+        <tr><td>Products/Services added?</td><td><span id="progress_products" class="progress-indicator progress-yes">Yes</span> <small id="products_count">(1/10)</small></td></tr>
+        <tr><td>Project priced?</td><td><span id="progress_project" class="progress-indicator progress-yes">Yes</span></td></tr>
+        <tr><td>Expenses entered?</td><td><span id="progress_expenses" class="progress-indicator progress-yes">Yes</span> <small id="expenses_count">(2/20)</small></td></tr>
+      </tbody></table>
+ 
+      <div class="section-header">Starter Plan Limits</div>
+      <table>
+        <tbody><tr><td><strong>Monthly Revenue Tracking</strong></td><td>Up to $50,000 <small>(Current: <span id="current_revenue">$8,000.00</span>)</small></td></tr>
+        <tr><td><strong>Products & Services</strong></td><td>Up to 10 items <small>(Used: <span id="items_used">1</span>/10)</small></td></tr>
+        <tr><td><strong>Monthly Expenses</strong></td><td>Up to 20 expenses <small>(Used: <span id="expenses_used">2</span>/20)</small></td></tr>
+        <tr><td><strong>Support</strong></td><td>Email support (24-48hr response)</td></tr>
+      </tbody></table>
+ 
+      <div style="background:#e3f2fd;padding:15px;border-radius:5px;margin-top:20px;">
+        <h4 style="color:#1976d2;margin-bottom:10px;">Perfect for:</h4>
+        <ul style="margin-left:20px;color:#1976d2;">
+          <li>Freelancers & consultants</li>
+          <li>Solo entrepreneurs</li>
+          <li>Service-based micro businesses</li>
+          <li>Getting started with profit allocation</li>
+        </ul>
+      </div>
+
+      <div style="background:#fff3cd;padding:15px;border-radius:5px;margin-top:20px;border-left:4px solid #ffc107;">
+        <h4 style="color:#856404;margin-bottom:10px;">🔄 Your Data</h4>
+        <p style="color:#856404;margin:0;">Your work is automatically saved locally. After your trial, continue with a paid subscription to keep your data and add new features.</p>
+      </div>
+    </div>
+ 
+    <!-- Settings Sheet -->
+    <div id="inputs" class="sheet">
+      <div class="sheet-title">Business Settings & Profit Allocation</div>
+ 
+      <div class="section-header">Business Information</div>
+      <table>
+        <thead><tr><th>Setting</th><th>Value</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Business Name</td>
+            <td class="input-cell"><input type="text" id="business_name" value="Your Business Name" onchange="updateCalculations()"></td>
+            <td class="input-cell"><input type="text" id="business_name_desc" value="Your business name for reports" onchange="updateCalculations()"></td>
+          </tr>
+          <tr>
+            <td>Currency</td>
+            <td class="input-cell"><input type="text" id="currency" value="USD" maxlength="3" onblur="this.value=this.value.toUpperCase();" onchange="updateCalculations()"></td>
+            <td class="input-cell"><input type="text" id="currency_desc" value="Currency code (USD, EUR, etc.)" onchange="updateCalculations()"></td>
+          </tr>
+          <tr>
+            <td>Business Type</td>
+            <td class="input-cell">
+              <select id="business_type" onchange="updateBusinessType(); updateCalculations();">
+                <option value="mixed" selected>Products & Services + Projects</option>
+                <option value="products">Products & Services Only</option>
+                <option value="projects">Projects Only</option>
+                <option value="services">Service-Based (No Projects)</option>
+              </select>
+            </td>
+            <td>Select the primary structure of your business</td>
+          </tr>
+          <tr>
+            <td>Projected Monthly Revenue Goal ($)</td>
+            <td class="input-cell">
+              <input type="number" id="monthly_goal" value="10000" step="100" min="0" onchange="updateCalculations()">
+            </td>
+            <td>Set your target monthly revenue goal</td>
+          </tr>
+        </tbody>
+      </table>
+ 
+      <div class="section-header">Profit Allocation Framework (Must Total 100%)</div>
+      <div style="background:#e8f5e9;padding:10px;border-radius:5px;margin-bottom:15px;font-size:14px;">
+        <strong>Starter Plan:</strong> Customize your 5 allocation categories with personalized names and descriptions. Upgrade to Professional for unlimited custom categories and advanced allocation features.
+      </div>
+ 
+      <div style="border:3px solid #007bff;border-radius:8px;background:#f8f9ff;padding:15px;margin-bottom:20px;">
+        <table style="margin:0;">
+          <thead>
+            <tr><th style="background:#007bff;">Category</th><th style="background:#007bff;">Percentage</th><th style="background:#007bff;">Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="giving_back_name" value="Giving Back" style="font-weight:700;" onchange="updateCalculations()"></td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="number" id="giving_back" value="5" step="1" min="0" max="100" onchange="updateCalculations()">%</td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="giving_back_desc" value="Charitable giving & community support" onchange="updateCalculations()"></td>
+            </tr>
+            <tr>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="emergency_fund_name" value="Emergency Fund" style="font-weight:700;" onchange="updateCalculations()"></td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="number" id="emergency_fund" value="10" step="1" min="0" max="100" onchange="updateCalculations()">%</td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="emergency_fund_desc" value="Business emergency reserves" onchange="updateCalculations()"></td>
+            </tr>
+            <tr>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="profit_name" value="Owner Profit" style="font-weight:700;" onchange="updateCalculations()"></td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="number" id="profit" value="25" step="1" min="0" max="100" onchange="updateCalculations()">%</td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="profit_desc" value="Your take-home profit" onchange="updateCalculations()"></td>
+            </tr>
+            <tr>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="operations_name" value="Operations" style="font-weight:700;" onchange="updateCalculations()"></td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="number" id="operations" value="50" step="1" min="0" max="100" onchange="updateCalculations()">%</td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="operations_desc" value="Day-to-day business expenses" onchange="updateCalculations()"></td>
+            </tr>
+            <tr>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="rnd_name" value="Growth & Development" style="font-weight:700;" onchange="updateCalculations()"></td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="number" id="rnd" value="10" step="1" min="0" max="100" onchange="updateCalculations()">%</td>
+              <td class="input-cell" style="background:#bbdefb;"><input type="text" id="rnd_desc" value="Business growth & skill development" onchange="updateCalculations()"></td>
+            </tr>
+          </tbody>
+        </table>
+ 
+        <div style="margin-top:15px;padding:10px;background:#fff;border-radius:5px;border:2px solid #6c757d;">
+          <table style="margin:0;">
+            <tbody><tr>
+              <td style="background:#f8f9fa;font-weight:700;font-size:14px;padding:12px;"><strong>Allocation Check (must = 100%)</strong></td>
+              <td id="allocation_check" class="calculated-cell positive-check" style="font-weight:700;font-size:16px;text-align:center;padding:12px;">100%</td>
+            </tr>
+          </tbody></table>
+        </div>
+      </div>
+ 
+      <div class="section-header">Tax Settings</div>
+      <table>
+        <thead><tr><th>Setting</th><th>Value</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Federal Tax Rate</td>
+            <td class="input-cell"><input type="number" id="federal_tax" value="21" step="1" min="0" max="100" onchange="updateCalculations()">%</td>
+            <td>Federal tax percentage</td>
+          </tr>
+          <tr>
+            <td>State Tax Rate</td>
+            <td class="input-cell"><input type="number" id="state_tax" value="6" step="1" min="0" max="100" onchange="updateCalculations()">%</td>
+            <td>State tax percentage</td>
+          </tr>
+          <tr>
+            <td><strong>Combined Tax Rate</strong></td>
+            <td id="combined_tax_rate" class="calculated-cell formula-result">27%</td>
+            <td>Total tax burden</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+ 
+    <!-- Products & Services Sheet -->
+    <div id="products" class="sheet">
+      <div class="sheet-title">Products & Services Catalog</div>
+
+      <div style="margin-bottom:15px;">
+        <button onclick="exportProducts()" class="add-button" style="background:#28a745;margin-right:10px;">📤 Export Data</button>
+        <input type="file" id="import-products" accept=".csv,.json" style="display:none;" onchange="importProducts(event)">
+        <button onclick="document.getElementById('import-products').click()" class="add-button" style="background:#17a2b8;">📥 Import Data</button>
+      </div>
+ 
+      <div id="products_limit_warning" class="limit-warning" style="display:none;">
+        You're approaching your 10-item limit. <a href="#upgrade" style="color:#856404;text-decoration:underline;">Upgrade to Professional</a> for unlimited products and services.
+      </div>
+ 
+      <div id="products_limit_reached" class="limit-reached" style="display:none;">
+        You've reached your 10-item limit for the Starter plan. <a href="#upgrade" style="color:#721c24;text-decoration:underline;">Upgrade to Professional</a> to add unlimited products and services.
+      </div>
+ 
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th><th>Type</th><th>Cost ($)</th><th>Quantity/Units</th><th>Price ($)</th><th>Margin ($)</th><th>Margin %</th><th>Total Revenue ($)</th>
+          </tr>
+        </thead>
+        <tbody id="products_table">
+          <tr>
+            <td class="input-cell"><input type="text" value="Consulting Service" onchange="updateCalculations()"></td>
+            <td class="input-cell">
+              <select onchange="updateCalculations()">
+                <option value="Service" selected="">Service</option>
+                <option value="Product">Product</option>
+              </select>
+            </td>
+            <td class="input-cell"><input type="number" value="100" step="0.01" min="0" onchange="updateCalculations()"></td>
+            <td class="input-cell"><input type="number" value="10" min="0" onchange="updateCalculations()"></td>
+            <td class="input-cell"><input type="number" value="300" step="0.01" min="0" onchange="updateCalculations()"></td>
+            <td class="calculated-cell formula-result">$200.00</td>
+            <td class="calculated-cell formula-result">66.7%</td>
+            <td class="calculated-cell formula-result">$3,000.00</td>
+          </tr>
+        </tbody>
+      </table>
+ 
+      <button id="add_product_btn" onclick="addProductRow()" class="add-button">Add Item</button>
+ 
+      <table style="margin-top:20px;">
+        <tbody><tr><td><strong>Total Revenue:</strong></td><td id="products_total" class="calculated-cell formula-result">$3,000.00</td></tr>
+        <tr><td><strong>Items Used:</strong></td><td id="items_summary" class="calculated-cell">1 of 10</td></tr>
+      </tbody></table>
+    </div>
+ 
+    <!-- Project Pricing Sheet -->
+    <div id="project_pricing" class="sheet">
+      <div class="sheet-title">Single Project Pricing</div>
+ 
+      <div style="background:#fff3cd;padding:10px;border-radius:5px;margin-bottom:15px;font-size:14px;">
+        <strong>Starter Plan:</strong> Track one project at a time. Upgrade to Professional for unlimited projects and advanced project management.
+      </div>
+ 
+      <table>
+        <tbody><tr><td><strong>Project Name</strong></td><td class="input-cell"><input type="text" id="project_name" value="Current Project" onchange="updateCalculations()"></td></tr>
+        <tr><td><strong>Project Price ($)</strong></td><td class="input-cell"><input type="number" id="project_price" value="5000" step="0.01" min="0" onchange="updateCalculations()"></td></tr>
+      </tbody></table>
+ 
+      <div class="section-header">Direct Project Costs</div>
+      <table>
+        <thead><tr><th>Cost Item</th><th>Amount ($)</th><th>Category</th></tr></thead>
+        <tbody id="project_costs_table">
+          <tr>
+            <td class="input-cell"><input type="text" value="Materials" onchange="updateCalculations()"></td>
+            <td class="input-cell"><input type="number" value="500" step="0.01" min="0" onchange="updateCalculations()"></td>
+            <td class="input-cell">
+              <select onchange="updateCalculations()">
+                <option value="Materials" selected="">Materials</option>
+                <option value="Labor">Labor</option>
+                <option value="Travel">Travel</option>
+                <option value="Other">Other</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="input-cell"><input type="text" value="Labor" onchange="updateCalculations()"></td>
+            <td class="input-cell"><input type="number" value="1000" step="0.01" min="0" onchange="updateCalculations()"></td>
+            <td class="input-cell">
+              <select onchange="updateCalculations()">
+                <option value="Materials">Materials</option>
+                <option value="Labor" selected="">Labor</option>
+                <option value="Travel">Travel</option>
+                <option value="Other">Other</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+ 
+      <button onclick="addProjectCostRow()" class="add-button">Add Cost Item</button>
+ 
+      <div class="revenue-limit-warning" id="revenue_warning" style="display: none;">
+        <strong>Revenue Limit Exceeded!</strong><br>
+        Your combined revenue exceeds the $50K monthly limit for Starter plans. Consider upgrading to Professional for unlimited revenue tracking.
+        <a href="#upgrade" style="color:#721c24;text-decoration:underline;">Upgrade Now</a>
+      </div>
+ 
+      <table style="margin-top:20px;">
+        <tbody><tr><td><strong>Direct Costs Total</strong></td><td id="direct_costs_total" class="calculated-cell formula-result">$1,500.00</td></tr>
+        <tr><td><strong>Gross Profit</strong></td><td id="gross_profit" class="calculated-cell formula-result">$3,500.00</td></tr>
+        <tr><td><strong>Profit Margin %</strong></td><td id="profit_margin" class="calculated-cell formula-result">70.0%</td></tr>
+        <tr><td><strong>Estimated Taxes</strong></td><td id="estimated_taxes" class="calculated-cell formula-result">$945.00</td></tr>
+        <tr><td><strong>After-Tax Profit</strong></td><td id="after_tax_profit" class="calculated-cell formula-result">$2,555.00</td></tr>
+      </tbody></table>
+    </div>
+ 
+    <!-- Expenses Sheet -->
+    <div id="expenses" class="sheet">
+      <div class="sheet-title">Monthly Business Expenses</div>
+
+      <div style="margin-bottom:15px;">
+        <button onclick="exportExpenses()" class="add-button" style="background:#28a745;margin-right:10px;">📤 Export Data</button>
+        <input type="file" id="import-expenses" accept=".csv,.json" style="display:none;" onchange="importExpenses(event)">
+        <button onclick="document.getElementById('import-expenses').click()" class="add-button" style="background:#17a2b8;">📥 Import Data</button>
+      </div>
+ 
+      <div id="expenses_limit_warning" class="limit-warning" style="display:none;">
+        You're approaching your 20-expense limit. <a href="#upgrade" style="color:#856404;text-decoration:underline;">Upgrade to Professional</a> for unlimited expense tracking.
+      </div>
+ 
+      <div id="expenses_limit_reached" class="limit-reached" style="display:none;">
+        You've reached your 20-expense limit for the Starter plan. <a href="#upgrade" style="color:#721c24;text-decoration:underline;">Upgrade to Professional</a> for unlimited expenses.
+      </div>
+ 
+      <table>
+        <thead><tr><th>Expense Name</th><th>Amount ($)</th><th>Frequency</th><th>Category</th><th>Status</th></tr></thead>
+        <tbody id="expenses_table">
+          <tr>
+            <td class="input-cell"><input type="text" value="Office Rent" onchange="updateCalculations()"></td>
+            <td class="input-cell"><input type="number" value="500" step="0.01" min="0" onchange="updateCalculations()"></td>
+            <td class="input-cell">
+              <select onchange="updateCalculations()">
+                <option value="Monthly" selected="">Monthly</option>
+                <option value="Annually">Annually</option>
+                <option value="Weekly">Weekly</option>
+              </select>
+            </td>
+            <td class="input-cell"><input type="text" value="Facilities" onchange="updateCalculations()"></td>
+            <td class="input-cell">
+              <select onchange="updateCalculations()">
+                <option value="Paid" selected="">Paid</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Overdue">Overdue</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="input-cell"><input type="text" value="Software Subscriptions" onchange="updateCalculations()"></td>
+            <td class="input-cell"><input type="number" value="200" step="0.01" min="0" onchange="updateCalculations()"></td>
+            <td class="input-cell">
+              <select onchange="updateCalculations()">
+                <option value="Monthly" selected="">Monthly</option>
+                <option value="Annually">Annually</option>
+                <option value="Weekly">Weekly</option>
+              </select>
+            </td>
+            <td class="input-cell"><input type="text" value="Software" onchange="updateCalculations()"></td>
+            <td class="input-cell">
+              <select onchange="updateCalculations()">
+                <option value="Paid" selected="">Paid</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Overdue">Overdue</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+ 
+      <button id="add_expense_btn" onclick="addExpenseRow()" class="add-button">Add Expense</button>
+ 
+      <table style="margin-top:20px;">
+        <tbody><tr><td><strong>Total Monthly Overhead:</strong></td><td id="total_overhead" class="calculated-cell formula-result">$700.00</td></tr>
+        <tr><td><strong>Expenses Used:</strong></td><td id="expenses_summary" class="calculated-cell">2 of 20</td></tr>
+      </tbody></table>
+    </div>
+ 
+    <!-- Dashboard Sheet -->
+    <div id="dashboard" class="sheet">
+      <div class="sheet-title">Business Dashboard</div>
+ 
+      <div class="section-header">Revenue Overview</div>
+      <table>
+        <tbody><tr><td><strong>Products & Services Revenue</strong></td><td id="dashboard_products_revenue" class="calculated-cell formula-result">$3,000.00</td></tr>
+        <tr><td><strong>Project Revenue</strong></td><td id="dashboard_project_revenue" class="calculated-cell formula-result">$5,000.00</td></tr>
+        <tr><td><strong>Total Monthly Revenue</strong></td><td id="dashboard_total_revenue" class="calculated-cell formula-result">$8,000.00</td></tr>
+        <tr><td><strong>Revenue Limit Status</strong></td><td id="dashboard_limit_status" class="calculated-cell" style="color:#155724;">16% of $50K limit</td></tr>
+        <tr><td><strong>Revenue Goal</strong></td><td id="dashboard_goal" class="calculated-cell formula-result">$10,000.00</td></tr>
+        <tr><td><strong>Goal Progress</strong></td><td id="dashboard_goal_progress" class="calculated-cell formula-result">80%</td></tr>
+      </tbody></table>
+
+      <div style="background:#e9ecef;border-radius:4px;overflow:hidden;height:12px;width:100%;margin:6px 0 16px;">
+        <div id="dashboard_goal_bar" style="background:#28a745;height:12px;width:0%;transition:width 0.4s;"></div>
+      </div>
+ 
+      <div class="section-header">Profit Allocation Breakdown</div>
+      <table>
+        <tbody><tr><td><strong>Giving Back</strong></td><td id="dashboard_giving" class="calculated-cell formula-result">$400.00</td></tr>
+        <tr><td><strong>Emergency Fund</strong></td><td id="dashboard_emergency" class="calculated-cell formula-result">$800.00</td></tr>
+        <tr><td><strong>Owner Profit</strong></td><td id="dashboard_profit" class="calculated-cell formula-result">$2,000.00</td></tr>
+        <tr><td><strong>Operations</strong></td><td id="dashboard_operations" class="calculated-cell formula-result">$4,000.00</td></tr>
+        <tr><td><strong>Growth & Development</strong></td><td id="dashboard_growth" class="calculated-cell formula-result">$800.00</td></tr>
+      </tbody></table>
+ 
+      <div class="section-header">Key Metrics</div>
+      <table>
+        <tbody><tr><td><strong>Monthly Overhead</strong></td><td id="dashboard_overhead" class="calculated-cell formula-result">$700.00</td></tr>
+        <tr><td><strong>Net Monthly Profit</strong></td><td id="dashboard_net_profit" class="calculated-cell formula-result">$7,300.00</td></tr>
+        <tr><td><strong>Estimated Monthly Taxes</strong></td><td id="dashboard_estimated_taxes" class="calculated-cell formula-result">$0.00</td></tr>
+        <tr><td><strong>After-Tax Net Profit</strong></td><td id="dashboard_after_tax_net_profit" class="calculated-cell formula-result">$7,300.00</td></tr>
+        <tr><td><strong>Profit Margin</strong></td><td id="dashboard_profit_margin" class="calculated-cell formula-result">91.3%</td></tr>
+      </tbody></table>
+ 
+      <div style="background:#e8f5e9;padding:15px;border-radius:5px;margin-top:20px;">
+        <h4 style="color:#155724;margin-bottom:10px;">Starter Plan Benefits:</h4>
+        <ul style="margin-left:20px;color:#155724;">
+          <li>Simple, automated profit allocation</li>
+          <li>Clear revenue and expense tracking</li>
+          <li>Built-in tax estimation</li>
+          <li>Professional client reports</li>
+        </ul>
+      </div>
+    </div>
+ 
+    <!-- My Business Summary Sheet -->
+    <div id="client_summary" class="sheet">
+      <div class="sheet-title">My Business Summary Report</div>
+ 
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:15px;background:#f8f9fa;border-radius:5px;">
+        <div>
+          <h3 id="summary_business_name">Your Business Name</h3>
+          <p>Monthly Business Report</p>
+          <p><strong>Report Date:</strong> <span id="summary_date">10/8/2025</span></p>
+        </div>
+        <div style="text-align:right;font-size:12px;color:#6c757d;">
+          <p>Generated by</p>
+          <p><strong>EYE AM STUDIOS PAS</strong></p>
+          <p>Starter Edition</p>
+        </div>
+      </div>
+ 
+      <div class="section-header">Revenue Summary</div>
+      <table>
+        <tbody><tr><td><strong>Products & Services Revenue</strong></td><td id="summary_products_revenue" class="calculated-cell formula-result">$3,000.00</td></tr>
+        <tr><td><strong>Project Revenue</strong></td><td id="summary_project_revenue" class="calculated-cell formula-result">$5,000.00</td></tr>
+        <tr style="border-top:2px solid #0d1b2a;"><td><strong>Total Monthly Revenue</strong></td><td id="summary_total_revenue" class="calculated-cell formula-result">$8,000.00</td></tr>
+        <tr><td><strong>Revenue Goal</strong></td><td id="summary_goal" class="calculated-cell formula-result">$10,000.00</td></tr>
+        <tr><td><strong>Goal Progress</strong></td><td id="summary_goal_progress" class="calculated-cell formula-result">80%</td></tr>
+      </tbody></table>
+
+      <div style="background:#e9ecef;border-radius:4px;overflow:hidden;height:12px;width:100%;margin:6px 0 16px;">
+        <div id="summary_goal_bar" style="background:#28a745;height:12px;width:0%;transition:width 0.4s;"></div>
+      </div>
+ 
+      <div class="section-header">Profit Allocation Framework</div>
+      <table>
+        <tbody><tr><td><strong>Giving Back</strong> <small>(5%)</small></td><td id="summary_giving_amount" class="calculated-cell formula-result">$400.00</td></tr>
+        <tr><td><strong>Emergency Fund</strong> <small>(10%)</small></td><td id="summary_emergency_amount" class="calculated-cell formula-result">$800.00</td></tr>
+        <tr><td><strong>Owner Profit</strong> <small>(25%)</small></td><td id="summary_profit_amount" class="calculated-cell formula-result">$2,000.00</td></tr>
+        <tr><td><strong>Operations</strong> <small>(50%)</small></td><td id="summary_operations_amount" class="calculated-cell formula-result">$4,000.00</td></tr>
+        <tr><td><strong>Growth & Development</strong> <small>(10%)</small></td><td id="summary_growth_amount" class="calculated-cell formula-result">$800.00</td></tr>
+      </tbody></table>
+ 
+      <div class="section-header">Business Health Indicators</div>
+      <table>
+        <tbody><tr><td><strong>Monthly Operating Expenses</strong></td><td id="summary_monthly_expenses" class="calculated-cell formula-result">$700.00</td></tr>
+        <tr><td><strong>Net Business Profit</strong></td><td id="summary_net_business_profit" class="calculated-cell formula-result">$7,300.00</td></tr>
+        <tr><td><strong>Estimated Monthly Taxes</strong></td><td id="summary_estimated_taxes" class="calculated-cell formula-result">$0.00</td></tr>
+        <tr><td><strong>After-Tax Net Profit</strong></td><td id="summary_after_tax_net_profit" class="calculated-cell formula-result">$7,300.00</td></tr>
+        <tr><td><strong>Overall Profit Margin</strong></td><td id="summary_profit_margin" class="calculated-cell formula-result">91.3%</td></tr>
+        <tr><td><strong>Project Gross Profit</strong></td><td id="summary_project_profit" class="calculated-cell formula-result">$3,500.00</td></tr>
+      </tbody></table>
+ 
+      <div style="margin-top:25px;padding:15px;background:#f8f9fa;border-radius:8px;border-left:4px solid #0d1b2a;">
+        <h4 style="margin-bottom:10px;">Executive Summary:</h4>
+        <p id="executive_summary">Your business is generating healthy profit margins with a balanced allocation framework. The automated profit allocation system ensures consistent savings, charitable giving, and business growth investments while maintaining operational efficiency.</p>
+      </div>
+ 
+      <div style="margin-top:20px;text-align:center;padding:15px;background:#e3f2fd;border-radius:5px;">
+        <p style="font-size:12px;color:#1976d2;">
+          This report was generated using EYE AM STUDIOS Profit Allocation System - Starter Edition<br>
+          Need more features? <a href="#upgrade" style="color:#d84315;">Upgrade to Professional</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="text-align:center;font-size:12px;color:#6c757d;margin-top:40px;padding:20px 0;border-top:1px solid #dee2e6;">
+    © 2025 EYE AM STUDIOS, LLC — Profit Allocation System (PAS) Starter Edition<br>
+    <em>Your Future. Our Focus.</em>
+  </footer>
+ 
+  <script>
+    // ---- Helpers ----
+    const fmt = new Intl.NumberFormat(undefined, { style:'currency', currency: 'USD', maximumFractionDigits: 2 });
+    const money = (n) => fmt.format(isFinite(n) ? n : 0);
+ 
+    // Starter plan limits
+    const STARTER_LIMITS = { maxRevenue: 50000, maxItems: 10, maxExpenses: 20 };
+ 
+    // Track current counts
+    let currentCounts = { items: 1, expenses: 2 };
+
+    // Trial Management
+    const TRIAL_LENGTH_DAYS = 30;
+    let trialStartDate = localStorage.getItem('pasTrialStart') || new Date().toISOString();
+    if (!localStorage.getItem('pasTrialStart')) {
+      localStorage.setItem('pasTrialStart', trialStartDate);
+    }
+
+    function getTrialDaysLeft() {
+      const startDate = new Date(trialStartDate);
+      const currentDate = new Date();
+      const diffTime = TRIAL_LENGTH_DAYS * 24 * 60 * 60 * 1000 - (currentDate - startDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return Math.max(0, diffDays);
+    }
+
+    function updateTrialStatus() {
+      const daysLeft = getTrialDaysLeft();
+      const daysLeftElement = document.getElementById('trial-days-left');
+      const trialStatusElement = document.getElementById('trial-status');
+      const trialBadge = document.getElementById('trial-badge');
+
+      if (daysLeft > 0) {
+        daysLeftElement.textContent = daysLeft;
+        if (daysLeft <= 3) {
+          trialStatusElement.style.background = 'rgba(255,193,7,0.2)';
+          trialStatusElement.style.color = '#856404';
+          trialBadge.style.background = '#ffc107';
+          trialBadge.style.color = '#333';
+          trialBadge.textContent = `${daysLeft} DAYS LEFT`;
+        }
+      } else {
+        trialStatusElement.className = 'trial-expired';
+        trialStatusElement.innerHTML = '<strong>Trial Expired</strong> - Upgrade to continue';
+        trialBadge.style.background = '#dc3545';
+        trialBadge.textContent = 'TRIAL EXPIRED';
+        showTrialModal();
+      }
+    }
+
+    function showTrialModal() {
+      document.getElementById('trial-modal').classList.add('show');
+    }
+
+    function closeTrialModal() {
+      document.getElementById('trial-modal').classList.remove('show');
+    }
+
+    function handleSubscribe() {
+      // Redirect to Stripe checkout or payment page
+      window.open('https://buy.stripe.com/test_pas_starter_19_99', '_blank');
+      closeTrialModal();
+    }
+
+    // Data persistence
+    function saveData() {
+      const data = {
+        businessName: document.getElementById('business_name').value,
+        businessNameDesc: document.getElementById('business_name_desc').value,
+        currency: document.getElementById('currency').value,
+        currencyDesc: document.getElementById('currency_desc').value,
+        businessType: document.getElementById('business_type')?.value || 'mixed',
+        monthlyGoal: document.getElementById('monthly_goal')?.value || 0,
+        allocations: {
+          givingBack: document.getElementById('giving_back').value,
+          givingBackName: document.getElementById('giving_back_name').value,
+          givingBackDesc: document.getElementById('giving_back_desc').value,
+          emergencyFund: document.getElementById('emergency_fund').value,
+          emergencyFundName: document.getElementById('emergency_fund_name').value,
+          emergencyFundDesc: document.getElementById('emergency_fund_desc').value,
+          profit: document.getElementById('profit').value,
+          profitName: document.getElementById('profit_name').value,
+          profitDesc: document.getElementById('profit_desc').value,
+          operations: document.getElementById('operations').value,
+          operationsName: document.getElementById('operations_name').value,
+          operationsDesc: document.getElementById('operations_desc').value,
+          rnd: document.getElementById('rnd').value,
+          rndName: document.getElementById('rnd_name').value,
+          rndDesc: document.getElementById('rnd_desc').value,
+        },
+        taxes: {
+          federal: document.getElementById('federal_tax').value,
+          state: document.getElementById('state_tax').value,
+        },
+        project: {
+          name: document.getElementById('project_name').value,
+          price: document.getElementById('project_price').value,
+        }
+      };
+      localStorage.setItem('pasData', JSON.stringify(data));
+      // Also store business type separately for quick access
+      if (data.businessType) localStorage.setItem('pas_business_type', data.businessType);
+    }
+
+    function loadData() {
+      const saved = localStorage.getItem('pasData');
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.businessName) document.getElementById('business_name').value = data.businessName;
+        if (data.businessNameDesc) document.getElementById('business_name_desc').value = data.businessNameDesc;
+        if (data.currency) document.getElementById('currency').value = data.currency;
+        if (data.currencyDesc) document.getElementById('currency_desc').value = data.currencyDesc;
+        if (data.businessType && document.getElementById('business_type')) document.getElementById('business_type').value = data.businessType;
+        if (typeof data.monthlyGoal !== 'undefined' && document.getElementById('monthly_goal')) document.getElementById('monthly_goal').value = data.monthlyGoal;
+        if (data.allocations) {
+          if (data.allocations.givingBack) document.getElementById('giving_back').value = data.allocations.givingBack;
+          if (data.allocations.givingBackName) document.getElementById('giving_back_name').value = data.allocations.givingBackName;
+          if (data.allocations.givingBackDesc) document.getElementById('giving_back_desc').value = data.allocations.givingBackDesc;
+          if (data.allocations.emergencyFund) document.getElementById('emergency_fund').value = data.allocations.emergencyFund;
+          if (data.allocations.emergencyFundName) document.getElementById('emergency_fund_name').value = data.allocations.emergencyFundName;
+          if (data.allocations.emergencyFundDesc) document.getElementById('emergency_fund_desc').value = data.allocations.emergencyFundDesc;
+          if (data.allocations.profit) document.getElementById('profit').value = data.allocations.profit;
+          if (data.allocations.profitName) document.getElementById('profit_name').value = data.allocations.profitName;
+          if (data.allocations.profitDesc) document.getElementById('profit_desc').value = data.allocations.profitDesc;
+          if (data.allocations.operations) document.getElementById('operations').value = data.allocations.operations;
+          if (data.allocations.operationsName) document.getElementById('operations_name').value = data.allocations.operationsName;
+          if (data.allocations.operationsDesc) document.getElementById('operations_desc').value = data.allocations.operationsDesc;
+          if (data.allocations.rnd) document.getElementById('rnd').value = data.allocations.rnd;
+          if (data.allocations.rndName) document.getElementById('rnd_name').value = data.allocations.rndName;
+          if (data.allocations.rndDesc) document.getElementById('rnd_desc').value = data.allocations.rndDesc;
+        }
+        if (data.taxes) {
+          if (data.taxes.federal) document.getElementById('federal_tax').value = data.taxes.federal;
+          if (data.taxes.state) document.getElementById('state_tax').value = data.taxes.state;
+        }
+        if (data.project) {
+          if (data.project.name) document.getElementById('project_name').value = data.project.name;
+          if (data.project.price) document.getElementById('project_price').value = data.project.price;
+        }
+      }
+    }
+ 
+    function showSheet(sheetId, el){
+      // Hide all sheets & reset tabs
+      document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t=>{ t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+ 
+      // Show selected
+      document.getElementById(sheetId).classList.add('active');
+      if(el){ el.classList.add('active'); el.setAttribute('aria-selected','true'); }
+ 
+      updateCalculations();
+    }
+ 
+    function updateCalculations(){
+      // Save data on every change
+      saveData();
+
+      // Allocation %
+      const givingBack = (parseFloat(document.getElementById('giving_back')?.value ?? 5) || 0) / 100;
+      const emergencyFund = (parseFloat(document.getElementById('emergency_fund')?.value ?? 10) || 0) / 100;
+      const profit = (parseFloat(document.getElementById('profit')?.value ?? 25) || 0) / 100;
+      const operations = (parseFloat(document.getElementById('operations')?.value ?? 50) || 0) / 100;
+      const rnd = (parseFloat(document.getElementById('rnd')?.value ?? 10) || 0) / 100;
+ 
+      // Taxes
+  const federalTax = (parseFloat(document.getElementById('federal_tax')?.value ?? 21) || 0) / 100;
+  const stateTax = (parseFloat(document.getElementById('state_tax')?.value ?? 6) || 0) / 100;
+  const combinedTaxRate = Math.min(1, Math.max(0, federalTax + stateTax));
+ 
+      // Project data
+      const projectPrice = parseFloat(document.getElementById('project_price')?.value ?? 5000) || 0;
+ 
+      // Allocation check
+      const allocationSum = (givingBack + emergencyFund + profit + operations + rnd) * 100;
+      const allocationCheck = document.getElementById('allocation_check');
+      if(allocationCheck){
+        allocationCheck.textContent = allocationSum.toFixed(0) + '%';
+        allocationCheck.classList.remove('positive-check','error-check');
+        Math.abs(allocationSum - 100) < 1 ? allocationCheck.classList.add('positive-check') : allocationCheck.classList.add('error-check');
+      }
+ 
+      // Combined tax rate
+      const combinedTaxElement = document.getElementById('combined_tax_rate');
+      if(combinedTaxElement) combinedTaxElement.textContent = (combinedTaxRate*100).toFixed(0) + '%';
+ 
+      // Products total
+      let productsTotal = 0;
+      const productRows = document.querySelectorAll('#products_table tr');
+      currentCounts.items = productRows.length;
+ 
+      productRows.forEach(row=>{
+        const nums = row.querySelectorAll('input[type="number"]');
+        if(nums.length >= 3){
+          const cost = parseFloat(nums[0].value || 0);
+          const quantity = parseFloat(nums[1].value || 0);
+          const price = parseFloat(nums[2].value || 0);
+          const margin = price - cost;
+          const marginPercent = price > 0 ? (margin / price * 100) : 0;
+          const totalRevenue = quantity * price;
+          productsTotal += totalRevenue;
+ 
+          const calc = row.querySelectorAll('.calculated-cell');
+          if(calc.length >= 3){
+            calc[0].textContent = money(margin);
+            calc[1].textContent = `${marginPercent.toFixed(1)}%`;
+            calc[2].textContent = money(totalRevenue);
+          }
+        }
+      });
+ 
+      // Project costs
+      let directCostsTotal = 0;
+      document.querySelectorAll('#project_costs_table tr').forEach(row=>{
+        const amt = row.querySelector('input[type="number"]');
+        directCostsTotal += parseFloat(amt?.value || 0);
+      });
+ 
+      // Expenses total
+      let totalOverhead = 0;
+      const expenseRows = document.querySelectorAll('#expenses_table tr');
+      currentCounts.expenses = expenseRows.length;
+ 
+      expenseRows.forEach(row=>{
+        const amountInput = row.querySelector('input[type="number"]');
+        const freq = row.querySelectorAll('select')[0]; // first select is frequency
+        if(amountInput && freq){
+          const amount = parseFloat(amountInput.value || 0);
+          let monthlyAmount = amount;
+          if(freq.value === 'Annually') monthlyAmount = amount / 12;
+          if(freq.value === 'Weekly') monthlyAmount = amount * 4.33;
+          totalOverhead += monthlyAmount;
+        }
+      });
+ 
+      // Totals
+      const totalRevenue = productsTotal + projectPrice;
+      const grossProfit = projectPrice - directCostsTotal;
+      const profitMarginPercent = projectPrice > 0 ? (grossProfit / projectPrice * 100) : 0;
+      const estimatedTaxes = Math.max(grossProfit,0) * combinedTaxRate;
+      const afterTaxProfit = grossProfit - estimatedTaxes;
+  const netProfit = totalRevenue - totalOverhead;
+  const estimatedMonthlyTaxes = Math.max(netProfit, 0) * combinedTaxRate;
+  const afterTaxNetProfit = netProfit - estimatedMonthlyTaxes;
+      const safeRevDiv = totalRevenue > 0 ? (netProfit/totalRevenue*100).toFixed(1) : '0.0';
+
+  // Projected Goal
+  const monthlyGoal = parseFloat(document.getElementById('monthly_goal')?.value || 0);
+  const goalProgress = monthlyGoal > 0 ? (totalRevenue / monthlyGoal) * 100 : 0;
+ 
+      // Allocation amounts
+      const givingBackAmount = totalRevenue * givingBack;
+      const emergencyFundAmount = totalRevenue * emergencyFund;
+      const profitAmount = totalRevenue * profit;
+      const operationsAmount = totalRevenue * operations;
+      const rndAmount = totalRevenue * rnd;
+ 
+      // UI updates (money formatted)
+      updateEl('products_total', money(productsTotal));
+      updateEl('direct_costs_total', money(directCostsTotal));
+      updateEl('gross_profit', money(grossProfit));
+      updateEl('profit_margin', `${profitMarginPercent.toFixed(1)}%`);
+      updateEl('estimated_taxes', money(estimatedTaxes));
+      updateEl('after_tax_profit', money(afterTaxProfit));
+      updateEl('total_overhead', money(totalOverhead));
+ 
+      updateEl('dashboard_products_revenue', money(productsTotal));
+      updateEl('dashboard_project_revenue', money(projectPrice));
+      updateEl('dashboard_total_revenue', money(totalRevenue));
+      updateEl('dashboard_overhead', money(totalOverhead));
+  updateEl('dashboard_net_profit', money(netProfit));
+  updateEl('dashboard_estimated_taxes', money(estimatedMonthlyTaxes));
+  updateEl('dashboard_after_tax_net_profit', money(afterTaxNetProfit));
+      updateEl('dashboard_profit_margin', `${safeRevDiv}%`);
+  updateEl('dashboard_goal', money(monthlyGoal));
+  updateEl('dashboard_goal_progress', `${goalProgress.toFixed(0)}%`);
+  const dbar = document.getElementById('dashboard_goal_bar');
+  if (dbar) dbar.style.width = `${Math.min(100, Math.max(0, goalProgress))}%`;
+ 
+      updateEl('dashboard_giving', money(givingBackAmount));
+      updateEl('dashboard_emergency', money(emergencyFundAmount));
+      updateEl('dashboard_profit', money(profitAmount));
+      updateEl('dashboard_operations', money(operationsAmount));
+      updateEl('dashboard_growth', money(rndAmount));
+ 
+      updateEl('summary_business_name', document.getElementById('business_name')?.value || 'Your Business Name');
+      updateEl('summary_date', new Date().toLocaleDateString());
+      updateEl('summary_products_revenue', money(productsTotal));
+      updateEl('summary_project_revenue', money(projectPrice));
+      updateEl('summary_total_revenue', money(totalRevenue));
+      updateEl('summary_monthly_expenses', money(totalOverhead));
+  updateEl('summary_net_business_profit', money(netProfit));
+  updateEl('summary_estimated_taxes', money(estimatedMonthlyTaxes));
+  updateEl('summary_after_tax_net_profit', money(afterTaxNetProfit));
+      updateEl('summary_profit_margin', `${safeRevDiv}%`);
+      updateEl('summary_project_profit', money(grossProfit));
+  updateEl('summary_goal', money(monthlyGoal));
+  updateEl('summary_goal_progress', `${goalProgress.toFixed(0)}%`);
+  const sbar = document.getElementById('summary_goal_bar');
+  if (sbar) sbar.style.width = `${Math.min(100, Math.max(0, goalProgress))}%`;
+ 
+      updateEl('summary_giving_amount', money(givingBackAmount));
+      updateEl('summary_emergency_amount', money(emergencyFundAmount));
+      updateEl('summary_profit_amount', money(profitAmount));
+      updateEl('summary_operations_amount', money(operationsAmount));
+      updateEl('summary_growth_amount', money(rndAmount));
+ 
+      updateLimitsAndWarnings(totalRevenue);
+      updateProgress();
+    }
+ 
+    function updateEl(id, val){ const el = document.getElementById(id); if(el) el.textContent = val; }
+ 
+    function updateLimitsAndWarnings(totalRevenue){
+      const revenueWarning = document.getElementById('revenue_warning');
+      const limitStatus = document.getElementById('dashboard_limit_status');
+ 
+      if(totalRevenue > STARTER_LIMITS.maxRevenue){
+        if(revenueWarning) revenueWarning.style.display = 'block';
+        if(limitStatus){ limitStatus.textContent = 'LIMIT EXCEEDED!'; limitStatus.style.color = '#dc3545'; }
+      }else{
+        if(revenueWarning) revenueWarning.style.display = 'none';
+        const pct = (totalRevenue / STARTER_LIMITS.maxRevenue * 100);
+        if(limitStatus){
+          limitStatus.textContent = `${pct.toFixed(0)}% of $50K limit`;
+          limitStatus.style.color = pct > 80 ? '#856404' : '#155724';
+        }
+      }
+ 
+      updateEl('current_revenue', money(Math.round(totalRevenue)));
+      updateEl('items_used', `${currentCounts.items}`);
+      updateEl('expenses_used', `${currentCounts.expenses}`);
+ 
+      const productsWarning = document.getElementById('products_limit_warning');
+      const productsReached = document.getElementById('products_limit_reached');
+      const addProductBtn = document.getElementById('add_product_btn');
+ 
+      if(currentCounts.items >= STARTER_LIMITS.maxItems){
+        productsReached.style.display = 'block'; productsWarning.style.display = 'none'; addProductBtn.disabled = true;
+      }else if(currentCounts.items >= STARTER_LIMITS.maxItems - 2){
+        productsWarning.style.display = 'block'; productsReached.style.display = 'none'; addProductBtn.disabled = false;
+      }else{
+        productsWarning.style.display = 'none'; productsReached.style.display = 'none'; addProductBtn.disabled = false;
+      }
+ 
+      const expensesWarning = document.getElementById('expenses_limit_warning');
+      const expensesReached = document.getElementById('expenses_limit_reached');
+      const addExpenseBtn = document.getElementById('add_expense_btn');
+ 
+      if(currentCounts.expenses >= STARTER_LIMITS.maxExpenses){
+        expensesReached.style.display = 'block'; expensesWarning.style.display = 'none'; addExpenseBtn.disabled = true;
+      }else if(currentCounts.expenses >= STARTER_LIMITS.maxExpenses - 3){
+        expensesWarning.style.display = 'block'; expensesReached.style.display = 'none'; addExpenseBtn.disabled = false;
+      }else{
+        expensesWarning.style.display = 'none'; expensesReached.style.display = 'none'; addExpenseBtn.disabled = false;
+      }
+ 
+      updateEl('items_summary', `${currentCounts.items} of ${STARTER_LIMITS.maxItems}`);
+      updateEl('expenses_summary', `${currentCounts.expenses} of ${STARTER_LIMITS.maxExpenses}`);
+      updateEl('products_count', `(${currentCounts.items}/${STARTER_LIMITS.maxItems})`);
+      updateEl('expenses_count', `(${currentCounts.expenses}/${STARTER_LIMITS.maxExpenses})`);
+    }
+ 
+    function updateProgress(){
+      const settingsComplete = !!(document.getElementById('giving_back')?.value && document.getElementById('business_name')?.value);
+      setProgress('progress_inputs', settingsComplete);
+ 
+      const hasItems = currentCounts.items > 0; setProgress('progress_products', hasItems);
+      const projectPriced = (parseFloat(document.getElementById('project_price')?.value || 0) > 0); setProgress('progress_project', projectPriced);
+      const hasExpenses = currentCounts.expenses > 0; setProgress('progress_expenses', hasExpenses);
+    }
+ 
+    function setProgress(id, ok){
+      const el = document.getElementById(id);
+      if(el){ el.textContent = ok ? 'Yes' : 'No'; el.className = `progress-indicator ${ok ? 'progress-yes':'progress-no'}`; }
+    }
+ 
+    function addProductRow(){
+      if(currentCounts.items >= STARTER_LIMITS.maxItems){
+        alert("You've reached the 10-item limit for Starter plans. Upgrade to Professional for unlimited items.");
+        return;
+      }
+      const tbody = document.getElementById('products_table');
+      const tr = tbody.insertRow();
+      tr.innerHTML = `
+        <td class="input-cell"><input type="text" placeholder="Item Name" onchange="updateCalculations()"></td>
+        <td class="input-cell">
+          <select onchange="updateCalculations()">
+            <option value="Service">Service</option>
+            <option value="Product">Product</option>
+          </select>
+        </td>
+        <td class="input-cell"><input type="number" value="0" step="0.01" min="0" onchange="updateCalculations()"></td>
+        <td class="input-cell"><input type="number" value="0" min="0" onchange="updateCalculations()"></td>
+        <td class="input-cell"><input type="number" value="0" step="0.01" min="0" onchange="updateCalculations()"></td>
+        <td class="calculated-cell formula-result">$0.00</td>
+        <td class="calculated-cell formula-result">0.0%</td>
+        <td class="calculated-cell formula-result">$0.00</td>
+      `;
+      updateCalculations();
+    }
+ 
+    function addProjectCostRow(){
+      const tbody = document.getElementById('project_costs_table');
+      const tr = tbody.insertRow();
+      tr.innerHTML = `
+        <td class="input-cell"><input type="text" placeholder="Cost Item" onchange="updateCalculations()"></td>
+        <td class="input-cell"><input type="number" value="0" step="0.01" min="0" onchange="updateCalculations()"></td>
+        <td class="input-cell">
+          <select onchange="updateCalculations()">
+            <option value="Materials">Materials</option>
+            <option value="Labor">Labor</option>
+            <option value="Travel">Travel</option>
+            <option value="Other">Other</option>
+          </select>
+        </td>
+      `;
+    }
+ 
+    function addExpenseRow(){
+      if(currentCounts.expenses >= STARTER_LIMITS.maxExpenses){
+        alert("You've reached the 20-expense limit for Starter plans. Upgrade to Professional for unlimited expenses.");
+        return;
+      }
+      const tbody = document.getElementById('expenses_table');
+      const tr = tbody.insertRow();
+      tr.innerHTML = `
+        <td class="input-cell"><input type="text" placeholder="Expense Name" onchange="updateCalculations()"></td>
+        <td class="input-cell"><input type="number" value="0" step="0.01" min="0" onchange="updateCalculations()"></td>
+        <td class="input-cell">
+          <select onchange="updateCalculations()">
+            <option value="Monthly">Monthly</option>
+            <option value="Annually">Annually</option>
+            <option value="Weekly">Weekly</option>
+          </select>
+        </td>
+        <td class="input-cell"><input type="text" placeholder="Category" onchange="updateCalculations()"></td>
+        <td class="input-cell">
+          <select onchange="updateCalculations()">
+            <option value="Paid">Paid</option>
+            <option value="Upcoming">Upcoming</option>
+            <option value="Overdue">Overdue</option>
+          </select>
+        </td>
+      `;
+      updateCalculations();
+    }
+
+    // Import/Export Functions
+    function exportProducts() {
+      const products = [];
+      const rows = document.querySelectorAll('#products_table tr');
+      
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll('input, select');
+        if (inputs.length >= 5) {
+          products.push({
+            name: inputs[0].value,
+            type: inputs[1].value,
+            cost: inputs[2].value,
+            quantity: inputs[3].value,
+            price: inputs[4].value
+          });
+        }
+      });
+
+      const csvContent = "Name,Type,Cost,Quantity,Price\n" + 
+        products.map(p => `"${p.name}","${p.type}","${p.cost}","${p.quantity}","${p.price}"`).join('\n');
+      
+      downloadCSV(csvContent, 'products.csv');
+    }
+
+    function exportExpenses() {
+      const expenses = [];
+      const rows = document.querySelectorAll('#expenses_table tr');
+      
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll('input, select');
+        if (inputs.length >= 5) {
+          expenses.push({
+            name: inputs[0].value,
+            amount: inputs[1].value,
+            frequency: inputs[2].value,
+            category: inputs[3].value,
+            status: inputs[4].value
+          });
+        }
+      });
+
+      const csvContent = "Name,Amount,Frequency,Category,Status\n" + 
+        expenses.map(e => `"${e.name}","${e.amount}","${e.frequency}","${e.category}","${e.status}"`).join('\n');
+      
+      downloadCSV(csvContent, 'expenses.csv');
+    }
+
+    function downloadCSV(content, filename) {
+      const blob = new Blob([content], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('hidden', '');
+      a.setAttribute('href', url);
+      a.setAttribute('download', filename);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }
+
+    function importProducts(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const csv = e.target.result;
+        const lines = csv.split('\n');
+        const tbody = document.getElementById('products_table');
+        
+        // Clear existing rows
+        tbody.innerHTML = '';
+        
+        // Skip header row
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+          
+          const values = parseCSVLine(line);
+          if (values.length >= 5) {
+            const tr = tbody.insertRow();
+            tr.innerHTML = `
+              <td class="input-cell"><input type="text" value="${values[0]}" onchange="updateCalculations()"></td>
+              <td class="input-cell">
+                <select onchange="updateCalculations()">
+                  <option value="Service" ${values[1] === 'Service' ? 'selected' : ''}>Service</option>
+                  <option value="Product" ${values[1] === 'Product' ? 'selected' : ''}>Product</option>
+                </select>
+              </td>
+              <td class="input-cell"><input type="number" value="${values[2]}" step="0.01" min="0" onchange="updateCalculations()"></td>
+              <td class="input-cell"><input type="number" value="${values[3]}" min="0" onchange="updateCalculations()"></td>
+              <td class="input-cell"><input type="number" value="${values[4]}" step="0.01" min="0" onchange="updateCalculations()"></td>
+              <td class="calculated-cell formula-result">$0.00</td>
+              <td class="calculated-cell formula-result">0.0%</td>
+              <td class="calculated-cell formula-result">$0.00</td>
+            `;
+          }
+        }
+        updateCalculations();
+        alert('Products imported successfully!');
+      };
+      reader.readAsText(file);
+    }
+
+    function importExpenses(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const csv = e.target.result;
+        const lines = csv.split('\n');
+        const tbody = document.getElementById('expenses_table');
+        
+        // Clear existing rows
+        tbody.innerHTML = '';
+        
+        // Skip header row
+        for (let i = 1; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+          
+          const values = parseCSVLine(line);
+          if (values.length >= 5) {
+            const tr = tbody.insertRow();
+            tr.innerHTML = `
+              <td class="input-cell"><input type="text" value="${values[0]}" onchange="updateCalculations()"></td>
+              <td class="input-cell"><input type="number" value="${values[1]}" step="0.01" min="0" onchange="updateCalculations()"></td>
+              <td class="input-cell">
+                <select onchange="updateCalculations()">
+                  <option value="Monthly" ${values[2] === 'Monthly' ? 'selected' : ''}>Monthly</option>
+                  <option value="Annually" ${values[2] === 'Annually' ? 'selected' : ''}>Annually</option>
+                  <option value="Weekly" ${values[2] === 'Weekly' ? 'selected' : ''}>Weekly</option>
+                </select>
+              </td>
+              <td class="input-cell"><input type="text" value="${values[3]}" onchange="updateCalculations()"></td>
+              <td class="input-cell">
+                <select onchange="updateCalculations()">
+                  <option value="Paid" ${values[4] === 'Paid' ? 'selected' : ''}>Paid</option>
+                  <option value="Upcoming" ${values[4] === 'Upcoming' ? 'selected' : ''}>Upcoming</option>
+                  <option value="Overdue" ${values[4] === 'Overdue' ? 'selected' : ''}>Overdue</option>
+                </select>
+              </td>
+            `;
+          }
+        }
+        updateCalculations();
+        alert('Expenses imported successfully!');
+      };
+      reader.readAsText(file);
+    }
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          result.push(current);
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current);
+      return result;
+    }
+ 
+    // Business type UI logic
+    function updateBusinessType() {
+      const type = document.getElementById('business_type')?.value || 'mixed';
+
+      const productsTab = document.querySelector('button[onclick*="products"]');
+      const projectTab = document.querySelector('button[onclick*="project_pricing"]');
+      const productsSheet = document.getElementById('products');
+      const projectSheet = document.getElementById('project_pricing');
+
+      // Reset visibility
+      if (productsTab) productsTab.style.display = '';
+      if (projectTab) projectTab.style.display = '';
+      if (productsSheet) productsSheet.style.display = '';
+      if (projectSheet) projectSheet.style.display = '';
+
+      if (type === 'products' || type === 'services') {
+        if (projectTab) projectTab.style.display = 'none';
+        if (projectSheet) projectSheet.style.display = 'none';
+      }
+
+      if (type === 'projects') {
+        if (productsTab) productsTab.style.display = 'none';
+        if (productsSheet) productsSheet.style.display = 'none';
+      }
+
+      // If the currently active sheet is hidden, switch to Dashboard
+      const activeSheet = document.querySelector('.sheet.active');
+      if (activeSheet && activeSheet.style.display === 'none') {
+        const dashTab = Array.from(document.querySelectorAll('.tab')).find(b => b.getAttribute('onclick')?.includes('dashboard'));
+        if (dashTab) {
+          showSheet('dashboard', dashTab);
+        } else {
+          showSheet('start_here');
+        }
+      }
+
+      // Persist selection
+      localStorage.setItem('pas_business_type', type);
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+      updateTrialStatus();
+      // Restore business type from storage if present
+      const savedType = localStorage.getItem('pas_business_type');
+      if (savedType && document.getElementById('business_type')) {
+        document.getElementById('business_type').value = savedType;
+      }
+      updateBusinessType();
+      updateCalculations();
+      
+      // Update trial status every hour
+      setInterval(updateTrialStatus, 3600000);
+    });
+ 
+    // Upgrade modal (placeholder)
+    document.addEventListener('click', (e)=>{
+      if(e.target.getAttribute('href') === '#upgrade'){
+        e.preventDefault();
+        alert(`
+Upgrade to Professional Plan:
+ 
+• Unlimited revenue tracking
+• Unlimited products & services  
+• Unlimited expenses
+• Advanced analytics
+• Data import/export
+• Custom allocation categories
+• Priority support
+ 
+Continue your trial or upgrade at eyeamstudios.com/pas
+        `);
+      }
+    });
+  </script>
+ 
+</body>
+</html>

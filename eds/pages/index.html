@@ -83,7 +83,7 @@
             Take control of your finances with a simple, privacy-first budgeting tool.<br>
             Track income, expenses, and savings—all in your browser, with no data stored.
           </p>
-          <a href="#" class="eds-btn-primary" style="margin-top:1rem; font-size:1.08rem; background:#a3e635; color:#222;">Try PBS Soon</a>
+          <a href="#" id="pbs-try-btn" class="eds-btn-primary" style="margin-top:1rem; font-size:1.08rem; background:#a3e635; color:#222;">Try PBS Now (24h)</a>
         </div>
 
         <div class="eds-tool-card" style="border: 2px solid #fbbf24; box-shadow: 0 0 0 2px #fbbf2433;">
@@ -91,7 +91,7 @@
           <p>
             Designed for small businesses and freelancers, PAS helps you allocate profits, plan taxes, and manage cash flow—securely and instantly.
           </p>
-          <a href="#" class="eds-btn-primary" style="margin-top:1rem; font-size:1.08rem; background:#fbbf24; color:#222;">Try PAS Soon</a>
+          <a href="#" id="pas-try-btn" class="eds-btn-primary" style="margin-top:1rem; font-size:1.08rem; background:#fbbf24; color:#222;">Try PAS Now (24h)</a>
         </div>
 
         <div class="eds-tool-card" style="border: 2px solid #818cf8; box-shadow: 0 0 0 2px #818cf833;">
@@ -99,8 +99,106 @@
           <p>
             Instantly estimate paint quantities and costs for any project. Enter your dimensions and get a detailed breakdown—no sign up, no data stored.
           </p>
-          <a href="#" class="eds-btn-primary" style="margin-top:1rem; font-size:1.08rem; background:#818cf8; color:#fff;">Try Paint Pro Soon</a>
+          <a href="#" id="paintpro-try-btn" class="eds-btn-primary" style="margin-top:1rem; font-size:1.08rem; background:#818cf8; color:#fff;">Try Paint Pro Now (24h)</a>
         </div>
+        <script>
+        // Trial key logic for each product
+        function setTrialKey(product) {
+          const now = Math.floor(Date.now() / 1000);
+          const expiry = now + 24 * 3600; // 24 hours from now
+          const key = `EDS-TRIAL-${product}-${expiry}`;
+          localStorage.setItem(`eds_trial_${product}`, key);
+          alert('Trial activated! You have 24 hours of access.');
+          // Optionally, redirect to the product page
+          // window.location.href = `../apps/${product}/index.html`;
+        }
+
+        function isTrialValid(product) {
+          const key = localStorage.getItem(`eds_trial_${product}`);
+          if (!key) return false;
+          const parts = key.split('-');
+          if (parts.length < 4) return false;
+          const expiry = parseInt(parts[3], 10);
+          if (isNaN(expiry)) return false;
+          const now = Math.floor(Date.now() / 1000);
+          return now < expiry;
+        }
+
+        // Update product buttons to "Unlock" if product HTML exists
+        document.addEventListener('DOMContentLoaded', function() {
+          const products = [
+            { id: 'pbs-try-btn', product: 'pbs', url: '../apps/pbs/index.html', label: 'Unlock PBS Now →' },
+            { id: 'pas-try-btn', product: 'pas', url: '../apps/pas/index.html', label: 'Unlock PAS Now →' },
+            { id: 'paintpro-try-btn', product: 'paintpro', url: '../apps/paintpro/index.html', label: 'Unlock Paint Pro Now →' }
+          ];
+          products.forEach(({ id, product, url, label }) => {
+            const btn = document.getElementById(id);
+            if (btn) {
+              // Check if product HTML exists
+              fetch(url, { method: 'HEAD' }).then(res => {
+                if (res.ok) {
+                  btn.textContent = label;
+                  btn.href = url;
+                  btn.onclick = null;
+                } else {
+                  // If not, keep trial logic
+                  btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    setTrialKey(product);
+                  });
+                }
+              }).catch(() => {
+                // If fetch fails, keep trial logic
+                btn.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  setTrialKey(product);
+                });
+              });
+            }
+          });
+        });
+        </script>
+        </div>
+      </div>
+      <script>
+      // Trial key logic for each product
+      function setTrialKey(product) {
+        const now = Math.floor(Date.now() / 1000);
+        const expiry = now + 24 * 3600; // 24 hours from now
+        const key = `EDS-TRIAL-${product}-${expiry}`;
+        localStorage.setItem(`eds_trial_${product}`, key);
+        alert('Trial activated! You have 24 hours of access.');
+        // Optionally, redirect to the product page
+        // window.location.href = `../apps/${product}/index.html`;
+      }
+
+      function isTrialValid(product) {
+        const key = localStorage.getItem(`eds_trial_${product}`);
+        if (!key) return false;
+        const parts = key.split('-');
+        if (parts.length < 4) return false;
+        const expiry = parseInt(parts[3], 10);
+        if (isNaN(expiry)) return false;
+        const now = Math.floor(Date.now() / 1000);
+        return now < expiry;
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        [
+          { id: 'pbs-try-btn', product: 'pbs' },
+          { id: 'pas-try-btn', product: 'pas' },
+          { id: 'paintpro-try-btn', product: 'paintpro' }
+        ].forEach(({ id, product }) => {
+          const btn = document.getElementById(id);
+          if (btn) {
+            btn.addEventListener('click', function(e) {
+              e.preventDefault();
+              setTrialKey(product);
+            });
+          }
+        });
+      });
+      </script>
       </div>
     </div>
   </section>

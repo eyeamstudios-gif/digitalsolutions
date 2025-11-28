@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Budget System Starter - Redirecting...</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <style>
+    body { 
+      display: grid; 
+      place-items: center; 
+      min-height: 100vh; 
+      background: #0D1B2A; 
+      color: #fff; 
+      font-family: Inter, sans-serif; 
+    }
+    .redirect-box {
+      text-align: center;
+      color: rgba(255,255,255,.9);
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(0,191,255,.3);
+      border-top: 3px solid #00BFFF;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="redirect-box">
+    <div class="spinner"></div>
+  <p>Redirecting to Personal Budget System Starter signup...</p>
+  </div>
+  
+  <script>
+    // Check if user is already signed up
+    if(localStorage.getItem('PBS_STARTER_SIGNED_UP')) {
+      // Already signed up, go directly to app
+      window.location.href = 'app.html';
+    } else {
+      // Not signed up, go to signup page
+      window.location.href = 'signup.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TEST • PBS Starter (Isolated)</title>
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="description" content="TEST build of PBS Starter. Uses isolated localStorage keys and bypasses signup to safely test changes." />
+  <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=">
+  <style>
+    :root{--black:#000;--blue:#0D1B2A;--cyan:#00BFFF;--white:#fff;--muted:rgba(255,255,255,.85);--panel:#2A4A6B;--ring:rgba(0,191,255,.35);--success:#28a745;--danger:#f44336;--warning:#ffc107;--text-primary:#ffffff;--text-secondary:#e8f4f8;--tab-bg:#355A7A;--tab-text:#f0f8ff;--main-bg:#1A2F42}
+    *{box-sizing:border-box}
+    html,body{height:100%;background:var(--main-bg)}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg, #1A2F42 0%, #2A4A6B 50%, #1A2F42 100%);color:var(--text-primary);min-height:100vh}
+    a{color:var(--cyan)}
+    .wrap{max-width:1280px;margin:0 auto;padding:24px;background:transparent}
+    .test-banner{position:sticky;top:0;z-index:9999;background:linear-gradient(90deg,#f44336,#ff9800);color:#000;padding:10px 14px;font-weight:800;border-bottom:2px solid rgba(0,0,0,.25);text-align:center}
+    .header{background:linear-gradient(140deg,#0D1B2A 0%,#1a2f42 55%,#0D1B2A 100%);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:20px 22px;position:relative;overflow:hidden}
+    .header > *{position:relative;z-index:1}
+    .header:after{content:"";position:absolute;inset:-2px;background:radial-gradient(400px 200px at 110% -10%,rgba(0,191,255,.20),transparent 60%);pointer-events:none;z-index:0}
+    .brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    h1{margin:0;font-size:22px;color:var(--text-primary)}
+    .tagline{color:var(--muted);font-size:14px}
+    .titleRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+    .titleRow input{max-width:320px}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+    .tab{padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:var(--tab-bg);cursor:pointer;color:var(--tab-text);font-weight:500;transition:all 0.2s ease}
+    .tab.active{background:linear-gradient(180deg,#00BFFF,#00A7E3);color:#001a2e;border-color:transparent;font-weight:600}
+    .tab:hover:not(.active):not(.locked){background:#4A6B8A;border-color:rgba(255,255,255,.4)}
+    .tab.locked{opacity:.8;position:relative;cursor:not-allowed;color:#B8D4E8}
+    .tab.locked::after{content:"\1f512";margin-left:6px}
+    .grid{display:grid;gap:18px;grid-template-columns:1.2fr 1fr}
+    @media (max-width:1024px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--panel);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .card h2{margin:0 0 12px;font-size:16px;color:#eaf6ff;letter-spacing:.2px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row>*{flex:1}
+    label{font-size:12px;color:var(--muted);font-weight:500}
+    input,select,button,textarea{width:100%;border:1px solid rgba(255,255,255,.2);background:#2A4A6B;color:var(--text-primary);padding:10px 12px;border-radius:10px;outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--ring);box-shadow:0 0 0 4px rgba(0,191,255,.12)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:#2A4A6B;color:var(--text-primary);cursor:pointer;text-decoration:none;font-weight:500}
+    .btn.primary{background:linear-gradient(180deg,#00BFFF,#00A7E3);color:#001a2e;border-color:transparent;font-weight:600}
+    .btn.success{background:linear-gradient(180deg,#57d67a,#28a745);color:#003d00}
+    .btn.danger{background:linear-gradient(180deg,#ff8170,#f44336);color:#2d0000}
+    .btn.ghost{background:#2A4A6B;color:var(--text-secondary)}
+    .theme-toggle{background:transparent;border:1px solid rgba(255,255,255,.25);color:#e1f3ff;border-radius:10px;padding:10px 12px;cursor:pointer}
+    .hr{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);margin:14px 0}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:#2A4A6B;color:#e8f4f8;font-size:12px}
+    .badge{display:inline-block;font-size:11px;padding:4px 8px;border-radius:999px;background:#2A4A6B;border:1px solid rgba(255,255,255,.2);color:#e8f4f8;font-weight:500}
+    .foot{margin-top:18px;font-size:12px;color:var(--muted)}
+    .notice{position:sticky;top:0;z-index:10;margin:12px 0;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,#0f2132,#0e1f30)}
+    .notice .actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    /* Watermark */
+    body::after{content:"TEST";position:fixed;inset:0;pointer-events:none;display:grid;place-items:center;font-size:10vw;font-weight:900;color:rgba(255,255,255,.04);letter-spacing:3vw;}
+  </style>
+</head>
+<body>
+  <div class="test-banner">TEST BUILD • Starter (isolated storage) • Not for production</div>
+  <div class="wrap">
+    <div class="header">
+      <div class="brand">
+        <div style="flex:1">
+          <h1>PBS Starter TEST <span class="badge">ISOLATED</span></h1>
+          <div class="titleRow">
+            <label class="mini" for="customTitle">Custom Name</label>
+            <input id="customTitle" placeholder="e.g., Johnson Household Budget, Tour Budget, Project X" />
+            <span class="badge" id="liveTitleBadge">Untitled</span>
+            <span class="badge" id="trialBadge" style="margin-left: 8px;">Trial: 30 days left</span>
+            <button class="btn ghost" id="toggleMode" style="width:auto">Toggle Trial/Basic</button>
+            <button class="btn ghost" id="resetTest" style="width:auto">Reset TEST Data</button>
+          </div>
+          <div class="tagline">TEST build  Separate keys  No signup redirect.</div>
+        </div>
+        <div class="row" style="width:auto">
+          <button class="theme-toggle" id="themeToggle" title="Toggle light/dark">🌓</button>
+          <button class="btn" id="printBtn">🖨️ Print / Save PDF</button>
+          <button class="btn danger" id="resetBtn" title="Remove all saved PBS data on this device" aria-label="Master Reset: Remove all saved PBS data on this device">Master Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="allocations">Allocations</button>
+      <button class="tab" data-tab="income">Income Sources</button>
+      <button class="tab" data-tab="bills">Bills & Subscriptions</button>
+      <button class="tab" data-tab="expenses">Variable Expenses</button>
+      <button class="tab" data-tab="debt">Debt Payoff</button>
+      <button class="tab" data-tab="goals">Savings Goals</button>
+      <button class="tab" data-tab="report">Monthly Report</button>
+      <button class="tab" data-tab="backup">Backup / Import</button>
+    </div>
+
+    <div class="grid">
+      <section class="card" id="left"></section>
+      <section class="card" id="right">
+        <div class="rightTop" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <h2>Visual Budget Map</h2>
+          <span class="badge" id="sumBadge">Sum: 100%</span>
+        </div>
+        <div class="chartWrap" style="display:grid;place-items:center">
+          <svg id="donut" viewBox="0 0 200 200" width="260" height="260" role="img">
+            <circle class="ring" cx="100" cy="100" r="70" fill="none" stroke-width="40"/>
+            <text x="100" y="96" text-anchor="middle" class="muted" font-size="12">Allocated</text>
+            <text id="donutTotal" x="100" y="118" text-anchor="middle" font-size="20" font-weight="700">$0</text>
+          </svg>
+          <div class="legend" id="legend" style="margin-top:10px"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="foot">© <span id="year"></span> EYE AM STUDIOS</div>
+  </div>
+
+  <script>
+    // ===== HOST GUARD: prevent accidental exposure on production =====
+    (function(){
+      try{
+        var host = (location.hostname||'').toLowerCase();
+        var isLocal = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+        var url = new URL(window.location.href);
+        var grant = url.searchParams.get('grant');
+        if(url.searchParams.get('test') === '1' && grant === '1'){
+          localStorage.setItem('PBS_TEST_OVERRIDE', 'true');
+        }
+        var hasOverride = localStorage.getItem('PBS_TEST_OVERRIDE') === 'true';
+        if(!isLocal && !hasOverride){
+          window.location.replace('index.html');
+        }
+      }catch(_){ /* non-blocking */ }
+    })();
+    // ===== TEST: bypass signup =====
+    localStorage.setItem('PBS_STARTER_SIGNED_UP', 'true');
+
+    // ===== ACCESS & TRIAL LOGIC (TEST keys) =====
+    const TRIAL_DAYS = 30;
+    const hasProAccess = () => false; // Starter TEST never grants Pro
+    const TEST_PREFIX = 'TEST_';
+    const getTrialStart = () => parseInt(localStorage.getItem(TEST_PREFIX+'PBS_TRIAL_START') || Date.now().toString());
+    const getDaysRemaining = () => Math.max(0, TRIAL_DAYS - Math.floor((Date.now() - getTrialStart())/(1000*60*60*24)));
+    const isTrialExpired = () => getDaysRemaining() === 0;
+    const isBasicMode = () => !hasProAccess() && isTrialExpired();
+
+    function initTrial() {
+      if (!localStorage.getItem(TEST_PREFIX+'PBS_TRIAL_START')) {
+        localStorage.setItem(TEST_PREFIX+'PBS_TRIAL_START', Date.now().toString());
+      }
+      updateTrialStatus();
+    }
+
+    function updateTrialStatus() {
+      const daysRemaining = getDaysRemaining();
+      const badge = document.getElementById('trialBadge');
+      const mainTitle = document.querySelector('h1');
+      if (!badge) return;
+      if (daysRemaining > 0) {
+        badge.textContent = `Trial: ${daysRemaining} days left`;
+        badge.style.background = daysRemaining <= 7 ? '#ffc107' : '#28a745';
+        badge.style.color = daysRemaining <= 7 ? '#000' : '#fff';
+        if (mainTitle) mainTitle.innerHTML = 'PBS Starter TEST <span class="badge">ISOLATED</span>';
+        document.title = 'TEST • PBS Starter (Trial)';
+      } else {
+        badge.textContent = 'Basic Mode';
+        badge.style.background = '#0b2233';
+        badge.style.color = '#bfeaff';
+        showBasicModeNotice();
+        if (mainTitle) mainTitle.innerHTML = 'PBS Starter TEST <span class="badge" style="background:#0b2233;color:#bfeaff;">BASIC</span>';
+        document.title = 'TEST • PBS Starter (Basic)';
+      }
+    }
+
+    function showBasicModeNotice(){
+      if(document.getElementById('basicModeNotice')) return;
+      const wrap=document.querySelector('.wrap');
+      const n=document.createElement('div');
+      n.id='basicModeNotice';
+      n.className='notice';
+      n.innerHTML=`<strong>Basic Mode (TEST)</strong>
+        <div class="mini">Trial ended for this TEST build. Use the toggle to simulate trial/basic states.</div>
+        <div class="actions">
+          <a class="btn" href="../pro/">Upgrade to Pro</a>
+          <a class="btn ghost" href="../pro-cloud/">See Pro+ Cloud</a>
+        </div>`;
+      wrap.insertBefore(n, wrap.firstChild);
+    }
+
+    // ========================= CONFIG (TEST storage key) =========================
+    const BRAND_COLORS={essentials:"#00BFFF",security:"#7FDBFF",lifestyle:"#9EE493",future:"#FFD166",giving:"#FF7A8A"};
+    const BUCKETS=[
+      {key:"essentials", label:"Essentials (Housing, Utilities, Food, Transport)"},
+      {key:"security",   label:"Financial Security (Debt, Emergency, Retirement)"},
+      {key:"lifestyle",  label:"Lifestyle & Growth (Health, Learning, Hobbies)"},
+      {key:"future",     label:"Freedom / Future Fund (Investments, Big Goals)"},
+      {key:"giving",     label:"Community / Giving (Donations, Tithes)"}
+    ];
+    const DEFAULT_BUCKET_LABELS=Object.fromEntries(BUCKETS.map(b=>[b.key,b.label]));
+    const PRESETS={starter:{essentials:60,security:25,lifestyle:15,future:0,giving:0},growth:{essentials:55,security:20,lifestyle:15,future:5,giving:5},legacy:{essentials:50,security:20,lifestyle:15,future:10,giving:5}};
+    const DEFAULT_ALLOC={...PRESETS.growth};
+    const LS_KEY="EAS_PBS_COMPREHENSIVE_v2_TEST"; // TEST-only key
+    const LEGACY_KEYS=["EAS_PBS_COMPREHENSIVE_v1_TEST"]; // test legacy if any
+    const FREQ_FACTORS={ monthly:1, biweekly:26/12, weekly:52/12, annual:1/12, daily:365/12 };
+
+    // ========================= STATE =========================
+    const state={
+      title:"Untitled",
+      allocations:{...DEFAULT_ALLOC},
+      bucketLabels:{...DEFAULT_BUCKET_LABELS},
+      income:[], bills:[], expenses:[], debts:[], goals:[],
+      debtStrategy:"snowball", plan:"growth"
+    };
+
+    // ========================= HELPERS =========================
+    const $=sel=>document.querySelector(sel);
+    const $$=sel=>Array.from(document.querySelectorAll(sel));
+    const fmt=(n)=> (isNaN(Number(n))?0:Number(n)).toLocaleString(undefined,{style:"currency",currency:"USD",maximumFractionDigits:2});
+    const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
+    const uuid=()=>Math.random().toString(36).slice(2,9);
+    const L=(key)=> (state.bucketLabels && state.bucketLabels[key]) || (function(){ const f=BUCKETS.find(function(b){return b.key===key}); return f?f.label:undefined; })() || key;
+    function incomeToMonthly(amount,freq){ const a=parseFloat(amount||0); const f=(FREQ_FACTORS.hasOwnProperty(freq)? FREQ_FACTORS[freq] : 1); return a * f; }
+    function sumPercents(obj){return Object.values(obj).reduce((t,v)=>t+(parseFloat(v)||0),0)}
+    function normalized(obj){const total=sumPercents(obj); if(total===0) return obj; const out={}; for(const k in obj){out[k]=(obj[k]/total)*100} return out}
+    function saveLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){ console.warn('LocalStorage save failed:', e); } }
+    function loadLocal(){ const raw=localStorage.getItem(LS_KEY); if(!raw) return; try{const s=JSON.parse(raw); Object.assign(state,{...state,...s});}catch(e){console.warn(e)} }
+    function ensureArray(prop){ if(!Array.isArray(state[prop])) state[prop]=[]; }
+    function validateState(){ ['income','bills','expenses','debts','goals'].forEach(k=>ensureArray(k)); if(!state.allocations||typeof state.allocations!=='object') state.allocations={...DEFAULT_ALLOC}; if(!state.bucketLabels||typeof state.bucketLabels!=='object') state.bucketLabels={...DEFAULT_BUCKET_LABELS}; if(typeof state.debtStrategy!=='string') state.debtStrategy='snowball'; if(typeof state.plan!=='string') state.plan='growth'; }
+
+    // ========================= HEADER / PRINT =========================
+    function initHeader(){
+      const input=$('#customTitle'); const badge=$('#liveTitleBadge');
+      const setTitle=(val)=>{ const t=(val||'').trim()||'Untitled'; state.title=t; badge.textContent=t; document.title=`${t} – PBS (TEST)`; saveLocal(); };
+      if(state.title && state.title !== 'Untitled'){ input.value = state.title; }
+      setTitle(state.title || input.value || 'Untitled');
+      const onChange=()=> setTitle(input.value);
+      input.addEventListener('input', onChange);
+      input.addEventListener('change', onChange);
+      input.addEventListener('keyup', onChange);
+      input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') input.blur(); });
+      updateTrialStatus();
+      $('#printBtn').onclick=()=>{ renderPrintView(); window.print(); };
+      $('#resetBtn').onclick=()=>{ if(confirm('This clears TEST storage only. Continue?')){ try{ localStorage.removeItem(LS_KEY); (LEGACY_KEYS||[]).forEach(k=>localStorage.removeItem(k)); }catch(e){} location.reload(); } };
+      $('#resetTest').onclick=()=>{ if(confirm('Reset TEST trial state?')){ localStorage.removeItem(TEST_PREFIX+'PBS_TRIAL_START'); location.reload(); } };
+      $('#toggleMode').onclick=()=>{ const expired=isTrialExpired(); if(expired){ localStorage.setItem(TEST_PREFIX+'PBS_TRIAL_START', Date.now().toString()); } else { localStorage.setItem(TEST_PREFIX+'PBS_TRIAL_START', (Date.now() - (TRIAL_DAYS+1)*24*60*60*1000).toString()); } updateTrialStatus(); route(); };
+    }
+
+    function renderPrintView(){
+      const left=$('#left');
+      const monthlyIncome=state.income.reduce((t,i)=>t+incomeToMonthly(i.amount,i.freq),0);
+      const monthlyBills=state.bills.reduce((t,b)=>t+incomeToMonthly(b.amount,b.freq),0);
+      const monthlyVar=state.expenses.reduce((t,x)=>t+incomeToMonthly(x.amount,x.freq),0);
+      const net=monthlyIncome-(monthlyBills+monthlyVar);
+      let html = `<div class="print-block"><div class="print-title">${state.title||'Untitled'}</div><div class="print-sub">Generated ${new Date().toLocaleDateString()}</div></div>`;
+      html += `<div class="print-block"><strong>Overview</strong><div>Income: ${fmt(monthlyIncome)} • Bills: ${fmt(monthlyBills)} • Variable: ${fmt(monthlyVar)} • Net: ${fmt(net)}</div></div>`;
+      html += `<div class="print-block"><strong>Allocations</strong><table><thead><tr><th>Bucket</th><th>Percent</th><th>Target</th></tr></thead><tbody>`;
+      BUCKETS.forEach(b=>{ const pct=clamp(Number(state.allocations[b.key]||0),0,100); html+=`<tr><td>${L(b.key).split(' (')[0]}</td><td>${pct.toFixed(0)}%</td><td>${fmt(monthlyIncome*(pct/100))}</td></tr>`; });
+      html+='</tbody></table></div>';
+      left.innerHTML=html;
+    }
+
+    // ========================= RENDER – RIGHT SIDE =========================
+    function renderLegendAndChart(){
+      const legend=$('#legend'); legend.innerHTML='';
+      const monthlyIncome=state.income.reduce((t,i)=>t+incomeToMonthly(i.amount,i.freq),0);
+      $('#donutTotal').textContent=fmt(monthlyIncome);
+      const donut=$('#donut'); Array.from(donut.querySelectorAll('path.segment')).forEach(p=>p.remove());
+      let start=-90;
+      BUCKETS.forEach(b=>{
+        const pct=clamp(Number(state.allocations[b.key]||0),0,100); const amt=monthlyIncome*(pct/100);
+        const item=document.createElement('div'); item.className='item'; item.style.display='flex'; item.style.gap='8px';
+        item.innerHTML=`<div class="swatch" style="width:12px;height:12px;border-radius:3px;background:${BRAND_COLORS[b.key]}"></div>
+          <div style="flex:1"><div style="font-weight:600">${L(b.key).split(' (')[0]}</div>
+          <div class="mini">${pct.toFixed(0)}% • ${fmt(amt)}</div></div>`;
+        legend.appendChild(item);
+        if(pct>0){ const angle=(pct/100)*360; const end=start+angle; const path=arcPath(100,100,70,40,start,end); const seg=document.createElementNS('http://www.w3.org/2000/svg','path'); seg.setAttribute('d',path); seg.setAttribute('fill',BRAND_COLORS[b.key]); seg.setAttribute('class','segment'); seg.setAttribute('opacity','0.9'); donut.insertBefore(seg, donut.firstChild); start=end; }
+      });
+      const totalPct=sumPercents(state.allocations); $('#sumBadge').textContent=`Sum: ${totalPct.toFixed(0)}%`; $('#sumBadge').style.background= totalPct===100? 'linear-gradient(180deg,#57d67a,#28a745)' : '#0b2233';
+    }
+
+    function polarToCartesian(cx,cy,r,angleDeg){const rad=(angleDeg-90)*Math.PI/180; return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}}
+    function arcPath(cx,cy,outerR,thickness,startAngle,endAngle){const innerR=outerR-thickness; const so=polarToCartesian(cx,cy,outerR,endAngle); const eo=polarToCartesian(cx,cy,outerR,startAngle); const si=polarToCartesian(cx,cy,innerR,endAngle); const ei=polarToCartesian(cx,cy,innerR,startAngle); const large=(endAngle-startAngle)<=180?"0":"1"; return ["M",so.x,so.y,"A",outerR,outerR,0,large,0,eo.x,eo.y,"L",ei.x,ei.y,"A",innerR,innerR,0,large,1,si.x,si.y,"Z"].join(' ')}
+
+    // ========================= VIEWS – LEFT SIDE =========================
+    function viewAllocations(){
+      const left=$('#left');
+      const monthlyIncome=state.income.reduce((t,i)=>t+incomeToMonthly(i.amount,i.freq),0);
+      left.innerHTML=
+        `<h2>Allocations (Targets)</h2>
+        <div class="row" style="margin-bottom:10px">
+          <div>
+            <label for="plan">Plan Presets</label>
+            <select id="plan">
+              <option value="starter">Starter – 60/25/15/0/0</option>
+              <option value="growth">Growth – 55/20/15/5/5</option>
+              <option value="legacy">Legacy – 50/20/15/10/5</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="row" style="flex:1">
+            <button class="btn primary" id="applyPreset">Apply Preset</button>
+            <button class="btn ghost" id="rebalance">Rebalance to 100%</button>
+          </div>
+        </div>
+        <div class="pill">Monthly Income (from sources): <strong style="margin-left:6px">${fmt(monthlyIncome)}</strong></div>
+        <div class="hr"></div>
+        <div id="allocRows"></div>
+        <div class="hr"></div>
+        <div class="row">
+          <button class="btn success" id="saveAll">Save</button>
+          <button class="btn danger" id="resetAll">Reset</button>
+        </div>`;
+
+      $('#plan').value=state.plan;
+      const wrap=$('#allocRows'); wrap.innerHTML='';
+      BUCKETS.forEach(b=>{
+        const pct=clamp(Number(state.allocations[b.key]||0),0,100);
+        const row=document.createElement('div'); row.className='alloc';
+        row.innerHTML=
+          `<div>
+            <div class="name" style="margin-bottom:6px">Bucket Name</div>
+            <input class="bucketLabel" type="text" value="${L(b.key)}" data-key="${b.key}" />
+          </div>
+          <div>
+            <label>Percent Slider</label>
+            <input class="slider" type="range" min="0" max="100" step="1" value="${pct}" data-key="${b.key}"/>
+          </div>
+          <div>
+            <label>%</label>
+            <input class="percent" type="number" min="0" max="100" step="1" value="${pct}" data-key="${b.key}">
+          </div>
+          <div>
+            <label>Amount</label>
+            <div class="amount">${fmt(monthlyIncome*(pct/100))}</div>
+          </div>`;
+        wrap.appendChild(row);
+      });
+
+      wrap.querySelectorAll('.bucketLabel').forEach(el=>{ el.addEventListener('input',e=>{ const key=e.target.dataset.key; state.bucketLabels[key]=e.target.value || L(key); saveLocal(); renderLegendAndChart(); updateBucketSelects(); }); });
+      wrap.querySelectorAll('.slider,.percent').forEach(el=>{ el.addEventListener('input',e=>{ const key=e.target.dataset.key; const val=clamp(parseFloat(e.target.value||0),0,100); state.allocations[key]=val; state.plan='custom'; $('#plan').value='custom'; renderLegendAndChart(); viewAllocations(); saveLocal(); }); });
+      $('#applyPreset').onclick=()=>{const p=$('#plan').value; if(PRESETS[p]){state.plan=p; state.allocations={...PRESETS[p]}; saveLocal(); viewAllocations(); renderLegendAndChart();}};
+      $('#rebalance').onclick=()=>{state.allocations=normalized(state.allocations); let entries=Object.entries(state.allocations).map(([k,v])=>[k,Math.floor(v)]); let s=entries.reduce((t,[,v])=>t+v,0); let r=100-s,i=0; while(r>0){entries[i%entries.length][1]+=1;r--;i++} state.allocations=Object.fromEntries(entries); saveLocal(); viewAllocations(); renderLegendAndChart(); };
+      $('#saveAll').onclick=()=>{saveLocal(); flash('#saveAll','Saved ✓')};
+      $('#resetAll').onclick=()=>{if(confirm('Reset allocations & names to defaults?')){state.allocations={...DEFAULT_ALLOC}; state.bucketLabels={...DEFAULT_BUCKET_LABELS}; state.plan='growth'; saveLocal(); viewAllocations(); renderLegendAndChart(); updateBucketSelects();}};
+    }
+
+    function bucketOptions(){return BUCKETS.map(b=>`<option value="${b.key}">${L(b.key).split(' (')[0]}</option>`).join('')}
+    function updateBucketSelects(){ $$('#billBucket,#exBucket').forEach(sel=>{ if(sel){ const val=sel.value; sel.innerHTML=bucketOptions(); sel.value=val; } }); }
+
+    function viewIncome(){
+      const left=$('#left');
+      left.innerHTML=
+        `<h2>Income Sources</h2>
+        <div class="row" style="margin-bottom:10px">
+          <div><label>Name</label><input id="incName" placeholder="e.g., Paycheck"/></div>
+          <div><label>Amount</label><input id="incAmt" type="number" min="0" step="0.01" placeholder="e.g., 3000"/></div>
+          <div><label>Frequency</label>
+            <select id="incFreq"><option value="monthly">Monthly</option><option value="biweekly">Bi-Weekly</option><option value="weekly">Weekly</option><option value="annual">Annual</option></select>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="addIncome">Add Source</button>
+          <button class="btn success" id="updateIncome" style="display:none">Update Source</button>
+          <button class="btn ghost" id="cancelIncomeEdit" style="display:none">Cancel</button>
+        </div>
+        <div class="hr"></div>
+        <table>
+          <thead><tr><th>Name</th><th>Amount</th><th>Freq</th><th class="right">Monthly</th><th></th></tr></thead>
+          <tbody id="incTbody"></tbody>
+        </table>
+        <div class="hr"></div>
+        <div class="pill">Total Monthly Income: <strong id="incTotal" style="margin-left:6px">$0</strong></div>`;
+
+      let editingId = null;
+      function resetIncomeForm() { $('#incName').value=''; $('#incAmt').value=''; $('#incFreq').value='monthly'; $('#addIncome').style.display='inline-flex'; $('#updateIncome').style.display='none'; $('#cancelIncomeEdit').style.display='none'; editingId=null; $('#incName').focus(); }
+      $('#addIncome').onclick=()=>{ const name=($('#incName').value||'').trim()||'Untitled'; const amt=parseFloat($('#incAmt').value); const amount=isNaN(amt)?0:amt; const freq=$('#incFreq').value||'monthly'; state.income.push({id:uuid(),name,amount,freq}); saveLocal(); resetIncomeForm(); viewIncome(); renderLegendAndChart(); };
+      $('#updateIncome').onclick=()=>{ const nameRaw=$('#incName').value; const amtRaw=parseFloat($('#incAmt').value); const freq=$('#incFreq').value||'monthly'; const name=(nameRaw||'').trim()||'Untitled'; const amount=isNaN(amtRaw)?0:amtRaw; const item=state.income.find(i=>i.id===editingId); if(item){ item.name=name; item.amount=amount; item.freq=freq; saveLocal(); resetIncomeForm(); viewIncome(); renderLegendAndChart(); } };
+      $('#cancelIncomeEdit').onclick=resetIncomeForm;
+      const body=$('#incTbody'); body.innerHTML='';
+      state.income.forEach(item=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td data-label="Name">${item.name}</td><td data-label="Amount">${fmt(item.amount)}</td><td data-label="Freq" class="mini">${item.freq}</td><td data-label="Monthly" class="right">${fmt(incomeToMonthly(item.amount,item.freq))}</td><td data-label="" class="right"><button class="btn ghost" data-id="${item.id}" data-action="edit">Edit</button> <button class="btn ghost" data-id="${item.id}" data-action="delete">Delete</button></td>`; body.appendChild(tr); });
+      body.querySelectorAll('button').forEach(b=>{ if(b.dataset.action==='delete'){ b.onclick=()=>{ state.income=state.income.filter(i=>i.id!==b.dataset.id); saveLocal(); resetIncomeForm(); viewIncome(); renderLegendAndChart(); }; } else if(b.dataset.action==='edit'){ b.onclick=()=>{ const item=state.income.find(i=>i.id===b.dataset.id); if(item){ $('#incName').value=item.name; $('#incAmt').value=item.amount; $('#incFreq').value=item.freq; $('#addIncome').style.display='none'; $('#updateIncome').style.display='inline-flex'; $('#cancelIncomeEdit').style.display='inline-flex'; editingId=item.id; } }; } });
+      $('#incTotal').textContent=fmt(state.income.reduce((t,i)=>t+incomeToMonthly(i.amount,i.freq),0));
+    }
+
+    function viewBills(){
+      const left=$('#left');
+      left.innerHTML=
+        `<h2>Bills & Subscriptions</h2>
+        <div class="row" style="margin-bottom:10px">
+          <div><label>Name</label><input id="billName" placeholder="e.g., Rent"/></div>
+          <div><label>Amount</label><input id="billAmt" type="number" min="0" step="0.01" placeholder="e.g., 1500"/></div>
+          <div><label>Frequency</label>
+            <select id="billFreq"><option value="monthly">Monthly</option><option value="weekly">Weekly</option><option value="biweekly">Bi-Weekly</option><option value="annual">Annual</option></select>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom:10px">
+          <div><label>Due Day (1–31, optional)</label><input id="billDue" type="number" min="1" max="31" placeholder="1"/></div>
+          <div><label>Bucket</label>
+            <select id="billBucket">${bucketOptions()}</select>
+          </div>
+          <div><label>Notes</label><input id="billNotes" placeholder="optional"/></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="addBill">Add Bill</button>
+          <button class="btn success" id="updateBill" style="display:none">Update Bill</button>
+          <button class="btn ghost" id="cancelBillEdit" style="display:none">Cancel</button>
+        </div>
+        <div class="hr"></div>
+        <table>
+          <thead><tr><th>Name</th><th>Bucket</th><th>Amount</th><th>Freq</th><th class="right">Monthly</th><th>Due</th><th></th></tr></thead>
+          <tbody id="billTbody"></tbody>
+        </table>
+        <div class="hr"></div>
+        <div class="pill">Monthly Bills Total: <strong id="billTotal" style="margin-left:6px">$0</strong></div>`;
+
+      let editingId = null;
+      function resetBillForm(){ $('#billName').value=''; $('#billAmt').value=''; $('#billFreq').value='monthly'; $('#billDue').value=''; $('#billBucket').value='essentials'; $('#billNotes').value=''; $('#addBill').style.display='inline-flex'; $('#updateBill').style.display='none'; $('#cancelBillEdit').style.display='none'; editingId=null; $('#billName').focus(); }
+      $('#addBill').onclick=()=>{ const name=($('#billName').value||'').trim()||'New Bill'; const amt=parseFloat($('#billAmt').value); const amount=isNaN(amt)?0:amt; const freq=$('#billFreq').value||'monthly'; const due=parseInt($('#billDue').value||''); const bucket=$('#billBucket').value||'essentials'; const notes=($('#billNotes').value||'').trim(); state.bills.push({id:uuid(),name,amount,freq,dueDay:isNaN(due)?null:due,bucket,notes}); saveLocal(); resetBillForm(); viewBills(); renderReport(); };
+      $('#updateBill').onclick=()=>{ const nameRaw=$('#billName').value; const amtRaw=parseFloat($('#billAmt').value); const freq=$('#billFreq').value||'monthly'; const due=parseInt($('#billDue').value||''); const bucket=$('#billBucket').value||'essentials'; const notes=($('#billNotes').value||'').trim(); const name=(nameRaw||'').trim()||'New Bill'; const amount=isNaN(amtRaw)?0:amtRaw; const item=state.bills.find(b=>b.id===editingId); if(item){ item.name=name; item.amount=amount; item.freq=freq; item.dueDay=isNaN(due)?null:due; item.bucket=bucket; item.notes=notes; saveLocal(); resetBillForm(); viewBills(); renderReport(); } };
+      $('#cancelBillEdit').onclick=resetBillForm;
+      const body=$('#billTbody'); body.innerHTML='';
+      state.bills.forEach(b=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td data-label="Name">${b.name}${b.notes?`<div class='mini'>${b.notes}</div>`:''}</td><td data-label="Bucket" class="mini">${L(b.bucket).split(' (')[0]}</td><td data-label="Amount">${fmt(b.amount)}</td><td data-label="Freq" class="mini">${b.freq}</td><td data-label="Monthly" class="right">${fmt(incomeToMonthly(b.amount,b.freq))}</td><td data-label="Due" class="mini">${(b.dueDay==null?'':b.dueDay)}</td><td data-label="" class="right"><button class="btn ghost" data-id="${b.id}" data-action="edit">Edit</button> <button class="btn ghost" data-id="${b.id}" data-action="delete">Delete</button></td>`; body.appendChild(tr); });
+      body.querySelectorAll('button').forEach(btn=>{ if(btn.dataset.action==='delete'){ btn.onclick=()=>{ state.bills=state.bills.filter(x=>x.id!==btn.dataset.id); saveLocal(); resetBillForm(); viewBills(); renderReport(); }; } else if(btn.dataset.action==='edit'){ btn.onclick=()=>{ const item=state.bills.find(b=>b.id===btn.dataset.id); if(item){ $('#billName').value=item.name; $('#billAmt').value=item.amount; $('#billFreq').value=item.freq; $('#billDue').value=item.dueDay||''; $('#billBucket').value=item.bucket; $('#billNotes').value=item.notes||''; $('#addBill').style.display='none'; $('#updateBill').style.display='inline-flex'; $('#cancelBillEdit').style.display='inline-flex'; editingId=item.id; } }; } });
+      $('#billTotal').textContent=fmt(state.bills.reduce((t,b)=>t+incomeToMonthly(b.amount,b.freq),0));
+    }
+
+    function viewExpenses(){
+      const left=$('#left');
+      left.innerHTML=
+        `<h2>Variable Expenses</h2>
+        <div class="row" style="margin-bottom:10px">
+          <div><label>Name</label><input id="exName" placeholder="e.g., Groceries"/></div>
+          <div><label>Budget / Amount</label><input id="exAmt" type="number" min="0" step="0.01" placeholder="e.g., 400"/></div>
+          <div><label>Frequency</label>
+            <select id="exFreq"><option value="monthly">Monthly</option><option value="weekly">Weekly</option><option value="biweekly">Bi-Weekly</option><option value="annual">Annual</option></select>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom:10px">
+          <div><label>Bucket</label>
+            <select id="exBucket">${bucketOptions()}</select>
+          </div>
+          <div><label>Notes</label><input id="exNotes" placeholder="optional"/></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="addEx">Add Expense</button>
+          <button class="btn success" id="updateEx" style="display:none">Update Expense</button>
+          <button class="btn ghost" id="cancelExEdit" style="display:none">Cancel</button>
+        </div>
+        <div class="hr"></div>
+        <table>
+          <thead><tr><th>Name</th><th>Bucket</th><th>Amount</th><th>Freq</th><th class="right">Monthly</th><th></th></tr></thead>
+          <tbody id="exTbody"></tbody>
+        </table>
+        <div class="hr"></div>
+        <div class="pill">Monthly Variable Total: <strong id="exTotal" style="margin-left:6px">$0</strong></div>`;
+
+      let editingId = null;
+      function resetExpenseForm(){ $('#exName').value=''; $('#exAmt').value=''; $('#exFreq').value='monthly'; $('#exBucket').value='essentials'; $('#exNotes').value=''; $('#addEx').style.display='inline-flex'; $('#updateEx').style.display='none'; $('#cancelExEdit').style.display='none'; editingId=null; $('#exName').focus(); }
+      $('#addEx').onclick=()=>{ const name=($('#exName').value||'').trim()||'New Expense'; const amt=parseFloat($('#exAmt').value); const amount=Math.max(0,isNaN(amt)?0:amt); const freq=$('#exFreq').value||'monthly'; const bucket=$('#exBucket').value||'essentials'; const notes=($('#exNotes').value||'').trim(); state.expenses.push({id:uuid(),name,amount,freq,bucket,notes}); saveLocal(); resetExpenseForm(); viewExpenses(); renderReport(); };
+      $('#updateEx').onclick=()=>{ const nameRaw=$('#exName').value; const amtRaw=parseFloat($('#exAmt').value); const freq=$('#exFreq').value||'monthly'; const bucket=$('#exBucket').value||'essentials'; const notes=($('#exNotes').value||'').trim(); const name=(nameRaw||'').trim()||'New Expense'; const amount=Math.max(0,isNaN(amtRaw)?0:amtRaw); const item=state.expenses.find(x=>x.id===editingId); if(item){ item.name=name; item.amount=amount; item.freq=freq; item.bucket=bucket; item.notes=notes; saveLocal(); resetExpenseForm(); viewExpenses(); renderReport(); } };
+      $('#cancelExEdit').onclick=resetExpenseForm;
+      const body=$('#exTbody'); body.innerHTML='';
+      state.expenses.forEach(x=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td data-label="Name">${x.name}${x.notes?`<div class='mini'>${x.notes}</div>`:''}</td><td data-label="Bucket" class="mini">${L(x.bucket).split(' (')[0]}</td><td data-label="Amount">${fmt(x.amount)}</td><td data-label="Freq" class="mini">${x.freq}</td><td data-label="Monthly" class="right">${fmt(incomeToMonthly(x.amount,x.freq))}</td><td data-label="" class="right"><button class="btn ghost" data-id="${x.id}" data-action="edit">Edit</button> <button class="btn ghost" data-id="${x.id}" data-action="delete">Delete</button></td>`; body.appendChild(tr); });
+      body.querySelectorAll('button').forEach(btn=>{ if(btn.dataset.action==='delete'){ btn.onclick=()=>{ state.expenses=state.expenses.filter(i=>i.id!==btn.dataset.id); saveLocal(); resetExpenseForm(); viewExpenses(); renderReport(); }; } else if(btn.dataset.action==='edit'){ btn.onclick=()=>{ const item=state.expenses.find(x=>x.id===btn.dataset.id); if(item){ $('#exName').value=item.name; $('#exAmt').value=item.amount; $('#exFreq').value=item.freq; $('#exBucket').value=item.bucket; $('#exNotes').value=item.notes||''; $('#addEx').style.display='none'; $('#updateEx').style.display='inline-flex'; $('#cancelExEdit').style.display='inline-flex'; editingId=item.id; } }; } });
+      $('#exTotal').textContent=fmt(state.expenses.reduce((t,x)=>t+incomeToMonthly(x.amount,x.freq),0));
+    }
+
+    function viewDebt(){
+      if(isBasicMode()){
+        const left=$('#left');
+        left.innerHTML = `
+          <h2>Debt Payoff</h2>
+          <div class="card" style="background:#0f2132;border:1px dashed rgba(255,255,255,.15)">
+            <div class="row" style="align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-weight:700;margin-bottom:4px">Locked in Basic Mode (TEST)</div>
+                <div class="mini">Toggle to Trial to unlock in this TEST build.</div>
+              </div>
+              <button class="btn" onclick="document.getElementById('toggleMode').click()">Switch Mode</button>
+            </div>
+          </div>`;
+        return;
+      }
+      const left=$('#left');
+      left.innerHTML=
+        `<h2>Debt Payoff</h2>
+        <div class="row" style="margin-bottom:10px">
+          <div><label>Name</label><input id="dbName" placeholder="e.g., Credit Card A"/></div>
+          <div><label>Balance</label><input id="dbBal" type="number" min="0" step="0.01" placeholder="e.g., 2500"/></div>
+          <div><label>APR %</label><input id="dbApr" type="number" min="0" step="0.01" placeholder="e.g., 19.99"/></div>
+        </div>
+        <div class="row" style="margin-bottom:10px">
+          <div><label>Min Payment</label><input id="dbMin" type="number" min="0" step="0.01" placeholder="e.g., 75"/></div>
+          <div><label>Extra Monthly</label><input id="dbExtra" type="number" min="0" step="0.01" placeholder="e.g., 100"/></div>
+          <div>
+            <label>Strategy</label>
+            <select id="dbStrategy"><option value="snowball">Snowball (lowest balance first)</option><option value="avalanche">Avalanche (highest APR first)</option></select>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="addDebt">Add Debt</button>
+          <button class="btn success" id="updateDebt" style="display:none">Update Debt</button>
+          <button class="btn ghost" id="cancelDebtEdit" style="display:none">Cancel</button>
+        </div>
+        <div class="hr"></div>
+        <table>
+          <thead><tr><th>Name</th><th>Balance</th><th>APR</th><th>Min</th><th>Extra</th><th class="right">Months (est)</th><th></th></tr></thead>
+          <tbody id="dbTbody"></tbody>
+        </table>
+        <div class="hr"></div>
+        <div class="pill">Total Extra Toward Debt: <strong id="dbExtraTotal" style="margin-left:6px">$0</strong></div>`;
+
+      let editingId = null;
+      function resetDebtForm(){ $('#dbName').value=''; $('#dbBal').value=''; $('#dbApr').value=''; $('#dbMin').value=''; $('#dbExtra').value=''; $('#addDebt').style.display='inline-flex'; $('#updateDebt').style.display='none'; $('#cancelDebtEdit').style.display='none'; editingId=null; $('#dbName').focus(); }
+      $('#addDebt').onclick=()=>{ const name=($('#dbName').value||'').trim()||'New Debt'; const balRaw=parseFloat($('#dbBal').value); const aprRaw=parseFloat($('#dbApr').value); const minRaw=parseFloat($('#dbMin').value); const extraRaw=parseFloat($('#dbExtra').value); const balance=Math.max(0,isNaN(balRaw)?0:balRaw); const apr=Math.min(100,Math.max(0,isNaN(aprRaw)?0:aprRaw)); const min=Math.max(0,isNaN(minRaw)?0:minRaw); const extra=Math.max(0,isNaN(extraRaw)?0:extraRaw); state.debts.push({id:uuid(),name,balance,apr,min,extra}); saveLocal(); resetDebtForm(); viewDebt(); };
+      $('#dbStrategy').value=state.debtStrategy;
+      $('#updateDebt').onclick=()=>{ const nameRaw=$('#dbName').value; const balRaw=parseFloat($('#dbBal').value); const aprRaw=parseFloat($('#dbApr').value); const minRaw=parseFloat($('#dbMin').value); const extraRaw=parseFloat($('#dbExtra').value); const name=(nameRaw||'').trim()||'New Debt'; const balance=Math.max(0,isNaN(balRaw)?0:balRaw); const apr=Math.min(100,Math.max(0,isNaN(aprRaw)?0:aprRaw)); const min=Math.max(0,isNaN(minRaw)?0:minRaw); const extra=Math.max(0,isNaN(extraRaw)?0:extraRaw); const item=state.debts.find(d=>d.id===editingId); if(item){ item.name=name; item.balance=balance; item.apr=apr; item.min=min; item.extra=extra; saveLocal(); resetDebtForm(); viewDebt(); } };
+      $('#cancelDebtEdit').onclick=resetDebtForm;
+      $('#dbStrategy').onchange=()=>{state.debtStrategy=$('#dbStrategy').value; saveLocal(); viewDebt();};
+      const body=$('#dbTbody'); body.innerHTML='';
+      const ordered=[...state.debts].sort((a,b)=> state.debtStrategy==='snowball'? (a.balance-b.balance) : (b.apr-a.apr));
+      function estimateMonthsToPayoff(balance, apr, payment){ balance=parseFloat(balance||0); const r=(apr||0)/100/12; payment=parseFloat(payment||0); if(balance<=0) return 0; if(payment<=balance*r) return Infinity; let months=0; let cap=1200; while(balance>0 && months<cap){ balance = balance * (1+r) - payment; months++; } return months>=cap? Infinity : months; }
+      ordered.forEach(d=>{ const months=estimateMonthsToPayoff(d.balance,d.apr,d.min + d.extra); const tr=document.createElement('tr'); tr.innerHTML=`<td data-label="Name">${d.name}</td><td data-label="Balance">${fmt(d.balance)}</td><td data-label="APR" class="mini">${Number(d.apr||0).toFixed(2)}%</td><td data-label="Min">${fmt(d.min||0)}</td><td data-label="Extra">${fmt(d.extra||0)}</td><td data-label="Months" class="right">${months===Infinity?'–':months}</td><td data-label="" class="right"><button class="btn ghost" data-id="${d.id}" data-action="edit">Edit</button> <button class="btn ghost" data-id="${d.id}" data-action="delete">Delete</button></td>`; body.appendChild(tr); });
+      body.querySelectorAll('button').forEach(btn=>{ if(btn.dataset.action==='delete'){ btn.onclick=()=>{ state.debts=state.debts.filter(i=>i.id!==btn.dataset.id); saveLocal(); resetDebtForm(); viewDebt(); }; } else if(btn.dataset.action==='edit'){ btn.onclick=()=>{ const item=state.debts.find(d=>d.id===btn.dataset.id); if(item){ $('#dbName').value=item.name; $('#dbBal').value=item.balance; $('#dbApr').value=item.apr||''; $('#dbMin').value=item.min||''; $('#dbExtra').value=item.extra||''; $('#addDebt').style.display='none'; $('#updateDebt').style.display='inline-flex'; $('#cancelDebtEdit').style.display='inline-flex'; editingId=item.id; } }; } });
+      $('#dbExtraTotal').textContent=fmt(state.debts.reduce((t,d)=>t+(d.extra||0),0));
+    }
+
+    function viewGoals(){
+      if(isBasicMode()){
+        const left=$('#left');
+        left.innerHTML = `
+          <h2>Savings Goals</h2>
+          <div class="card" style="background:#0f2132;border:1px dashed rgba(255,255,255,.15)">
+            <div class="row" style="align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-weight:700;margin-bottom:4px">Locked in Basic Mode (TEST)</div>
+                <div class="mini">Toggle to Trial to unlock in this TEST build.</div>
+              </div>
+              <button class="btn" onclick="document.getElementById('toggleMode').click()">Switch Mode</button>
+            </div>
+          </div>`;
+        return;
+      }
+      const left=$('#left');
+      left.innerHTML=
+        `<h2>Savings Goals</h2>
+        <div class="row" style="margin-bottom:10px">
+          <div><label>Name</label><input id="gName" placeholder="e.g., Emergency Fund"/></div>
+          <div><label>Target</label><input id="gTarget" type="number" min="0" step="0.01" placeholder="e.g., 5000"/></div>
+          <div><label>Current Saved</label><input id="gCurrent" type="number" min="0" step="0.01" placeholder="e.g., 1200"/></div>
+        </div>
+        <div class="row" style="margin-bottom:10px">
+          <div><label>Monthly Contribution</label><input id="gMonthly" type="number" min="0" step="0.01" placeholder="e.g., 200"/></div>
+          <div><label>Notes</label><input id="gNotes" placeholder="optional"/></div>
+          <div><label>&nbsp;</label>
+            <button class="btn primary" id="addGoal">Add Goal</button>
+            <button class="btn success" id="updateGoal" style="display:none">Update Goal</button>
+            <button class="btn ghost" id="cancelGoalEdit" style="display:none">Cancel</button>
+          </div>
+        </div>
+        <div class="hr"></div>
+        <table>
+          <thead><tr><th>Name</th><th>Target</th><th>Current</th><th>Monthly</th><th class="right">ETA (months)</th><th></th></tr></thead>
+          <tbody id="gTbody"></tbody>
+        </table>`;
+
+      let editingId = null;
+      function resetGoalForm(){ $('#gName').value=''; $('#gTarget').value=''; $('#gCurrent').value=''; $('#gMonthly').value=''; $('#gNotes').value=''; $('#addGoal').style.display='inline-flex'; $('#updateGoal').style.display='none'; $('#cancelGoalEdit').style.display='none'; editingId=null; $('#gName').focus(); }
+      $('#updateGoal').onclick=()=>{ const nameRaw=$('#gName').value; const targetRaw=parseFloat($('#gTarget').value); const currentRaw=parseFloat($('#gCurrent').value); const monthlyRaw=parseFloat($('#gMonthly').value); const notes=($('#gNotes').value||'').trim(); const name=(nameRaw||'').trim()||'New Goal'; const target=isNaN(targetRaw)?0:targetRaw; const current=isNaN(currentRaw)?0:currentRaw; const monthly=isNaN(monthlyRaw)?0:monthlyRaw; const item=state.goals.find(g=>g.id===editingId); if(item){ item.name=name; item.target=target; item.current=current; item.monthly=monthly; item.notes=notes; saveLocal(); resetGoalForm(); viewGoals(); } };
+      $('#cancelGoalEdit').onclick=resetGoalForm;
+      const body=$('#gTbody'); body.innerHTML='';
+      state.goals.forEach(g=>{ const remaining=Math.max(0,(g.target||0)-(g.current||0)); const eta=(g.monthly||0)>0? Math.ceil(remaining/(g.monthly||1)) : '–'; const tr=document.createElement('tr'); tr.innerHTML=`<td data-label="Name">${g.name}${g.notes?`<div class='mini'>${g.notes}</div>`:''}<div class="progress" style="height:8px;background:#0b2233;border-radius:999px;overflow:hidden;margin-top:8px"><div class="bar" style="height:8px;background:linear-gradient(180deg,#57d67a,#28a745);width:${Math.min(100, (g.current||0)/(g.target||1)*100)}%"></div></div></td><td data-label="Target">${fmt(g.target||0)}</td><td data-label="Current">${fmt(g.current||0)}</td><td data-label="Monthly">${fmt(g.monthly||0)}</td><td data-label="ETA" class="right">${eta}</td><td data-label="" class="right"><button class="btn ghost" data-id="${g.id}" data-action="edit">Edit</button> <button class="btn ghost" data-id="${g.id}" data-action="delete">Delete</button></td>`; body.appendChild(tr); });
+      body.querySelectorAll('button').forEach(btn=>{ if(btn.dataset.action==='delete'){ btn.onclick=()=>{ state.goals=state.goals.filter(i=>i.id!==btn.dataset.id); saveLocal(); resetGoalForm(); viewGoals(); }; } else if(btn.dataset.action==='edit'){ btn.onclick=()=>{ const item=state.goals.find(g=>g.id===btn.dataset.id); if(item){ $('#gName').value=item.name; $('#gTarget').value=item.target||''; $('#gCurrent').value=item.current||''; $('#gMonthly').value=item.monthly||''; $('#gNotes').value=item.notes||''; $('#addGoal').style.display='none'; $('#updateGoal').style.display='inline-flex'; $('#cancelGoalEdit').style.display='inline-flex'; editingId=item.id; } }; } });
+    }
+
+    function viewReport(){
+      const left=$('#left');
+      const monthlyIncome=state.income.reduce((t,i)=>t+incomeToMonthly(i.amount,i.freq),0);
+      const monthlyBills=state.bills.reduce((t,b)=>t+incomeToMonthly(b.amount,b.freq),0);
+      const monthlyVar=state.expenses.reduce((t,x)=>t+incomeToMonthly(x.amount,x.freq),0);
+      const totalOut=monthlyBills+monthlyVar; const net=monthlyIncome-totalOut;
+      const bucketUsed=Object.fromEntries(BUCKETS.map(b=>[b.key,0]));
+      state.bills.forEach(b=>bucketUsed[b.bucket]+=incomeToMonthly(b.amount,b.freq));
+      state.expenses.forEach(x=>bucketUsed[x.bucket]+=incomeToMonthly(x.amount,x.freq));
+      const bucketTargets=Object.fromEntries(BUCKETS.map(b=>[b.key, monthlyIncome*(state.allocations[b.key]/100)]));
+      left.innerHTML=
+        `<h2>Monthly Report</h2>
+        <div class="row">
+          <div class="pill">Income: <strong>${fmt(monthlyIncome)}</strong></div>
+          <div class="pill">Bills: <strong>${fmt(monthlyBills)}</strong></div>
+          <div class="pill">Variable: <strong>${fmt(monthlyVar)}</strong></div>
+          <div class="pill">Net: <strong>${fmt(net)}</strong></div>
+        </div>
+        <div class="hr"></div>
+        <table>
+          <thead><tr><th>Bucket</th><th class="right">Target</th><th class="right">Used</th><th class="right">Remaining</th></tr></thead>
+          <tbody id="bucketRows"></tbody>
+        </table>`;
+      const body=$('#bucketRows'); body.innerHTML='';
+      BUCKETS.forEach(b=>{ const target=bucketTargets[b.key]; const used=bucketUsed[b.key]; const rem=target-used; const pct=target>0? Math.min(100,(used/target)*100):(used>0?100:0); const tr=document.createElement('tr'); tr.innerHTML=`<td data-label="Bucket">${L(b.key).split(' (')[0]}</td><td data-label="Target" class="right">${fmt(target)}</td><td data-label="Used" class="right">${fmt(used)}</td><td data-label="Remaining" class="right" style="color:${rem<0?'#ff8170':'#9EE493'}">${fmt(rem)}</td>`; body.appendChild(tr); const trBar=document.createElement('tr'); trBar.innerHTML=`<td colspan="4"><div class="progress ${used>target?'over':''}"><div class="bar" style="height:8px;background:${used>target?'linear-gradient(180deg,#ff8170,#f44336)':'linear-gradient(180deg,#57d67a,#28a745)'};width:${pct}%;"></div></div></td>`; body.appendChild(trBar); });
+    }
+
+    function viewBackup(){
+      const left=$('#left');
+      left.innerHTML=
+        `<h2>Backup / Import (TEST)</h2>
+        <div class="row">
+          <button class="btn" id="exportJson">Export JSON</button>
+          <button class="btn" id="exportPbs">Download .pbs</button>
+          <input type="file" id="importFile" accept=".json,.pbs,application/json" style="display:none" />
+          <button class="btn" id="importFileBtn">Import from File (.json/.pbs)</button>
+          <button class="btn danger" id="clearAll" title="Master Reset: Remove TEST data">Master Reset (TEST Only)</button>
+        </div>
+        <div class="mini" style="margin-top:6px;color:#ffb3a7">Warning: This only clears TEST keys.</div>
+        <div class="hr"></div>
+        <label class="mini">Paste JSON</label>
+        <textarea id="jsonArea" rows="12" placeholder="JSON will appear here on export, or paste JSON here to import..."></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="importJson">Import from Text</button>
+        </div>`;
+      $('#exportJson').onclick=()=>{$('#jsonArea').value=JSON.stringify(state,null,2)};
+      $('#exportPbs').onclick=()=>{ try{ const data=JSON.stringify(state); const blob=new Blob([data],{type:'application/json'}); const a=document.createElement('a'); const title=(state.title||'PBS_TEST').replace(/[^a-z0-9\-_]+/gi,'_'); const stamp=new Date().toISOString().slice(0,10); a.href=URL.createObjectURL(blob); a.download=`${title}_${stamp}.pbs`; document.body.appendChild(a); a.click(); a.remove(); }catch(e){ alert('Export failed'); } };
+      $('#importJson').onclick=()=>{try{const data=JSON.parse($('#jsonArea').value); Object.assign(state,data); saveLocal(); route(); renderLegendAndChart(); alert('Imported ✓ (TEST)')}catch(e){alert('Invalid JSON')}};
+      $('#clearAll').onclick=()=>{ if(confirm('Erase all TEST data?')){ try{ localStorage.removeItem(LS_KEY); (LEGACY_KEYS||[]).forEach(k=>localStorage.removeItem(k)); }catch(e){} location.reload(); } };
+      $('#importFileBtn').onclick=()=>$('#importFile').click();
+      $('#importFile').addEventListener('change', (e)=>{ const file=(e.target && e.target.files && e.target.files[0]) || null; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ try{ const data=JSON.parse(reader.result); Object.assign(state,data); saveLocal(); route(); renderLegendAndChart(); alert('Imported ✓ from file (TEST)'); } catch(err){ alert('Invalid file'); } }; reader.readAsText(file); });
+    }
+
+    // ========================= ROUTER / INIT =========================
+    function route(){ const activeEl=document.querySelector('.tab.active'); let active=(activeEl&&activeEl.dataset&&activeEl.dataset.tab)?activeEl.dataset.tab:'allocations'; if(isBasicMode() && (active==='debt'||active==='goals')){ active='allocations'; $$('.tab').forEach(x=>x.classList.remove('active')); document.querySelector('.tab[data-tab="allocations"]').classList.add('active'); } if(active==='allocations') viewAllocations(); if(active==='income') viewIncome(); if(active==='bills') viewBills(); if(active==='expenses') viewExpenses(); if(active==='debt') viewDebt(); if(active==='goals') viewGoals(); if(active==='report') viewReport(); if(active==='backup') viewBackup(); }
+    function flash(selector,text){const el=document.querySelector(selector); if(!el) return; const old=el.textContent; el.textContent=text; setTimeout(()=>el.textContent=old,1200)}
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const yearEl=document.getElementById('year'); if(yearEl){ yearEl.textContent=new Date().getFullYear(); }
+      const saved=localStorage.getItem('PBS_THEME'); if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+      const btn=document.getElementById('themeToggle'); if(btn){ btn.addEventListener('click', ()=>{ const cur=document.documentElement.getAttribute('data-theme')==='light'?'dark':'light'; document.documentElement.setAttribute('data-theme', cur); localStorage.setItem('PBS_THEME', cur); }); }
+      initTrial();
+      loadLocal();
+      validateState();
+      initHeader();
+      $$('.tab').forEach(t=>t.onclick=()=>{ if(t.classList.contains('locked')){ showBasicModeNotice(); return; } $$('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); route(); });
+      route();
+      renderLegendAndChart();
+    });
+  </script>
+</body>
+</html>

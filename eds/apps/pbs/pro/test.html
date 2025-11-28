@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TEST • PBS Pro App (Bypass Access)</title>
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <link rel="stylesheet" href="../assets/site.css">
+  <style>
+    .test-banner{position:sticky;top:0;z-index:9999;background:linear-gradient(90deg,#f44336,#ff9800);color:#000;padding:10px 14px;font-weight:800;border-bottom:2px solid rgba(0,0,0,.25);text-align:center}
+    main.wrap { max-width: 1100px; padding: 32px 24px; }
+    .lead { color: rgba(255,255,255,.9); max-width: 900px; line-height: 1.7; }
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:#2A4A6B;color:#e8f4f8;font-size:12px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:#2A4A6B;color:#e8f4f8;text-decoration:none;cursor:pointer}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../">
+      <span class="logo" aria-hidden="true"></span>
+      <strong>EAS</strong><span class="muted"> | Personal Budget System</span>
+    </a>
+    <nav>
+      <a href="../starter/">Starter</a>
+      <a class="active" href="../pro/">Pro</a>
+      <a href="../pro-cloud/">Pro+ Cloud</a>
+      <a href="../starter/guide.html">Guide</a>
+      <a href="../support.html">Support</a>
+      <button class="theme-toggle" id="themeToggle" type="button" title="Toggle light/dark">🌓</button>
+    </nav>
+  </header>
+
+  <div class="test-banner">TEST BUILD • Pro (access bypass + isolated keys)</div>
+
+  <main class="wrap">
+    <h1>PBS Pro TEST</h1>
+    <p class="lead">This page bypasses Pro access checks and uses separate localStorage keys so you can test flows safely.</p>
+
+    <div class="row" style="margin:10px 0 18px">
+      <span class="pill">Pro Access: <strong id="proState">off</strong></span>
+      <button class="btn" id="togglePro">Toggle Pro Access</button>
+      <button class="btn" id="expirePro">Simulate Expired</button>
+      <button class="btn" id="resetPro">Reset Pro Keys (TEST)</button>
+      <button class="btn" id="applyLive" title="Copy TEST keys to LIVE (used by pro/app.html)">Apply to LIVE keys</button>
+      <button class="btn" id="clearLive" title="Clear LIVE keys">Clear LIVE keys</button>
+    </div>
+
+    <div class="card" style="padding:16px;margin:16px 0">
+      <h2>What this page does</h2>
+      <ul>
+        <li>No redirect to payment.html.</li>
+        <li>Writes only to TEST keys: PBS_PRO_ACCESS_TEST, PBS_PRO_KEY_TEST, PBS_PRO_EXPIRES_TEST.</li>
+        <li>Theme toggle persists to normal PBS_THEME so your site theme stays consistent.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="padding:16px;margin:16px 0">
+      <h3>Access Status</h3>
+      <div class="row" style="gap:16px">
+        <div style="flex:1;min-width:260px">
+          <div class="pill" style="margin-bottom:8px">TEST keys</div>
+          <pre id="statusTest" style="white-space:pre-wrap"></pre>
+        </div>
+        <div style="flex:1;min-width:260px">
+          <div class="pill" style="margin-bottom:8px">LIVE keys (used by pro/app.html)</div>
+          <pre id="statusLive" style="white-space:pre-wrap"></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-row" style="display:flex;gap:12px">
+      <a class="btn" href="index.html">Open Pro Landing</a>
+      <a class="btn" href="app.html" title="Opens app with LIVE keys gating">Open Pro App (LIVE keys)</a>
+      <a class="btn ghost" href="../starter/">Try Starter</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>© <span id="year"></span> EYE AM STUDIOS</span>
+  </footer>
+
+  <script>
+    // ===== HOST GUARD: prevent accidental exposure on production =====
+    (function(){
+      try{
+        var host = (location.hostname||'').toLowerCase();
+        var isLocal = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+        var url = new URL(window.location.href);
+        var grant = url.searchParams.get('grant');
+        if(url.searchParams.get('test') === '1' && grant === '1'){
+          // Set a temporary override flag for this browser
+          localStorage.setItem('PBS_TEST_OVERRIDE', 'true');
+        }
+        var hasOverride = localStorage.getItem('PBS_TEST_OVERRIDE') === 'true';
+        if(!isLocal && !hasOverride){
+          // Soft-protect: redirect to Pro landing unless explicitly overridden
+          window.location.replace('index.html');
+        }
+      }catch(_){ /* non-blocking */ }
+    })();
+    // ===== TEST KEYS (isolated) =====
+  const K_ACCESS = 'PBS_PRO_ACCESS_TEST';
+  const K_KEY = 'PBS_PRO_KEY_TEST';
+  const K_EXPIRES = 'PBS_PRO_EXPIRES_TEST';
+  // LIVE keys used by pro/app.html
+  const L_ACCESS = 'PBS_PRO_ACCESS';
+  const L_KEY = 'PBS_PRO_KEY';
+  const L_EXPIRES = 'PBS_PRO_EXPIRES';
+
+    function nowTs(){ return Date.now(); }
+    function oneDay(ms=1){ return 24*60*60*1000*ms; }
+
+    function readStatus(){
+      return {
+        access: localStorage.getItem(K_ACCESS),
+        key: localStorage.getItem(K_KEY),
+        expires: localStorage.getItem(K_EXPIRES)
+      };
+    }
+
+    function writeStatus(o){
+      if('access' in o){ localStorage.setItem(K_ACCESS, String(o.access)); }
+      if('key' in o){ localStorage.setItem(K_KEY, String(o.key)); }
+      if('expires' in o){ localStorage.setItem(K_EXPIRES, String(o.expires)); }
+      render();
+    }
+
+    function resetStatus(){
+      localStorage.removeItem(K_ACCESS);
+      localStorage.removeItem(K_KEY);
+      localStorage.removeItem(K_EXPIRES);
+      render();
+    }
+
+    function readLive(){
+      return {
+        access: localStorage.getItem(L_ACCESS),
+        key: localStorage.getItem(L_KEY),
+        expires: localStorage.getItem(L_EXPIRES)
+      };
+    }
+
+    function writeLive(o){
+      if('access' in o){ localStorage.setItem(L_ACCESS, String(o.access)); }
+      if('key' in o){ localStorage.setItem(L_KEY, String(o.key)); }
+      if('expires' in o){ localStorage.setItem(L_EXPIRES, String(o.expires)); }
+      render();
+    }
+
+    function clearLive(){
+      localStorage.removeItem(L_ACCESS);
+      localStorage.removeItem(L_KEY);
+      localStorage.removeItem(L_EXPIRES);
+      render();
+    }
+
+    function render(){
+      const s = readStatus();
+      const live = readLive();
+      document.getElementById('statusTest').textContent = JSON.stringify(s, null, 2);
+      document.getElementById('statusLive').textContent = JSON.stringify(live, null, 2);
+      document.getElementById('proState').textContent = s.access === 'true' ? 'on' : 'off';
+    }
+
+    document.getElementById('togglePro').onclick = () => {
+      const s = readStatus();
+      const next = !(s.access === 'true');
+      writeStatus({ access: next, key: next ? 'TEST-' + Math.random().toString(36).slice(2,8).toUpperCase() : '' });
+      if(next){ writeStatus({ expires: 'recurring' }); }
+    };
+
+    document.getElementById('expirePro').onclick = () => {
+      const s = readStatus();
+      if(s.access !== 'true'){ alert('Turn Pro on first.'); return; }
+      writeStatus({ expires: String(nowTs() - oneDay(1)) });
+      alert('Set to expired (yesterday).');
+    };
+
+    document.getElementById('resetPro').onclick = resetStatus;
+    document.getElementById('applyLive').onclick = () => {
+      if(!confirm('Copy TEST keys to LIVE keys used by pro/app.html?')) return;
+      const s = readStatus();
+      if(!(s && s.access === 'true' && s.key)){
+        if(!confirm('TEST access is not enabled yet. Continue to set LIVE access ON with a temp key?')) return;
+        writeLive({ access: true, key: 'LIVE-TEST-' + Math.random().toString(36).slice(2,8).toUpperCase(), expires: 'recurring' });
+      } else {
+        writeLive({ access: s.access, key: s.key, expires: s.expires || 'recurring' });
+      }
+      alert('LIVE keys updated. Open Pro App to verify.');
+    };
+    document.getElementById('clearLive').onclick = () => {
+      if(confirm('Clear LIVE keys? This will make pro/app.html treat access as missing/expired.')){
+        clearLive();
+        alert('LIVE keys cleared.');
+      }
+    };
+
+    // Theme + year
+    (function(){
+      const saved = localStorage.getItem('PBS_THEME');
+      if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+      const btn = document.getElementById('themeToggle');
+      if(btn){ btn.addEventListener('click', ()=>{
+        const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', cur);
+        localStorage.setItem('PBS_THEME', cur);
+      }); }
+      document.getElementById('year').textContent=new Date().getFullYear();
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - PBS Pro</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <style>
+    body {
+      background: #0D1B2A;
+      color: #fff;
+      font-family: Inter, sans-serif;
+      margin: 0;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+    }
+    .success-container {
+      max-width: 500px;
+      text-align: center;
+      background: #112436;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #28a745, #20a83a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+    .success-container h1 {
+      color: #EAF6FF;
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0 0 16px;
+      text-shadow: 0 2px 12px rgba(0,0,0,.25), 0 0 24px rgba(0,191,255,.25);
+    }
+    .success-container p {
+      color: rgba(255,255,255,.9);
+      line-height: 1.6;
+      margin: 0 0 24px;
+    }
+    .access-key-display {
+      background: rgba(0,191,255,.1);
+      border: 2px solid #00BFFF;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    .access-key-display h3 {
+      color: #00BFFF;
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+    }
+    .key-value {
+      font-family: 'Courier New', monospace;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #fff;
+      background: #0f2132;
+      padding: 12px 16px;
+      border-radius: 8px;
+      letter-spacing: 2px;
+      margin: 12px 0;
+      word-break: break-all;
+    }
+    .copy-btn {
+      background: #00BFFF;
+      border: none;
+      color: #052432;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: transform 0.2s ease;
+    }
+    .copy-btn:hover {
+      transform: translateY(-1px);
+    }
+    .next-steps {
+      background: rgba(15,33,50,.6);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+      text-align: left;
+    }
+    .next-steps h3 {
+      color: #EAF6FF;
+      margin: 0 0 16px;
+      font-size: 1.2rem;
+    }
+    .next-steps ol {
+      margin: 0;
+      padding-left: 20px;
+      color: rgba(255,255,255,.9);
+    }
+    .next-steps li {
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+    .action-buttons {
+      display: grid;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .btn {
+      background: linear-gradient(180deg, #00BFFF, #00A7E3);
+      border: none;
+      color: #052432;
+      padding: 14px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      box-shadow: 0 8px 20px rgba(0,191,255,.35);
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.06);
+    }
+    .btn.secondary {
+      background: rgba(15,33,50,.8);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: none;
+    }
+    .btn.secondary:hover {
+      background: rgba(15,33,50,.9);
+    }
+    .important-note {
+      background: rgba(255,193,7,.1);
+      border: 1px solid rgba(255,193,7,.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 24px;
+      font-size: 14px;
+      color: rgba(255,255,255,.9);
+    }
+    .important-note strong {
+      color: #ffc107;
+    }
+  </style>
+</head>
+<body>
+  <div class="success-container">
+    <div class="success-icon">✅</div>
+    
+    <h1>Payment Successful!</h1>
+    <p>Welcome to PBS Pro Standard! Your subscription is now active and you have full access to all Pro features.</p>
+    
+    <div class="access-key-display">
+      <h3>🔑 Your Access Key</h3>
+      <p>Save this key safely - you'll need it to access PBS Pro on any device:</p>
+      <div class="key-value" id="accessKey">Generating...</div>
+      <button class="copy-btn" onclick="copyAccessKey()">Copy Key</button>
+    </div>
+    
+    <div class="next-steps">
+      <h3>Next Steps:</h3>
+      <ol>
+        <li><strong>Save your access key</strong> in a safe place (password manager recommended)</li>
+        <li><strong>Access PBS Pro</strong> using the button below</li>
+        <li><strong>Import your trial data</strong> if you want to continue from where you left off</li>
+        <li><strong>Explore Pro features</strong> like debt tracking and savings goals</li>
+      </ol>
+    </div>
+    
+    <div class="action-buttons">
+      <a href="../pro/app.html" class="btn" id="accessProBtn">Access PBS Pro Now</a>
+  <a href="../starter/guide.html" class="btn secondary">View User Guide</a>
+      <a href="../support.html" class="btn secondary">Get Support</a>
+    </div>
+    
+    <div class="important-note">
+      <strong>Important:</strong> Your access key has also been sent to your email. You can use this key on any device to access your PBS Pro account. Keep it secure and don't share it with others.
+    </div>
+  </div>
+
+  <script>
+    // Generate access key and set up Pro access
+    function generateAccessKey() {
+      // Generate a unique access key
+      const timestamp = Date.now().toString(36).toUpperCase();
+      const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const checksum = (timestamp + random).split('').reduce((a, b) => a + b.charCodeAt(0), 0).toString(36).toUpperCase().substring(0, 4);
+      
+      return `PBS-${timestamp.substring(0, 4)}-${random}-${checksum}`;
+    }
+    
+    function initializeProAccess() {
+      // Generate access key
+      const accessKey = generateAccessKey();
+      
+      // Display the key
+      document.getElementById('accessKey').textContent = accessKey;
+      
+      // Store Pro access in localStorage
+      localStorage.setItem('PBS_PRO_ACCESS', 'true');
+      localStorage.setItem('PBS_PRO_KEY', accessKey);
+      localStorage.setItem('PBS_PRO_PLAN', 'standard');
+      localStorage.setItem('PBS_PRO_ACTIVATED', Date.now().toString());
+      
+      // Get plan from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const plan = urlParams.get('plan') || 'monthly';
+      
+      if (plan === 'annual') {
+        // Annual plan - expires in 1 year
+        const expiryDate = new Date();
+        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+        localStorage.setItem('PBS_PRO_EXPIRES', expiryDate.getTime().toString());
+      } else {
+        // Monthly plan - set recurring subscription flag
+        localStorage.setItem('PBS_PRO_SUBSCRIPTION', 'monthly');
+        localStorage.setItem('PBS_PRO_EXPIRES', 'recurring');
+      }
+      
+      // Mark trial as converted
+      localStorage.setItem('PBS_TRIAL_CONVERTED', 'true');
+      
+      // Send access key to customer email and your records
+      sendAccessKeyEmail(accessKey, plan);
+      
+      console.log('Pro access initialized:', {
+        key: accessKey,
+        plan: plan,
+        activated: new Date().toISOString()
+      });
+    }
+    
+    async function sendAccessKeyEmail(accessKey, plan) {
+      try {
+        // Get customer email from Stripe session or form
+        const customerEmail = getCustomerEmail();
+        
+        // In production, call your backend API to:
+        // 1. Store the key in your database
+        // 2. Email the key to the customer
+        // 3. Send a copy to your support email
+        
+        const response = await fetch('/api/store-access-key', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            accessKey: accessKey,
+            customerEmail: customerEmail,
+            plan: plan,
+            purchaseDate: new Date().toISOString(),
+            stripeSessionId: getStripeSessionId() // if available
+          })
+        });
+        
+        if (response.ok) {
+          console.log('Access key stored and emailed successfully');
+        } else {
+          console.error('Failed to store access key');
+          // Fallback: Show key prominently and warn user to save it
+          showKeyBackupWarning();
+        }
+        
+      } catch (error) {
+        console.error('Error sending access key:', error);
+        showKeyBackupWarning();
+      }
+    }
+    
+    function showKeyBackupWarning() {
+      const warningDiv = document.createElement('div');
+      warningDiv.style.cssText = `
+        background: #ff4444; 
+        color: white; 
+        padding: 16px; 
+        border-radius: 8px; 
+        margin: 16px 0; 
+        text-align: center; 
+        font-weight: bold;
+      `;
+      warningDiv.innerHTML = `
+        ⚠️ IMPORTANT: Save your access key now! We couldn't send it to your email. 
+        Screenshot this page or write down your key: <span style="background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px;">${document.getElementById('accessKey').textContent}</span>
+      `;
+      document.querySelector('.success-container').appendChild(warningDiv);
+    }
+    
+    function copyAccessKey() {
+      const keyElement = document.getElementById('accessKey');
+      const key = keyElement.textContent;
+      
+      navigator.clipboard.writeText(key).then(() => {
+        const copyBtn = document.querySelector('.copy-btn');
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        copyBtn.style.background = '#28a745';
+        
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+          copyBtn.style.background = '#00BFFF';
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        // Fallback for older browsers
+        keyElement.select();
+        document.execCommand('copy');
+      });
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeProAccess();
+      
+      // Update access button to include validation
+      document.getElementById('accessProBtn').addEventListener('click', function(e) {
+        // Ensure Pro access is properly set before redirecting
+        if (!localStorage.getItem('PBS_PRO_ACCESS')) {
+          e.preventDefault();
+          alert('Pro access not properly initialized. Please contact support.');
+        }
+      });
+    });
+    
+    // Helper functions for email integration
+    function getCustomerEmail() {
+      // Try to get email from URL params, localStorage, or Stripe session
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('email') || 
+             localStorage.getItem('PBS_CUSTOMER_EMAIL') || 
+             'customer@example.com'; // Fallback
+    }
+    
+    function getStripeSessionId() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('session_id') || null;
+    }
+    
+    // Show different messages based on plan
+    const urlParams = new URLSearchParams(window.location.search);
+    const plan = urlParams.get('plan');
+    
+    if (plan === 'annual') {
+      // Could customize messaging for annual subscribers
+      console.log('Annual plan activated');
+    }
+  </script>
+</body>
+</html>

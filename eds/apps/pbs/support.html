@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PBS Support - AI Assistant</title>
+  <link rel="stylesheet" href="assets/site.css">
+  <style>
+    body {
+      background: #0D1B2A;
+      color: #fff;
+      font-family: Inter, sans-serif;
+      margin: 0;
+      padding: 24px;
+    }
+    .support-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .header h1 {
+      color: #EAF6FF;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 8px;
+      text-shadow: 0 2px 12px rgba(0,0,0,.25), 0 0 24px rgba(0,191,255,.25);
+    }
+    .header p {
+      color: rgba(255,255,255,.9);
+      font-size: 1.1rem;
+      margin: 0;
+    }
+    .chat-container {
+      background: #112436;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      margin-bottom: 24px;
+    }
+    .chat-messages {
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      padding-right: 8px;
+    }
+    .message {
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 80%;
+    }
+    .message.user {
+      background: linear-gradient(135deg, #00BFFF, #0099cc);
+      color: #052432;
+      margin-left: auto;
+      text-align: right;
+    }
+    .message.ai {
+      background: rgba(15,33,50,.8);
+      border: 1px solid rgba(255,255,255,.12);
+      color: #fff;
+    }
+    .message.system {
+      background: rgba(0,191,255,.1);
+      border: 1px solid rgba(0,191,255,.3);
+      color: #bfeaff;
+      text-align: center;
+      margin: 0 auto;
+      font-size: 0.9rem;
+    }
+    .input-container {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    .input-container textarea {
+      flex: 1;
+      background: #0f2132;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px;
+      color: #fff;
+      padding: 12px 16px;
+      font-family: inherit;
+      font-size: 16px;
+      resize: vertical;
+      min-height: 50px;
+      max-height: 120px;
+      outline: none;
+    }
+    .input-container textarea:focus {
+      border-color: rgba(0,191,255,.35);
+      box-shadow: 0 0 0 4px rgba(0,191,255,.12);
+    }
+    .input-container button {
+      background: linear-gradient(180deg, #00BFFF, #00A7E3);
+      border: none;
+      color: #052432;
+      padding: 12px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      box-shadow: 0 8px 20px rgba(0,191,255,.35);
+      height: 50px;
+    }
+    .input-container button:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.06);
+    }
+    .input-container button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .quick-action {
+      background: rgba(15,33,50,.6);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+    .quick-action:hover {
+      background: rgba(0,191,255,.1);
+      border-color: rgba(0,191,255,.3);
+    }
+    .email-fallback {
+      background: rgba(255,193,7,.1);
+      border: 1px solid rgba(255,193,7,.3);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .email-fallback h3 {
+      color: #ffc107;
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+    .email-fallback p {
+      color: rgba(255,255,255,.9);
+      margin: 0 0 12px;
+      font-size: 0.95rem;
+    }
+    .email-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffc107;
+      color: #000;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s ease;
+    }
+    .email-link:hover {
+      transform: translateY(-1px);
+    }
+    .back-link {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      color: #8fe6ff;
+      text-decoration: none;
+      font-size: 14px;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+    .back-link:hover {
+      opacity: 1;
+    }
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,.6);
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: rgba(0,191,255,.6);
+      border-radius: 50%;
+      animation: typing 1.4s ease-in-out infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-10px); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <a href="./" class="back-link">← Back to PBS</a>
+  
+  <header class="site-header" style="margin-bottom: 16px;">
+    <a class="brand" href="./">
+      <span class="logo" aria-hidden="true"></span>
+      <strong>EAS</strong><span class="muted"> | Personal Budget System</span>
+    </a>
+    <nav>
+      <a href="starter/">Starter</a>
+      <a href="pro/">Pro</a>
+      <a href="pro-cloud/">Pro+ Cloud</a>
+      <a href="starter/guide.html">Guide</a>
+      <a class="active" href="support.html">Support</a>
+      <button class="theme-toggle" id="themeToggle" type="button" title="Toggle light/dark">🌓</button>
+    </nav>
+  </header>
+  
+  <div class="support-container">
+    <div class="header">
+      <h1>PBS Support</h1>
+      <p class="lead">Your Money. Your Plan. Your Future.</p>
+      <p>Get instant help with your budgeting questions from our AI assistant</p>
+    </div>
+
+    <div class="quick-actions">
+      <div class="quick-action" onclick="sendQuickMessage('How do I set up my first budget?')">
+        🚀 Getting Started
+      </div>
+      <div class="quick-action" onclick="sendQuickMessage('How do allocation buckets work?')">
+        📊 Allocation Buckets
+      </div>
+      <div class="quick-action" onclick="sendQuickMessage('How do I track debt payoff?')">
+        💳 Debt Management
+      </div>
+      <div class="quick-action" onclick="sendQuickMessage('How do I backup my data?')">
+        💾 Data Backup
+      </div>
+      <div class="quick-action" onclick="sendQuickMessage('What is the difference between Starter and Pro?')">
+        ⭐ Starter vs Pro
+      </div>
+      <div class="quick-action" onclick="sendQuickMessage('How do I upgrade to Pro?')">
+        🔄 Upgrade Help
+      </div>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-messages" id="chatMessages">
+        <div class="message system">
+          👋 Hi! I'm your PBS AI assistant. Ask me anything about budgeting, the app features, or troubleshooting!
+        </div>
+      </div>
+      
+      <div class="typing-indicator" id="typingIndicator">
+        <span>AI is thinking</span>
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="input-container">
+        <textarea 
+          id="messageInput" 
+          placeholder="Ask me anything about PBS budgeting..."
+          onkeydown="handleKeyPress(event)"
+        ></textarea>
+        <button onclick="sendMessage()" id="sendButton">Send</button>
+      </div>
+    </div>
+
+    <div class="email-fallback">
+      <h3>Need Human Support?</h3>
+      <p>For complex issues or account-specific questions, reach out directly:</p>
+      <a href="mailto:support@eyeamstudios.com?subject=PBS Support Request&body=Hi there,%0D%0A%0D%0AI need help with:%0D%0A%0D%0A[Please describe your issue]%0D%0A%0D%0AThanks!" class="email-link">
+        📧 Email Support
+      </a>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const saved = localStorage.getItem('PBS_THEME');
+      if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+      const btn = document.getElementById('themeToggle');
+      if(btn){ btn.addEventListener('click', ()=>{
+        const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', cur);
+        localStorage.setItem('PBS_THEME', cur);
+      }); }
+    })();
+    // You'll need to replace this with your actual Gemini API key
+    const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY_HERE';
+    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const typingIndicator = document.getElementById('typingIndicator');
+
+    // PBS-specific context for the AI
+  const PBS_CONTEXT = `You are a helpful AI assistant for EAS | Personal Budget System. 
+
+PBS is a comprehensive budgeting app with these key features:
+- Allocation-based budgeting with 5 buckets: Essentials, Security, Lifestyle, Future, Giving
+- Income and expense tracking
+- Debt payoff tracking (Snowball/Avalanche methods)
+- Savings goals with progress tracking
+- Printable reports
+- Works offline, stores data locally
+- Three versions: Free trial (30 days), Starter ($19.99/mo), Pro ($29.99/mo)
+
+Be helpful, concise, and specific to PBS features. If users ask about features not in PBS, suggest alternatives or workarounds within the app.`;
+
+    function addMessage(content, type) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      messageDiv.textContent = content;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTyping() {
+      typingIndicator.style.display = 'flex';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTyping() {
+      typingIndicator.style.display = 'none';
+    }
+
+    async function sendToGemini(message) {
+      if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+        return "I'm sorry, but the AI service isn't configured yet. Please use the email support option below for help!";
+      }
+
+      try {
+        const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{
+                text: `${PBS_CONTEXT}\n\nUser question: ${message}`
+              }]
+            }]
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+          return data.candidates[0].content.parts[0].text;
+        } else {
+          throw new Error('Invalid response from AI service');
+        }
+      } catch (error) {
+        console.error('Error calling Gemini API:', error);
+        return "I'm having trouble connecting to the AI service right now. Please try again in a moment, or use the email support option below.";
+      }
+    }
+
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message) return;
+
+      // Add user message
+      addMessage(message, 'user');
+      messageInput.value = '';
+      sendButton.disabled = true;
+      showTyping();
+
+      // Get AI response
+      const response = await sendToGemini(message);
+      
+      hideTyping();
+      addMessage(response, 'ai');
+      sendButton.disabled = false;
+      messageInput.focus();
+    }
+
+    function sendQuickMessage(message) {
+      messageInput.value = message;
+      sendMessage();
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    // Focus input on page load
+    messageInput.focus();
+  </script>
+</body>
+</html>

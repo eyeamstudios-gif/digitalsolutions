@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PBS Preview Launcher</title>
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <link rel="stylesheet" href="assets/site.css" />
+  <style>
+    body{padding:24px}
+    .wrap{max-width:1200px;margin:0 auto}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .card{padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(13,27,42,.7)}
+    .card h2{margin:0 0 8px}
+    .btn{display:inline-block;margin:6px 6px 0 0;padding:10px 12px;border-radius:10px;text-decoration:none;border:1px solid rgba(255,255,255,.2)}
+    .btn.primary{background:linear-gradient(180deg,#00BFFF,#00A7E3);color:#001a2e;border-color:transparent;font-weight:700}
+    .btn.ghost{background:#2A4A6B;color:#e8f4f8}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:#2A4A6B;color:#e8f4f8;font-size:12px}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .muted{color:rgba(255,255,255,.75);font-size:.95em}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>PBS Preview Launcher</h1>
+  <p class="muted">Use these links to open each version quickly. Test links auto-enable the override on non-local hosts; you can also toggle it below.</p>
+
+    <div class="row" style="margin:12px 0 20px">
+      <button class="btn" id="enableOverride">Enable Test Override</button>
+      <button class="btn ghost" id="clearOverride">Clear Test Override</button>
+      <span class="pill" id="ovStatus">Override: off</span>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Homepage</h2>
+        <a class="btn primary" href="index.html">Open Root Landing</a>
+      </div>
+
+      <div class="card">
+        <h2>Starter</h2>
+        <a class="btn" href="starter/app.html?test=1">Open Starter App (?test=1)</a>
+        <a class="btn ghost" href="starter/test.html?test=1&grant=1">Open Starter Test</a>
+      </div>
+
+      <div class="card">
+        <h2>Pro</h2>
+        <a class="btn" href="pro/index.html">Open Pro Landing</a>
+        <a class="btn" href="pro/app.html?test=1">Open Pro App (?test=1)</a>
+        <a class="btn ghost" href="pro/test.html?test=1&grant=1">Open Pro Test Tools</a>
+      </div>
+
+      <div class="card">
+        <h2>Pro+ Cloud</h2>
+        <a class="btn" href="pro-cloud/index.html">Open Cloud Landing</a>
+        <a class="btn" href="pro-cloud/app.html?test=1">Open Cloud App (?test=1)</a>
+        <a class="btn ghost" href="pro-cloud/test.html?test=1&grant=1">Open Cloud Test</a>
+      </div>
+    </div>
+
+    <div style="margin-top:20px" class="muted">
+      Notes:
+      <ul>
+        <li>Test pages require localhost/127.0.0.1/.local or an explicit override.</li>
+        <li>Pro App reads LIVE keys; use Pro Test Tools → “Apply to LIVE keys” to preview real gating.</li>
+        <li>All test pages are set to noindex and blocked in robots.txt.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function updateStatus(){
+      const on = localStorage.getItem('PBS_TEST_OVERRIDE') === 'true';
+      document.getElementById('ovStatus').textContent = 'Override: ' + (on ? 'on' : 'off');
+    }
+    document.getElementById('enableOverride').onclick = function(){
+      localStorage.setItem('PBS_TEST_OVERRIDE','true');
+      updateStatus();
+      alert('Override enabled for this browser on this host.');
+    };
+    document.getElementById('clearOverride').onclick = function(){
+      localStorage.removeItem('PBS_TEST_OVERRIDE');
+      updateStatus();
+      alert('Override cleared.');
+    };
+    updateStatus();
+  </script>
+</body>
+</html>

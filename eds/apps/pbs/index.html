@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EYE AM STUDIOS – Personal Budget System (PBS)</title>
+  <meta name="description" content="PBS is a fast, private budgeting app that lives in your browser. Start free with Starter or upgrade to Pro for Debt Payoff and Savings Goals." />
+  <meta name="theme-color" content="#0D1B2A" />
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=">
+  <link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./">
+  <span class="logo" aria-hidden="true"></span>
+  <strong>EAS</strong><span class="muted"> | Personal Budget System</span>
+    </a>
+    <nav>
+      <a href="starter/">Starter</a>
+      <a href="pro/">Pro</a>
+      <a href="pro-cloud/">Pro+ Cloud</a>
+      <a href="starter/guide.html">Guide</a>
+      <a href="support.html">Support</a>
+      <button class="theme-toggle" id="themeToggle" type="button" title="Toggle light/dark">🌓</button>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <div class="hero-text">
+      <h1>Your Money. Your Plan. Your Future.</h1>
+      <p>Personal Budget System that runs in your browser—private by default, lightning‑fast, and easy to use. No sign‑up. No ads. Export anytime.</p>
+      <div class="cta">
+  <a class="btn" href="starter/" aria-label="Start Free with Personal Budget System Starter">Start Free</a>
+        <a class="btn ghost" href="pro/" aria-label="See PBS Pro features">Upgrade to Pro</a>
+      </div>
+      <div class="mini">Works offline • Saves locally • Print‑ready reports</div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="mock" aria-hidden="true">
+        <div class="mock-top">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <span class="chip">PBS Dashboard</span>
+        </div>
+        <div class="mock-body">
+          <div class="mock-left">
+            <div class="bar"></div>
+            <div class="bar small"></div>
+            <div class="bar small"></div>
+            <div class="bar small"></div>
+          </div>
+          <div class="mock-right">
+            <svg viewBox="0 0 200 200" width="160" height="160" role="img" aria-label="Budget allocation donut">
+              <circle cx="100" cy="100" r="70" fill="#0a1e2e" />
+              <path d="M100,30 A70,70 0 1,1 60,160 L60,130 A40,40 0 1,0 100,60 Z" fill="#00BFFF" opacity="0.85"/>
+            </svg>
+            <div class="legend">
+              <span><i style="background:#00BFFF"></i> Essentials</span>
+              <span><i style="background:#7FDBFF"></i> Security</span>
+              <span><i style="background:#9EE493"></i> Lifestyle</span>
+              <span><i style="background:#FFD166"></i> Future</span>
+              <span><i style="background:#FF7A8A"></i> Giving</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mini note">Dashboard visual mockup</div>
+    </div>
+  </main>
+
+  <section class="features wrap">
+    <h2>Why PBS?</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>Private & Offline</h3>
+        <p>Everything stays in your browser via localStorage. No servers, no accounts—your budget, your device.</p>
+      </div>
+      <div class="card">
+        <h3>Allocation‑First</h3>
+        <p>Simple buckets for Essentials, Security, Lifestyle, Future, and Giving. See targets vs. actuals at a glance.</p>
+      </div>
+      <div class="card">
+        <h3>Grow to Pro</h3>
+        <p>Unlock Debt Payoff strategies and Savings Goals with progress, ETA, and printable monthly reports.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap grid-2">
+    <div class="card">
+      <h3>How it works</h3>
+      <ol class="list">
+        <li>Pick an allocation preset and name your buckets.</li>
+        <li>Add income, bills, and variable expenses (with frequencies).</li>
+        <li>Review the Monthly Report and adjust until it fits your plan.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>What you’ll love</h3>
+      <ul class="list">
+        <li>No learning curve—clean, fast, and focused</li>
+        <li>Visual budget map with live totals</li>
+        <li>Backup/Import via JSON—take your data anywhere</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="features wrap">
+    <h2>Explore the PBS sections</h2>
+    <p class="muted">PBS gives you a clear visual snapshot with a live donut for allocations and a monthly report with progress bars. These sections work together so you can see where your money goes at a glance.</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>Allocations</h3>
+        <p>Set target percentages for Essentials, Security, Lifestyle, Future, and Giving. The Visual Budget Map donut shows each bucket’s share and dollar target based on your income.</p>
+        <p class="mini"><a href="starter/" aria-label="Open Starter to Allocations">Open in Starter</a></p>
+      </div>
+      <div class="card">
+        <h3>Income</h3>
+        <p>Add paychecks and other sources with frequencies (monthly, weekly, etc.). Monthly totals drive allocation targets and the donut’s center total.</p>
+        <p class="mini"><a href="starter/" aria-label="Open Starter to Income">Open in Starter</a></p>
+      </div>
+      <div class="card">
+        <h3>Bills & Subscriptions</h3>
+        <p>Track fixed costs like rent, utilities, and memberships. Assign each to a bucket so the Monthly Report can compare used vs target per bucket.</p>
+        <p class="mini"><a href="starter/" aria-label="Open Starter to Bills">Open in Starter</a></p>
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-top:16px">
+      <div class="card">
+        <h3>Variable Expenses</h3>
+        <p>Budget flexible categories (groceries, dining, fuel). Assign a frequency and bucket to see how these roll up against allocation targets.</p>
+        <p class="mini"><a href="starter/" aria-label="Open Starter to Variable Expenses">Open in Starter</a></p>
+      </div>
+      <div class="card">
+        <h3>Debt Payoff</h3>
+        <p>List balances, APR, minimums, and extra payments. Try Snowball or Avalanche and see an estimated payoff timeline. Included with Pro or during trial.</p>
+        <p class="mini"><a href="starter/" aria-label="Open Starter to Debt Payoff">Open in Starter</a> · <a href="pro/" aria-label="See Pro features">See Pro</a></p>
+      </div>
+      <div class="card">
+        <h3>Savings Goals</h3>
+        <p>Create targets with current and monthly contributions to visualize progress and ETA. A simple, motivating snapshot of your future funds.</p>
+        <p class="mini"><a href="starter/" aria-label="Open Starter to Savings Goals">Open in Starter</a> · <a href="pro/" aria-label="See Pro features">See Pro</a></p>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card">
+        <h3>Monthly Report</h3>
+        <p>See bucket targets vs used (bills + variable) with clear progress bars. Overages highlight in red; remaining shows in green—instant clarity.</p>
+        <p class="mini"><a href="starter/" aria-label="Open Starter to Monthly Report">Open in Starter</a></p>
+      </div>
+      <div class="card">
+        <h3>Backup / Import</h3>
+        <p>Export your budget as JSON or .pbs and import it later. PBS stores data locally for privacy and works offline by default.</p>
+        <p class="mini"><a href="starter/" aria-label="Open Starter to Backup Import">Open in Starter</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <h3 style="margin:0 0 6px">Ready to take control?</h3>
+        <p style="margin:0;color:rgba(255,255,255,.85)">Start free in seconds. Upgrade to Pro anytime.</p>
+      </div>
+      <div class="cta">
+        <a class="btn" href="starter/">Start Free</a>
+        <a class="btn ghost" href="pro/">See Pro</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <span>© <span id="year"></span> EYE AM STUDIOS</span>
+  </footer>
+
+  <script>
+    // Theme init
+    (function(){
+      const saved = localStorage.getItem('PBS_THEME');
+      if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+      const btn = document.getElementById('themeToggle');
+      if(btn){ btn.addEventListener('click', ()=>{
+        const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', cur);
+        localStorage.setItem('PBS_THEME', cur);
+      }); }
+    })();
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

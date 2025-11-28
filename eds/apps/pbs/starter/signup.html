@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Budget System Starter – Free 30-Day Trial Signup</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <style>
+    body { 
+      display: grid; 
+      place-items: center; 
+      min-height: 100vh; 
+      background: #0D1B2A; 
+      color: #fff; 
+      font-family: Inter, sans-serif; 
+    }
+    .box {
+      background: #112436;
+      padding: 40px;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0,191,255,.1);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .box h1 {
+      margin: 0 0 8px;
+      color: #EAF6FF;
+      font-size: 2rem;
+      font-weight: 800;
+      text-shadow: 0 2px 12px rgba(0,0,0,.25), 0 0 24px rgba(0,191,255,.25);
+    }
+    .box p {
+      color: rgba(255,255,255,.9);
+      margin: 0 0 24px;
+      line-height: 1.6;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: #0f2132;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    input:focus {
+      border-color: rgba(0,191,255,.35);
+      box-shadow: 0 0 0 4px rgba(0,191,255,.12);
+    }
+    input::placeholder {
+      color: rgba(255,255,255,.5);
+    }
+    button {
+      background: linear-gradient(180deg, #00BFFF, #00A7E3);
+      border: none;
+      color: #052432;
+      padding: 14px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 16px;
+      width: 100%;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      box-shadow: 0 8px 20px rgba(0,191,255,.35);
+    }
+    button:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.06);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .note {
+      font-size: 13px;
+      color: #bfeaff;
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+    .features {
+      text-align: left;
+      margin: 20px 0;
+      padding: 16px;
+      background: rgba(15,33,50,.5);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .features h3 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      color: #EAF6FF;
+    }
+    .features ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 14px;
+      color: rgba(255,255,255,.8);
+    }
+    .features li {
+      margin: 6px 0;
+    }
+    .logo { display: none; }
+    .back-link {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      color: #8fe6ff;
+      text-decoration: none;
+      font-size: 14px;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+    .back-link:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <a href="../" class="back-link">← Back to PBS</a>
+  
+  <div class="box">
+    <div class="logo" aria-hidden="true"></div>
+  <h1>Personal Budget System Starter</h1>
+    <p>Get 30-day free access to your personal budgeting system.</p>
+    
+    <div class="features">
+      <h3>What's included:</h3>
+      <ul>
+        <li>Complete offline budgeting system</li>
+        <li>Allocation sliders and presets</li>
+        <li>Income, bills, and expense tracking</li>
+        <li>Printable monthly reports</li>
+        <li>Private by default (localStorage)</li>
+        <li>30-day full access trial</li>
+      </ul>
+    </div>
+    
+    <iframe name="fsFrame" style="display:none"></iframe>
+    <form id="signupForm" action="https://formspree.io/f/xnnggjrr" method="POST" target="fsFrame">
+      <!-- Formspree endpoint configured -->
+      <input type="hidden" name="_next" value="app.html">
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email Address" required>
+      <button type="submit" class="btn primary">Start Free Trial</button>
+    </form>
+    <p class="note">No credit card required. You'll be redirected to your Starter app immediately.</p>
+    
+    <!-- Development bypass (remove in production) -->
+    <p style="margin-top: 24px; font-size: 12px; opacity: 0.6;">
+      <a href="#" onclick="localStorage.setItem('PBS_STARTER_SIGNED_UP','yes'); window.location.href='app.html'; return false;" style="color: rgba(255,255,255,0.4);">
+        Dev bypass
+      </a>
+      •
+      <a href="../support.html" style="color: rgba(255,255,255,0.7);">
+        Need help?
+      </a>
+    </p>
+  </div>
+  
+  <script>
+    // Check if already signed up
+    if(localStorage.getItem('PBS_STARTER_SIGNED_UP')) {
+      window.location.href = 'app.html';
+    }
+    
+    // Handle form submission
+    (function () {
+      const form = document.getElementById('signupForm');
+      if (!form) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // don’t leave the page
+
+        try {
+          await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { Accept: 'application/json' }
+          });
+        } catch (_) { /* ignore errors; continue redirect */ }
+
+        try {
+          localStorage.setItem('PBS_STARTER_SIGNED_UP','true');
+          if (!localStorage.getItem('PBS_TRIAL_START')) {
+            localStorage.setItem('PBS_TRIAL_START', Date.now().toString());
+          }
+        } catch (_) {}
+
+        setTimeout(() => { window.location.replace('./app.html'); }, 2000); // 2s
+      });
+    })();
+    
+    // Redirect after successful submission (backup)
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('success')) {
+      localStorage.setItem('PBS_STARTER_SIGNED_UP', 'yes');
+      window.location.href = 'app.html';
+    }
+  </script>
+</body>
+</html>

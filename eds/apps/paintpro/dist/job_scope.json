@@ -1,0 +1,56 @@
+{
+  "client": {
+    "name": "Client Name",
+    "project_address": "456 Client Ave, City, ST",
+    "phone": "555-987-6543",
+    "email": "client@example.com"
+  },
+  "estimate": {
+    "description": "Interior repaint"
+  },
+  "job_scope": {
+    "project_type": "Interior",
+    "rooms": [
+      "Living Room",
+      "Kitchen"
+    ],
+    "surfaces": [
+      "Walls",
+      "Ceiling",
+      "Trim"
+    ],
+    "prep_level": "standard",
+    "coats": 2,
+    "height_level": "10ft",
+    "surface_condition": "clean",
+    "color_change": "minor change",
+    "description": "Includes prep, masking, and cleanup"
+  },
+  "labor": {
+    "area_sqft": 1800,
+    "productivity_rate": 325,
+    "labor_rate": 55,
+    "painters": 2
+  },
+  "materials": {
+    "area_sqft": 1800,
+    "coats": 2,
+    "coverage_rate": 350,
+    "cost_per_gallon": 48,
+    "markup_percent": 12
+  },
+  "equipment": [
+    {
+      "label": "Masking + PPE",
+      "daily_cost": 75,
+      "days": 2
+    },
+    {
+      "label": "Lift Rental",
+      "daily_cost": 180,
+      "days": 1
+    }
+  ],
+  "overhead_percent": 10,
+  "profit_percent": 15
+}

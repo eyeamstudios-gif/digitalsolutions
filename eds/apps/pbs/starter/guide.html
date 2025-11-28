@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PBS | Getting Started Guide</title>
+  <meta name="description" content="Getting Started Guide for EAS | Personal Budget System." />
+  <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=">
+  <link rel="stylesheet" href="../assets/site.css">
+  <style>
+    .lead{max-width:900px;margin:10px auto 0;color:rgba(255,255,255,.9);text-align:center;line-height:1.7}
+    .grid-2.guide{margin-top:20px}
+    .callout{border-left:3px solid var(--electric-cyan);padding-left:12px}
+    .cta-row{display:flex;gap:12px;justify-content:center;margin:24px 0}
+    .pdf-embed iframe{width:100%;min-height:560px;border:none;background:#0f2132;border-radius:10px}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../">
+      <span class="logo" aria-hidden="true"></span>
+      <strong>EAS</strong><span class="muted"> | Personal Budget System</span>
+    </a>
+    <nav>
+      <a class="active" href="./guide.html">Guide</a>
+      <a href="./">Starter</a>
+      <a href="../pro/">Pro</a>
+      <a href="../pro-cloud/">Pro+ Cloud</a>
+      <button class="theme-toggle" id="themeToggle" type="button" title="Toggle light/dark">🌓</button>
+      <a href="../support.html">Support</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <h1>PBS Getting Started Guide</h1>
+    <p class="lead">Your Money. Your Plan. Your Future.</p>
+    <p class="lead">Set up your plan in minutes. PBS runs in your browser, saves locally, and prints beautifully.</p>
+
+    <section class="grid-2 guide">
+      <div class="card">
+        <h3>1) Get started</h3>
+        <ol class="list">
+          <li>Open <a href="./">Personal Budget System Starter</a>.</li>
+          <li>Enter a Custom Name for your plan (e.g., "Johnson Family Budget").</li>
+          <li>Choose a preset: Starter, Growth, or Legacy.</li>
+          <li>Rename buckets if you like (Essentials, Security, Lifestyle, Future, Giving).</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>2) Add income</h3>
+        <ol class="list">
+          <li>Go to Income and click Add Source.</li>
+          <li>Enter amount and frequency (monthly, bi‑weekly, weekly, annual).</li>
+          <li>Add all sources to build your monthly total.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="grid-2 guide">
+      <div class="card">
+        <h3>3) Bills & variable expenses</h3>
+        <ul class="list">
+          <li>Add recurring bills (rent, utilities, subscriptions) with due day if helpful.</li>
+          <li>Add variable expenses (groceries, gas, entertainment).</li>
+          <li>Assign each item to a bucket for clearer tracking.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>4) Review your plan</h3>
+        <ul class="list">
+          <li>Open Monthly Report to see Targets vs. Used by bucket.</li>
+          <li>Tweak allocations until the plan matches your reality.</li>
+          <li>Use Print / Save PDF for a clean monthly snapshot.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid-2 guide">
+      <div class="card">
+        <h3>Back up or move devices</h3>
+        <p class="callout">PBS stores data in your browser (localStorage). Export JSON to save a snapshot; Import to restore.</p>
+        <ul class="list">
+          <li>Go to Backup / Import → Export JSON.</li>
+          <li>Keep the file somewhere safe (no personal data leaves your device otherwise).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Go Pro when ready</h3>
+        <ul class="list">
+          <li>Debt Payoff (Snowball/Avalanche) with payoff estimates.</li>
+          <li>Savings Goals with progress, ETA, and visuals.</li>
+          <li>Priority updates; optional sync coming soon.</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn" href="./">Start Free</a>
+          <a class="btn ghost" href="../pro/">See Pro</a>
+        </div>
+      </div>
+    </section>
+
+    <h2>PDF Guide</h2>
+    <p class="mini">Place your PDF at assets/pbs-quick-start.pdf to show it below.</p>
+    <div class="pdf-embed">
+      <iframe src="../assets/pbs-quick-start.pdf" title="PBS Quick Start PDF"></iframe>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span>© <span id="year"></span> EYE AM STUDIOS</span>
+  </footer>
+  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+  <script>
+    (function(){
+      const saved = localStorage.getItem('PBS_THEME');
+      if(saved){ document.documentElement.setAttribute('data-theme', saved); }
+      const btn = document.getElementById('themeToggle');
+      if(btn){ btn.addEventListener('click', ()=>{
+        const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', cur);
+        localStorage.setItem('PBS_THEME', cur);
+      }); }
+    })();
+  </script>
+</body>
+</html>

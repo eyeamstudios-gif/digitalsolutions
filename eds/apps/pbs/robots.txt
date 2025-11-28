@@ -1,0 +1,6 @@
+# PBS robots directives
+# Block crawler access to test-only pages
+User-agent: *
+Disallow: /starter/test.html
+Disallow: /pro/test.html
+Disallow: /pro-cloud/test.html
