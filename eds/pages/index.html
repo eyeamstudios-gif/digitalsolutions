@@ -108,9 +108,27 @@
           const expiry = now + 24 * 3600; // 24 hours from now
           const key = `EDS-TRIAL-${product}-${expiry}`;
           localStorage.setItem(`eds_trial_${product}`, key);
-          alert('Trial activated! You have 24 hours of access.');
-          // Optionally, redirect to the product page
-          // window.location.href = `../apps/${product}/index.html`;
+          // Show monthly cost popup, then redirect
+          showMonthlyCostAndRedirect(product);
+        }
+
+        function showMonthlyCostAndRedirect(product) {
+          // Customize costs per product if needed
+          const costs = {
+            pbs: '$7/mo',
+            pas: '$9/mo',
+            paintpro: '$5/mo'
+          };
+          const names = {
+            pbs: 'Personal Budget System',
+            pas: 'Profit Allocation System',
+            paintpro: 'Paint Pro Estimator'
+          };
+          const cost = costs[product] || '$7/mo';
+          const name = names[product] || product;
+          const msg = `You are starting a free 24-hour trial of ${name}.\n\nAfter your trial, continue for just ${cost}.`;
+          alert(msg);
+          window.location.href = `../apps/${product}/index.html`;
         }
 
         function isTrialValid(product) {
