@@ -122,13 +122,12 @@
           const names = {
             pbs: 'Personal Budget System',
             pas: 'Profit Allocation System',
-            paintpro: 'Paint Pro Estimator'
-          };
-          const cost = costs[product] || '$7/mo';
-          const name = names[product] || product;
-          const msg = `You are starting a free 24-hour trial of ${name}.\n\nAfter your trial, continue for just ${cost}.`;
-          alert(msg);
-          window.location.href = `../apps/${product}/index.html`;
+            };
+            const cost = costs[product] || '$7/mo';
+            const name = names[product] || product;
+            const msg = `You are starting a free 24-hour trial of ${name}.\n\nAfter your trial, continue for just ${cost}.`;
+            alert(msg);
+            window.location.href = `../apps/${product}/index.html`;
         }
 
         function isTrialValid(product) {
